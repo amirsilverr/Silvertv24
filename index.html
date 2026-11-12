@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SILVER TV | Series Manager</title>
+<link rel="icon" type="image/avif" href="https://user55191.na.imgto.link/public/20261112/af46ebb8909a3ce346703d9f-1000013733.avif">
 <style>
 :root{--bg:#0b0e14;--panel:#131925;--panel2:#1a2230;--text:#edf1f7;--muted:#8995a8;--accent:#8b7cff;--border:#273144;--green:#39c98a;--red:#f16b78}
 *{box-sizing:border-box}
@@ -20,6 +21,8 @@ button{cursor:pointer}
 .nav button{display:flex;align-items:center;gap:12px;width:100%;padding:12px 13px;border:0;border-radius:10px;background:transparent;color:#aab4c4;text-align:left;margin:4px 0}
 .nav button:hover,.nav button.active{background:#24233c;color:white}
 .nav button.active{box-shadow:inset 3px 0 var(--accent)}
+.nav button[data-page="deleteData"]{margin-top:24px;background:#2b1d25;color:#e99aa5;border:1px solid #4b2c37}
+.nav button[data-page="deleteData"]:hover{background:#3a222c;color:#ffb2bc;border-color:#70404e}
 .sidebar-footer{position:sticky;bottom:0;margin-top:24px;padding:15px 0 4px;background:#101620;color:var(--muted);font-size:11px}
 .main{margin-left:245px;padding:30px;max-width:1600px}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;gap:15px}
@@ -76,6 +79,8 @@ textarea{width:100%;min-height:150px;resize:vertical}
 .badge.watched{color:var(--green)}
 .badge.watching{color:#e9c36c}
 .badge.stop{color:#ff9b78;background:#3a2725}
+.badge.year-badge{color:#b9c9df;background:#202b3b;border:1px solid #34445b}
+.badge.rating-badge{color:#f4d27c;background:#332d20;border:1px solid #62502b}
 .list-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}
 .selection-tools[hidden]{display:none!important}
 .selection-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:11px;background:#101722;border:1px solid var(--border);border-radius:10px;margin:10px 0}
@@ -611,9 +616,9 @@ function seriesCard(s,index,total,options={}){
     <div>
       <div class="series-name"><span>${escapeHTML(s.name)}</span>${options.titleExtra||""}</div>
       <div class="meta">
-        ${s.year?`<span>${escapeHTML(s.year)}</span>`:""}
+        ${s.year?`<span class="badge year-badge">${escapeHTML(s.year)}</span>`:""}
         <span class="badge ${statusClass} ${statusClass==='stop watching'?'stop':''}">${escapeHTML(s.status)}</span>
-        <span class="rating">★ ${formatRating(s.rating)}</span>
+        <span class="badge rating-badge">★ ${formatRating(s.rating)}</span>
         ${options.extraMeta||""}
       </div>
     </div>
@@ -697,7 +702,8 @@ function renderPrivateList(key){
     const episodeCount=Number(item.episodesWatched)||0;
     const episodeMinutes=Number(item.episodeMinutes)||0;
     const seriesHours=(episodeCount*episodeMinutes)/60;
-    const titleExtra=key==="amirWatched"?`<span class="watched-inline-meta">${episodeCount} eps · ${episodeMinutes?episodeMinutes.toFixed(2)+" min/ep":"— min/ep"} · ${seriesHours.toFixed(2)} h</span>`:"";
+    const episodeMinutesText=episodeMinutes?String(Number(episodeMinutes.toFixed(2))):"—";
+    const titleExtra=key==="amirWatched"?`<span class="watched-inline-meta">${episodeCount} eps · ${episodeMinutesText} min/ep · ${seriesHours.toFixed(2)} h</span>`:"";
     return seriesCard(item,i,list.length,{select:editModes[key]?key:null,move:editModes[key]&&mode==="manual",canMoveUp:actualIndex>0,canMoveDown:actualIndex<items.length-1,edit:editModes[key],remove:editModes[key],titleExtra});
   }).join(""):`<div class="empty">${key==="amirWatched"?"No watched series added yet.":"Your watch list is empty."}</div>`;
 }
