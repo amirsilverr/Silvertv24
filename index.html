@@ -171,13 +171,95 @@ textarea{width:100%;min-height:150px;resize:vertical}
 
 .watched-summary{margin:0 0 18px}.watched-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.private-edit{background:#292342;border-color:#55488d;color:#c9bdff}.private-edit.editing{background:#18392f;border-color:#32785d;color:#8ce0b5}
 @media(max-width:700px){.watched-stats{grid-template-columns:1fr 1fr}}
+
+/* Theme switch */
+.topbar{flex-wrap:wrap}
+.theme-toggle{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  min-height:42px;padding:9px 14px;border:1px solid var(--border);
+  border-radius:11px;background:var(--panel);color:var(--text);
+  font-size:12px;font-weight:700;white-space:nowrap;transition:background .25s,color .25s,border-color .25s;
+}
+.theme-toggle:hover{border-color:var(--accent);filter:brightness(1.08)}
+.theme-toggle-icon{font-size:16px;line-height:1}
+body,.sidebar,.panel,.stat,.series-card,.modal,.btn,input,select,textarea,.theme-toggle{
+  transition:background-color .25s,color .25s,border-color .25s,box-shadow .25s;
+}
+
+/* Light mode palette */
+body.light{
+  --bg:#f1f5f9;
+  --panel:#ffffff;
+  --panel2:#e8eef6;
+  --text:#172033;
+  --muted:#64748b;
+  --border:#dbe3ee;
+  --accent:#6554d9;
+  --green:#16865a;
+  --red:#d94b5b;
+  background:var(--bg);color:var(--text);
+}
+body.light .sidebar{background:#ffffff;border-right-color:#dbe3ee;box-shadow:4px 0 22px #24334a0a}
+body.light .sidebar-footer{background:#ffffff;color:#6554d9;border-top-color:#e2e8f0}
+body.light .nav button{color:#526078}
+body.light .nav button:hover,body.light .nav button.active{background:#eeeaff;color:#4938b5}
+body.light .nav button.active{box-shadow:inset 3px 0 #6554d9}
+body.light .nav button[data-page="deleteData"]{background:#fff0f1;color:#c74455;border-color:#f2cbd0}
+body.light .nav button[data-page="deleteData"]:hover{background:#ffe4e7;color:#a92e40;border-color:#e9aeb7}
+body.light .menu-btn{background:#fff;color:#172033}
+body.light .overlay{background:#1e293b66}
+body.light .number{background:#eeeaff;color:#5948c7}
+body.light .watched-inline-meta{color:#526078;background:#f1f5f9;border-color:#dbe3ee}
+body.light .icon-btn{background:#f1f5f9;color:#475569;border-color:#dbe3ee}
+body.light .badge{background:#eef2f7;color:#526078}
+body.light .badge.watched{color:#16865a;background:#e5f7ee}
+body.light .badge.watching{color:#9a6a12;background:#fff5dc}
+body.light .badge.stop{color:#b64a31;background:#fff0e9}
+body.light .badge.year-badge{color:#526078;background:#edf2f8;border-color:#d5deea}
+body.light .badge.rating-badge{color:#926514;background:#fff7df;border-color:#f0dfaa}
+body.light input,body.light select,body.light textarea{background:#f8fafc;color:#172033;border-color:#d6dfeb}
+body.light input::placeholder,body.light textarea::placeholder{color:#94a3b8}
+body.light .field label{color:#526078}
+body.light .selection-tools{background:#f8fafc;border-color:#dbe3ee}
+body.light .stats-group{background:#fff;border-color:#dbe3ee}
+body.light .stats-group-title{color:#526078}
+body.light .status-stats .stat{background:#f1f5f9;border-color:#dbe3ee}
+body.light .status-stats .stat:nth-child(2){background:#eaf7f1;border-color:#ccebdc}
+body.light .status-stats .stat:nth-child(3){background:#f0efff;border-color:#dedbff}
+body.light .status-stats .stat:nth-child(4){background:#f8eff9;border-color:#ead9ee}
+body.light .status-stats .stat:nth-child(5){background:#edf6fa;border-color:#d5e9f0}
+body.light .status-stats .stat:nth-child(6){background:#fbf7e9;border-color:#eee5bd}
+body.light .status-stats .stat:nth-child(7){background:#fff1eb;border-color:#f2d8ca}
+body.light .rating-stats .stat{background:#f4f1ff;border-color:#e2dcfa}
+body.light .rating-stats .stat:nth-child(2){background:#edf6f8;border-color:#d7e9ed}
+body.light .favorite-mini,body.light .backup-panel{background:#f8fafc;border-color:#dbe3ee}
+body.light .dashboard-brand{background:linear-gradient(115deg,#ffffff 0%,#f0efff 55%,#edf7ff 100%);border-color:#dbe3ee;box-shadow:0 12px 30px #3341550d}
+body.light .dashboard-brand-logo{background:#fff;border-color:#dbe3ee}
+body.light .dashboard-brand-copy h2{background:linear-gradient(90deg,#273449 0%,#6554d9 55%,#2686b8 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+body.light .dashboard-brand-copy p{color:#64748b}
+body.light .telegram-icon{background:#e6f4fc;color:#168ac5}
+body.light .delete-warning{background:#fff0f1;border-color:#f0c7ce;color:#b9384a}
+body.light .toast{background:#fff;color:#172033;border-color:#dbe3ee;box-shadow:0 8px 28px #33415518}
+body.light .btn{background:#f1f5f9;color:#263449;border-color:#dbe3ee}
+body.light .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+body.light .btn.danger{color:#d94b5b}
+body.light .btn.editing{background:#e7f6ee;border-color:#b9e4cd;color:#16865a}
+body.light .private-edit{background:#eeeaff;border-color:#d4ccff;color:#5948c7}
+body.light .private-edit.editing{background:#e7f6ee;border-color:#b9e4cd;color:#16865a}
+body.light .modal-wrap{background:#17203366}
+body.light .empty{border-color:#cbd5e1}
+@media(max-width:700px){
+  .theme-toggle{margin-left:auto;min-height:39px;padding:8px 11px}
+  .topbar{margin-bottom:22px}
+}
+
 </style>
 </head>
 <body>
 
 <aside class="sidebar" id="sidebar">
   <div class="brand">SILVER<span>TV24</span></div>
-  <div class="version">SERIES MANAGER · VERSION 5.1</div>
+  <div class="version">SERIES MANAGER · VERSION 5.3</div>
   <div class="nav-label">MAIN MENU</div>
   <nav class="nav">
     <button class="active" data-page="dashboard">◫ Dashboard</button>
@@ -200,7 +282,10 @@ textarea{width:100%;min-height:150px;resize:vertical}
     <button class="menu-btn" id="menuBtn">☰</button>
     <div><h1 id="pageTitle">Dashboard</h1><p>Your SILVERTV24 series collection</p></div>
   </div>
-
+  <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light mode" title="Switch to light mode">
+    <span class="theme-toggle-icon" id="themeToggleIcon">☀️</span>
+    <span id="themeToggleText">Light Mode</span>
+  </button>
 </header>
 
 <section class="page active" id="dashboard">
@@ -1365,6 +1450,33 @@ document.addEventListener("click",e=>{
   if(b.dataset.copy)copyList(key);
   if(b.dataset.share)shareList(key);
 });
+
+/* Persistent dark / light theme */
+const THEME_STORAGE_KEY="silver_tv_theme";
+const themeToggle=document.getElementById("themeToggle");
+const themeToggleIcon=document.getElementById("themeToggleIcon");
+const themeToggleText=document.getElementById("themeToggleText");
+
+function applyTheme(theme){
+  const light=theme==="light";
+  document.body.classList.toggle("light",light);
+  if(themeToggle){
+    themeToggle.setAttribute("aria-label",light?"Switch to dark mode":"Switch to light mode");
+    themeToggle.title=light?"Switch to dark mode":"Switch to light mode";
+  }
+  if(themeToggleIcon)themeToggleIcon.textContent=light?"🌙":"☀️";
+  if(themeToggleText)themeToggleText.textContent=light?"Dark Mode":"Light Mode";
+}
+let savedTheme="dark";
+try{savedTheme=localStorage.getItem(THEME_STORAGE_KEY)==="light"?"light":"dark";}catch{}
+applyTheme(savedTheme);
+if(themeToggle){
+  themeToggle.addEventListener("click",()=>{
+    const nextTheme=document.body.classList.contains("light")?"dark":"light";
+    applyTheme(nextTheme);
+    try{localStorage.setItem(THEME_STORAGE_KEY,nextTheme);}catch{}
+  });
+}
 
 /* Initial load */
 render();
