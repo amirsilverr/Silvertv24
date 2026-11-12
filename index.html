@@ -260,6 +260,17 @@ body.light .empty{border-color:#cbd5e1}
   .topbar{margin-bottom:22px}
 }
 
+
+/* Mobile header: keep the theme switch inside the viewport */
+@media(max-width:700px){
+  .topbar{width:100%;min-width:0;flex-wrap:nowrap;align-items:center;gap:10px}
+  .topbar > div:first-child{flex:1 1 auto;min-width:0;max-width:calc(100% - 62px)}
+  .topbar > div:first-child > div{min-width:0;max-width:100%}
+  .topbar h1{font-size:clamp(16px,5vw,21px);overflow-wrap:anywhere}
+  .topbar p{font-size:11px;line-height:1.35;overflow-wrap:anywhere}
+  .theme-toggle{flex:0 0 52px;width:52px;min-width:52px;margin-left:0;padding:3px;min-height:29px;height:29px}
+}
+
 </style>
 </head>
 <body>
