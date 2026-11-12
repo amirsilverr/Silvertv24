@@ -11,7 +11,8 @@
 body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
-.sidebar{position:fixed;inset:0 auto 0 0;width:245px;background:#101620;border-right:1px solid var(--border);padding:24px 16px;z-index:20;transition:transform .25s;overflow-y:auto;overscroll-behavior:contain}
+.sidebar{position:fixed;inset:0 auto 0 0;width:245px;height:100vh;background:#101620;border-right:1px solid var(--border);padding:24px 16px;z-index:20;transition:transform .25s;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:none;-ms-overflow-style:none}
+.sidebar::-webkit-scrollbar{display:none;width:0;height:0}
 .brand{font-size:19px;font-weight:800;letter-spacing:1px;margin:5px 10px 4px}
 .brand span{color:var(--accent)}
 .version{font-size:11px;color:var(--muted);margin:0 10px 32px}
@@ -51,7 +52,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent)}
 .series-list{display:flex;flex-direction:column;gap:9px}
 .series-card{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px 14px}
 .number{width:34px;height:34px;border-radius:10px;background:#24233c;color:#c7c0ff;display:grid;place-items:center;font-size:13px;font-weight:700}
-.series-name{font-weight:650;overflow-wrap:anywhere}
+.series-name{font-weight:650;overflow-wrap:anywhere;display:flex;align-items:center;gap:8px;flex-wrap:wrap}.watched-inline-meta{font-size:10px;font-weight:600;color:#aeb9ca;background:#20283a;border:1px solid #303d53;border-radius:7px;padding:3px 7px;line-height:1.4}
 .meta{font-size:11px;color:var(--muted);margin-top:6px;display:flex;gap:10px;flex-wrap:wrap}
 .rating{color:#f4c96b}
 .actions{display:flex;align-items:center;gap:5px;flex-wrap:wrap;justify-content:flex-end}
@@ -64,7 +65,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent)}
 .modal-wrap.open{display:flex}
 .modal{width:min(540px,100%);max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--border);border-radius:17px;padding:23px}
 .modal h2{margin:0 0 18px;font-size:19px}
-.field{display:flex;flex-direction:column;gap:7px;margin:13px 0}
+.field{display:flex;flex-direction:column;gap:7px;margin:13px 0}.field[hidden]{display:none!important}
 .field label{font-size:12px;color:#b8c2d2}
 .field small{font-size:11px;color:var(--muted)}
 .modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:20px}
@@ -171,7 +172,7 @@ textarea{width:100%;min-height:150px;resize:vertical}
 
 <aside class="sidebar" id="sidebar">
   <div class="brand">SILVER<span>TV24</span></div>
-  <div class="version">SERIES MANAGER · VERSION 5.0</div>
+  <div class="version">SERIES MANAGER · VERSION 5.1</div>
   <div class="nav-label">MAIN MENU</div>
   <nav class="nav">
     <button class="active" data-page="dashboard">◫ Dashboard</button>
@@ -180,7 +181,7 @@ textarea{width:100%;min-height:150px;resize:vertical}
     <button data-page="top">★ Favorite Series</button>
     <div class="nav-label">AMIR'S SERIES</div>
     <button data-page="amirWatched">✓ Series I've Watched</button>
-    <button data-page="amirWant">＋ Series I Want to Watch</button>
+    <button data-page="amirWant">＋ Watchlist</button>
     <button data-page="telegram">➤ Telegram Channel</button>
     <button data-page="deleteData">⌫ Delete Data</button>
   </nav>
@@ -317,7 +318,7 @@ textarea{width:100%;min-height:150px;resize:vertical}
   <div class="stats-group watched-summary">
     <h2 class="stats-group-title">WATCHING STATISTICS</h2>
     <div class="status-stats watched-stats">
-      <div class="stat"><small>Total Watch Time</small><strong id="amirWatchedHours">0 h</strong><div class="hint">Based on entered episode counts and lengths</div></div>
+      <div class="stat"><small>Total Watch Time</small><strong id="amirWatchedHours">0 h</strong><div class="hint">Episodes × average episode length ÷ 60</div></div>
       <div class="stat"><small>Watched Episodes</small><strong id="amirWatchedEpisodes">0</strong><div class="hint">Total recorded episodes</div></div>
     </div>
   </div>
@@ -334,7 +335,7 @@ textarea{width:100%;min-height:150px;resize:vertical}
 
 <section class="page" id="amirWant">
   <div class="panel">
-    <div class="panel-head"><h2>Series I Want to Watch</h2><div style="display:flex;align-items:center;gap:8px"><span class="muted" id="amirWantCount">0 series</span><button class="btn small private-edit" id="amirWantEditToggle">Edit</button></div></div>
+    <div class="panel-head"><h2>Watchlist</h2><div style="display:flex;align-items:center;gap:8px"><span class="muted" id="amirWantCount">0 series</span><button class="btn small private-edit" id="amirWantEditToggle">Edit</button></div></div>
     <p class="edit-hint" id="amirWantEditHint" hidden>Edit mode: rename, delete or reorder series.</p>
     <div class="toolbar"><input class="search" id="amirWantSearch" placeholder="Search series..."><select id="amirWantStatusFilter"><option value="all">All Status</option><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select><button class="btn" id="amirWantSortReset">↺ Manual Order</button><button class="btn primary" id="amirWantAdd">＋ Add Series</button><button class="btn" id="amirWantBulkOpen">＋ Bulk Add</button></div>
     <div class="toolbar" style="margin-top:-7px"><span class="sort-label">SORT BY</span><select id="amirWantSortSelect" class="search"><option value="manual">Manual Order</option><option value="az">Name (A–Z)</option><option value="za">Name (Z–A)</option><option value="oldest">Release Year (Oldest First)</option><option value="newest">Release Year (Newest First)</option><option value="rating">Rating (Highest First)</option><option value="status">Watch Status</option></select></div>
@@ -375,7 +376,7 @@ textarea{width:100%;min-height:150px;resize:vertical}
   <div class="field"><label>Watch Status</label><select id="formStatus"><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select></div>
   <div class="field"><label>Rating (0–10)</label><input id="formRating" type="number" min="0" max="10" step="0.01" placeholder="Optional"></div>
   <div class="field" id="watchedEpisodesField" hidden><label>Episodes Watched</label><input id="formEpisodesWatched" type="number" min="0" step="1" placeholder="e.g. 62"><small>Enter the number of episodes you have watched for this series.</small></div>
-  <div class="field" id="watchedEpisodeMinutesField" hidden><label>Average Episode Length (Minutes)</label><input id="formEpisodeMinutes" type="number" min="1" max="600" step="1" placeholder="e.g. 45"><small>Used to calculate your total watch time.</small></div>
+  <div class="field" id="watchedEpisodeMinutesField" hidden><label>Average Episode Length (Minutes)</label><input id="formEpisodeMinutes" type="number" min="1" max="600" step="0.01" placeholder="e.g. 45"><small>Watch time = episodes watched × average episode length ÷ 60.</small></div>
   <div class="field"><label>Position (Optional)</label><input id="formPosition" type="number" min="1" step="1" placeholder="Leave empty to add at the end"><small>Enter a position number to insert the item at that place.</small></div>
   <div class="modal-actions"><button class="btn" id="cancelModal">Cancel</button><button class="btn primary" id="saveItem">Save</button></div>
  </div>
@@ -394,7 +395,7 @@ textarea{width:100%;min-height:150px;resize:vertical}
   <div class="field"><label>Default Watch Status</label><select id="bulkStatus"><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select></div>
   <div class="field"><label>Default Rating (Optional)</label><input id="bulkRating" type="number" min="0" max="10" step="0.01" placeholder="Leave empty"></div>
   <div class="field" id="bulkEpisodesField" hidden><label>Episodes Watched (Optional)</label><input id="bulkEpisodesWatched" type="number" min="0" step="1" placeholder="Leave empty"></div>
-  <div class="field" id="bulkEpisodeMinutesField" hidden><label>Average Episode Length (Minutes)</label><input id="bulkEpisodeMinutes" type="number" min="1" max="600" step="1" placeholder="e.g. 45"></div>
+  <div class="field" id="bulkEpisodeMinutesField" hidden><label>Average Episode Length (Minutes)</label><input id="bulkEpisodeMinutes" type="number" min="1" max="600" step="0.01" placeholder="e.g. 45"></div>
   <div class="modal-actions"><button class="btn" id="cancelBulk">Cancel</button><button class="btn primary" id="bulkSave">Add All</button></div>
  </div>
 </div>
@@ -608,7 +609,7 @@ function seriesCard(s,index,total,options={}){
     ${options.select?`<input class="select-box item-select" type="checkbox" data-item-select="${escapeHTML(options.select)}" data-id="${escapeHTML(s.id)}" aria-label="Select ${escapeHTML(s.name)}">`:`<span></span>`}
     <div class="number">${index+1}</div>
     <div>
-      <div class="series-name">${escapeHTML(s.name)}</div>
+      <div class="series-name"><span>${escapeHTML(s.name)}</span>${options.titleExtra||""}</div>
       <div class="meta">
         ${s.year?`<span>${escapeHTML(s.year)}</span>`:""}
         <span class="badge ${statusClass} ${statusClass==='stop watching'?'stop':''}">${escapeHTML(s.status)}</span>
@@ -693,8 +694,11 @@ function renderPrivateList(key){
   const list=sortItems(items,mode).filter(item=>item.name.toLowerCase().includes(query)&&(filter==="all"||item.status===filter));
   document.getElementById(prefix+"List").innerHTML=list.length?list.map((item,i)=>{
     const actualIndex=items.findIndex(x=>x.id===item.id);
-    const extra=key==="amirWatched"?`<span>${Number(item.episodesWatched)||0} eps</span>`:"";
-    return seriesCard(item,i,list.length,{select:editModes[key]?key:null,move:editModes[key]&&mode==="manual",canMoveUp:actualIndex>0,canMoveDown:actualIndex<items.length-1,edit:editModes[key],remove:editModes[key],extraMeta:extra});
+    const episodeCount=Number(item.episodesWatched)||0;
+    const episodeMinutes=Number(item.episodeMinutes)||0;
+    const seriesHours=(episodeCount*episodeMinutes)/60;
+    const titleExtra=key==="amirWatched"?`<span class="watched-inline-meta">${episodeCount} eps · ${episodeMinutes?episodeMinutes.toFixed(2)+" min/ep":"— min/ep"} · ${seriesHours.toFixed(2)} h</span>`:"";
+    return seriesCard(item,i,list.length,{select:editModes[key]?key:null,move:editModes[key]&&mode==="manual",canMoveUp:actualIndex>0,canMoveDown:actualIndex<items.length-1,edit:editModes[key],remove:editModes[key],titleExtra});
   }).join(""):`<div class="empty">${key==="amirWatched"?"No watched series added yet.":"Your watch list is empty."}</div>`;
 }
 function renderPrivateStats(){
@@ -702,7 +706,7 @@ function renderPrivateStats(){
   const minutes=data.amirWatched.reduce((sum,item)=>sum+(Number(item.episodesWatched)||0)*(Number(item.episodeMinutes)||0),0);
   const hours=minutes/60;
   document.getElementById("amirWatchedEpisodes").textContent=episodes.toLocaleString();
-  document.getElementById("amirWatchedHours").textContent=(hours?hours.toFixed(1).replace(/\.0$/,""):"0")+" h";
+  document.getElementById("amirWatchedHours").textContent=hours.toFixed(2)+" h";
 }
 
 function renderSelectors(){
@@ -834,8 +838,10 @@ function saveItem(){
   if(year&&(!Number.isInteger(+year)||+year<1900||+year>2100))return toast("Enter a valid release year.");
   if(rating!==""&&(!Number.isFinite(+rating)||+rating<0||+rating>10))return toast("Rating must be between 0 and 10.");
   if(position!==""&&(!Number.isInteger(+position)||+position<1))return toast("Position must be a positive whole number.");
-  if(targetIsWatchedTarget()&&episodesWatched!==""&&(!Number.isInteger(+episodesWatched)||+episodesWatched<0))return toast("Enter a valid number of watched episodes.");
-  if(targetIsWatchedTarget()&&episodeMinutes!==""&&(!Number.isInteger(+episodeMinutes)||+episodeMinutes<1||+episodeMinutes>600))return toast("Episode length must be between 1 and 600 minutes.");
+  if(targetIsWatchedTarget()&&episodesWatched==="")return toast("Enter the number of episodes watched.");
+  if(targetIsWatchedTarget()&&(!Number.isInteger(+episodesWatched)||+episodesWatched<0))return toast("Enter a valid number of watched episodes.");
+  if(targetIsWatchedTarget()&&episodeMinutes==="")return toast("Enter the average episode length in minutes.");
+  if(targetIsWatchedTarget()&&(!Number.isFinite(+episodeMinutes)||+episodeMinutes<1||+episodeMinutes>600))return toast("Episode length must be between 1 and 600 minutes.");
 
   const target=editingTarget;
   const list=target==="watchlist"?data.watchlist:target==="series"?data.series:getListByKey(target);
@@ -865,7 +871,7 @@ function saveItem(){
   if(!save()){data=previousData;return;}
   render();
   closeModal();
-  toast(wasEditing?"Item updated.":target==="watchlist"?"Added to Watchlist.":target==="amirWatched"?"Added to Series I've Watched.":target==="amirWant"?"Added to Series I Want to Watch.":"Series added.");
+  toast(wasEditing?"Item updated.":target==="watchlist"?"Added to Watchlist.":target==="amirWatched"?"Added to Series I've Watched.":target==="amirWant"?"Added to Watchlist.":"Series added.");
 }
 
 /* Bulk Add: new series are always added at the end. */
@@ -898,8 +904,10 @@ function bulkAdd(){
   if(!names.length)return toast("Enter at least one series name.");
   if(year&&(!Number.isInteger(+year)||+year<1900||+year>2100))return toast("Enter a valid release year.");
   if(rating!==""&&(!Number.isFinite(+rating)||+rating<0||+rating>10))return toast("Rating must be between 0 and 10.");
-  if(bulkTarget==="amirWatched"&&episodesWatched!==""&&(!Number.isInteger(+episodesWatched)||+episodesWatched<0))return toast("Enter a valid number of watched episodes.");
-  if(bulkTarget==="amirWatched"&&episodeMinutes!==""&&(!Number.isInteger(+episodeMinutes)||+episodeMinutes<1||+episodeMinutes>600))return toast("Episode length must be between 1 and 600 minutes.");
+  if(bulkTarget==="amirWatched"&&episodesWatched==="")return toast("Enter the number of episodes watched.");
+  if(bulkTarget==="amirWatched"&&(!Number.isInteger(+episodesWatched)||+episodesWatched<0))return toast("Enter a valid number of watched episodes.");
+  if(bulkTarget==="amirWatched"&&episodeMinutes==="")return toast("Enter the average episode length in minutes.");
+  if(bulkTarget==="amirWatched"&&(!Number.isFinite(+episodeMinutes)||+episodeMinutes<1||+episodeMinutes>600))return toast("Episode length must be between 1 and 600 minutes.");
 
   const target=bulkTarget;
   const list=target==="watchlist"?data.watchlist:target==="series"?data.series:getListByKey(target);
@@ -999,7 +1007,7 @@ document.querySelectorAll(".nav button").forEach(btn=>{
     btn.classList.add("active");
     document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
     document.getElementById(btn.dataset.page).classList.add("active");
-    document.getElementById("pageTitle").textContent=({dashboard:"Dashboard",series:"Series List",watchlist:"Watchlist",top:"Favorite Series",amirWatched:"Series I've Watched",amirWant:"Series I Want to Watch",telegram:"Telegram Channel",deleteData:"Delete Data"})[btn.dataset.page]||btn.textContent.trim();
+    document.getElementById("pageTitle").textContent=({dashboard:"Dashboard",series:"Series List",watchlist:"Watchlist",top:"Favorite Series",amirWatched:"Series I've Watched",amirWant:"Watchlist",telegram:"Telegram Channel",deleteData:"Delete Data"})[btn.dataset.page]||btn.textContent.trim();
     closeSidebar();
   });
 });
@@ -1304,7 +1312,7 @@ document.addEventListener("click",e=>{
 });
 
 /* Full backup: JSON preserves all five lists and their order. */
-function fullBackupObject(){return{app:"SILVERTV24",version:5,exportedAt:new Date().toISOString(),series:data.series,watchlist:data.watchlist,topList:data.topList,amirWatched:data.amirWatched,amirWant:data.amirWant};}
+function fullBackupObject(){return{app:"SILVERTV24",version:6,exportedAt:new Date().toISOString(),series:data.series,watchlist:data.watchlist,topList:data.topList,amirWatched:data.amirWatched,amirWant:data.amirWant};}
 function downloadText(filename,text,mime="application/json;charset=utf-8"){
   const blob=new Blob([text],{type:mime});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200);
 }
