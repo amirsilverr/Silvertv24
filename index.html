@@ -350,6 +350,11 @@ body.light .empty{border-color:#cbd5e1}
 .favorite-browse-box{padding:14px;background:var(--bg);border:1px solid var(--border);border-radius:12px}
 .favorite-browse-box h3{font-size:13px;margin:0 0 10px}
 .favorite-browse-box .toolbar{margin:0}
+.watch-browse-box{margin:12px 0 17px}
+.watch-browse-box .toolbar{align-items:center}
+.watch-browse-box #watchSearch{flex:1 1 220px;min-width:170px}
+.watch-browse-box #watchSortSelect{margin-left:auto;min-width:190px}
+@media(max-width:600px){.watch-browse-box .toolbar>*{flex:1 1 100%;width:100%;margin-left:0!important}}
 .watch-omdb-preview{display:flex;align-items:center;gap:12px;padding:12px;background:var(--panel2);border:1px solid var(--border);border-radius:11px;margin-top:12px}
 .watch-omdb-preview[hidden]{display:none!important}
 .watch-omdb-preview img{width:58px;height:82px;object-fit:cover;border-radius:7px;background:#101722}
@@ -464,26 +469,27 @@ body.light .favorite-browse-box{background:#fff}
     <p class="muted" style="font-size:12px">Your independent watchlist. Items here do not need to exist in Series List.</p>
     <p class="edit-hint" id="watchEditHint" hidden>Edit mode: rename, delete or move watchlist items.</p>
     <div class="toolbar">
-      <input class="search" id="watchSearch" placeholder="Search watchlist...">
-      <select id="watchStatusFilter">
-        <option value="all">All Status</option>
-        <option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option>
-      </select>
-      <button class="btn" id="watchSortReset">↺ Manual Order</button>
       <button class="btn primary" id="watchAdd">＋ Add Manually</button>
       <button class="btn" id="watchBulkOpen">＋ Bulk Add</button>
     </div>
-    <div class="toolbar" style="margin-top:-7px">
-      <span class="sort-label">SORT BY</span>
-      <select id="watchSortSelect" class="search">
-        <option value="manual">Manual Order</option>
-        <option value="az">Name (A–Z)</option>
-        <option value="za">Name (Z–A)</option>
-        <option value="oldest">Release Year (Oldest First)</option>
-        <option value="newest">Release Year (Newest First)</option>
-        <option value="rating">Rating (Highest First)</option>
-        <option value="status">Watch Status</option>
-      </select>
+    <div class="favorite-browse-box watch-browse-box">
+      <h3>Search &amp; Sort</h3>
+      <div class="toolbar">
+        <input class="search" id="watchSearch" placeholder="Search watchlist...">
+        <select id="watchStatusFilter" aria-label="Filter by watch status">
+          <option value="all">All Status</option>
+          <option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option>
+        </select>
+        <select id="watchSortSelect" class="search" aria-label="Sort watchlist">
+          <option value="manual">Manual Order</option>
+          <option value="az">Name (A–Z)</option>
+          <option value="za">Name (Z–A)</option>
+          <option value="oldest">Release Year (Oldest First)</option>
+          <option value="newest">Release Year (Newest First)</option>
+          <option value="rating">Rating (Highest First)</option>
+          <option value="status">Watch Status</option>
+        </select>
+      </div>
     </div>
     <div class="list-tools"><button class="btn small" data-backup="watchlist">Backup List</button><button class="btn small" data-copy="watchlist">Copy List</button><button class="btn small" data-share="watchlist">Share List</button></div>
     <div class="selection-tools" data-selection-tools="watchlist"><label><input class="select-box" type="checkbox" data-select-all="watchlist"> Select all</label><span class="muted" data-selected-count="watchlist">0 selected</span><button class="btn small danger" data-bulk-delete="watchlist">Delete</button><input type="number" min="1900" max="2100" placeholder="Year" data-bulk-year="watchlist"><button class="btn small" data-apply-year="watchlist">Set year</button><input type="number" min="0" max="10" step="0.01" placeholder="Rating" data-bulk-rating="watchlist"><button class="btn small" data-apply-rating="watchlist">Set rating</button><select data-bulk-status="watchlist"><option value="">Set status…</option><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select><button class="btn small" data-apply-status="watchlist">Apply</button></div>
@@ -1386,11 +1392,6 @@ document.getElementById("sortReset").onclick=()=>{
   document.getElementById("sortSelect").value="manual";
   renderSeries();
   toast("Manual order restored.");
-};
-document.getElementById("watchSortReset").onclick=()=>{
-  document.getElementById("watchSortSelect").value="manual";
-  renderWatchlist();
-  toast("Watchlist manual order restored.");
 };
 
 /* List action listeners */
