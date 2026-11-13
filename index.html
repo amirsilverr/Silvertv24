@@ -93,7 +93,7 @@ textarea{width:100%;min-height:150px;resize:vertical}
 .badge.rating-badge{color:#f4d27c;background:#332d20;border:1px solid #62502b}
 .list-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}
 .selection-tools[hidden]{display:none!important}
-.selection-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:11px;background:#101722;border:1px solid var(--border);border-radius:10px;margin:10px 0}
+[data-selection-tools][hidden]{display:none!important}\n.selection-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:11px;background:#101722;border:1px solid var(--border);border-radius:10px;margin:10px 0}
 .selection-tools select,.selection-tools input{padding:8px}
 .select-box{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
 .series-card{grid-template-columns:24px 38px minmax(0,1fr) auto}
@@ -492,7 +492,7 @@ body.light .favorite-browse-box{background:#fff}
       </div>
     </div>
     <div class="list-tools"><button class="btn small" data-backup="watchlist">Backup List</button><button class="btn small" data-copy="watchlist">Copy List</button><button class="btn small" data-share="watchlist">Share List</button></div>
-    <div class="selection-tools" data-selection-tools="watchlist"><label><input class="select-box" type="checkbox" data-select-all="watchlist"> Select all</label><span class="muted" data-selected-count="watchlist">0 selected</span><button class="btn small danger" data-bulk-delete="watchlist">Delete</button><input type="number" min="1900" max="2100" placeholder="Year" data-bulk-year="watchlist"><button class="btn small" data-apply-year="watchlist">Set year</button><input type="number" min="0" max="10" step="0.01" placeholder="Rating" data-bulk-rating="watchlist"><button class="btn small" data-apply-rating="watchlist">Set rating</button><select data-bulk-status="watchlist"><option value="">Set status…</option><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select><button class="btn small" data-apply-status="watchlist">Apply</button></div>
+    <div class="selection-tools" data-selection-tools="watchlist" hidden><label><input class="select-box" type="checkbox" data-select-all="watchlist"> Select all</label><span class="muted" data-selected-count="watchlist">0 selected</span><button class="btn small danger" data-bulk-delete="watchlist">Delete</button><input type="number" min="1900" max="2100" placeholder="Year" data-bulk-year="watchlist"><button class="btn small" data-apply-year="watchlist">Set year</button><input type="number" min="0" max="10" step="0.01" placeholder="Rating" data-bulk-rating="watchlist"><button class="btn small" data-apply-rating="watchlist">Set rating</button></div>
     <div class="series-list" id="watchList"></div>
   </div>
 </section>
@@ -508,15 +508,9 @@ body.light .favorite-browse-box{background:#fff}
     </div>
     <p class="muted" style="font-size:12px">Favorites are selected from your existing series collection.</p>
     <p class="edit-hint" id="topEditHint" hidden>Edit mode: edit details, remove or move favorites.</p>
-    <div class="favorite-add-box">
-      <h3>＋ Add titles to Favorites</h3>
-      <p>Search only inside My List and your custom collections, then select the titles you want to add here.</p>
-      <div class="toolbar" style="margin:0;align-items:stretch">
-        <input id="topPickerSearch" class="search" type="search" autocomplete="off" placeholder="Search titles in your collections..." style="flex:1;min-width:180px">
-        <button class="btn primary" id="topPickerSearchBtn" type="button">Find in My Lists</button>
-      </div>
-      <div id="topPickerResults" class="omdb-results" style="max-height:230px;margin-top:10px" hidden></div>
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px"><small class="muted" id="topPickerCount">0 selected</small><button class="btn primary" id="topAdd">＋ Add selected to Favorites</button></div>
+    <div class="favorite-add-box" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div><h3>＋ Add a Favorite</h3><p>Choose one title from My List or any custom collection, then set its position.</p></div>
+      <button class="btn primary" id="topAddOpen">＋ Add Favorite</button>
     </div>
     <div class="favorite-browse-box">
       <h3>⌕ Search inside your Favorites</h3>
@@ -530,7 +524,7 @@ body.light .favorite-browse-box{background:#fff}
       </div>
     </div>
     <div class="list-tools"><button class="btn small" data-backup="topList">Backup List</button><button class="btn small" data-copy="topList">Copy List</button><button class="btn small" data-share="topList">Share List</button></div>
-    <div class="selection-tools" data-selection-tools="topList"><label><input class="select-box" type="checkbox" data-select-all="topList"> Select all</label><span class="muted" data-selected-count="topList">0 selected</span><button class="btn small danger" data-bulk-delete="topList">Remove</button><input type="number" min="0" max="10" step="0.01" placeholder="Rating" data-bulk-rating="topList"><button class="btn small" data-apply-rating="topList">Set rating</button></div>
+    <div class="selection-tools" data-selection-tools="topList" hidden><label><input class="select-box" type="checkbox" data-select-all="topList"> Select all</label><span class="muted" data-selected-count="topList">0 selected</span><button class="btn small danger" data-bulk-delete="topList">Remove</button></div>
     <div class="series-list" id="topList"></div>
   </div>
 </section>
@@ -617,7 +611,7 @@ body.light .favorite-browse-box{background:#fff}
   <h2 id="modalTitle">Add Series</h2>
   <div class="field"><label>Series Name</label><input id="formName" type="text" name="silver-title-entry" autocomplete="off" autocapitalize="words" placeholder="Enter series or movie name"></div>
   <div class="field"><label>Release Year</label><input id="formYear" autocomplete="off" type="number" min="1900" max="2100" placeholder="e.g. 2019"></div>
-  <div class="field"><label>Watch Status</label><select id="formStatus"><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select></div>
+  <div class="field" id="formStatusField"><label>Watch Status</label><select id="formStatus"><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select></div>
   <div class="field"><label>Rating (0–10)</label><input id="formRating" autocomplete="off" type="number" min="0" max="10" step="0.01" placeholder="Optional"></div>
   <div class="field" id="watchedEpisodesField" hidden><label>Episodes Watched</label><input id="formEpisodesWatched" type="number" min="0" step="1" placeholder="e.g. 62"><small>Enter the number of episodes you have watched for this series.</small></div>
   <div class="field" id="watchedEpisodeMinutesField" hidden><label>Average Episode Length (Minutes)</label><input id="formEpisodeMinutes" type="number" min="1" max="600" step="0.01" placeholder="e.g. 45"><small>Watch time = episodes watched × average episode length ÷ 60.</small></div>
@@ -636,7 +630,8 @@ body.light .favorite-browse-box{background:#fff}
     <small>Enter one series name per line. Duplicate names are skipped.</small>
   </div>
   <div class="field"><label>Default Release Year (Optional)</label><input id="bulkYear" type="number" min="1900" max="2100" placeholder="e.g. 2020"></div>
-  <div class="field"><label>Default Watch Status</label><select id="bulkStatus"><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select></div>
+  <div class="field" id="bulkStatusField"><label>Default Watch Status</label><select id="bulkStatus"><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select></div>
+
   <div class="field"><label>Default Rating (Optional)</label><input id="bulkRating" type="number" min="0" max="10" step="0.01" placeholder="Leave empty"></div>
   <div class="field" id="bulkEpisodesField" hidden><label>Episodes Watched (Optional)</label><input id="bulkEpisodesWatched" type="number" min="0" step="1" placeholder="Leave empty"></div>
   <div class="field" id="bulkEpisodeMinutesField" hidden><label>Average Episode Length (Minutes)</label><input id="bulkEpisodeMinutes" type="number" min="1" max="600" step="0.01" placeholder="e.g. 45"></div>
@@ -653,11 +648,15 @@ body.light .favorite-browse-box{background:#fff}
    <small>Choose a result below. The title, poster and release year will be loaded automatically.</small>
    <div id="watchOmdbResults" class="watch-omdb-results"></div>
   </div>
+  <div class="field" id="watchManualFields" hidden>
+   <label for="watchManualName">Title</label><input id="watchManualName" type="text" placeholder="Enter movie or series name">
+   <label for="watchManualYear" style="margin-top:10px">Release Year (Optional)</label><input id="watchManualYear" type="number" min="1888" max="2100" placeholder="e.g. 2024">
+  </div>
   <div class="watch-omdb-preview" id="watchSelectedPreview" hidden>
    <img id="watchSelectedPoster" alt="Selected title poster">
    <div><strong id="watchSelectedName"></strong><small id="watchSelectedYear"></small><small>Selected from OMDb</small></div>
   </div>
-  <div class="field"><label>Watch Status</label><select id="watchAddStatus"><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select></div>
+  <p class="muted" style="font-size:12px">New Watchlist items are automatically marked as Planned.</p>
   <div class="field"><label>Rating (0–10)</label><input id="watchAddRating" type="number" min="0" max="10" step="0.01" placeholder="Optional"></div>
   <div class="field"><label>Position (Optional)</label><input id="watchAddPosition" type="number" min="1" step="1" placeholder="Leave empty to add at the end"><small>Choose where the title should appear in your Watchlist.</small></div>
   <div class="modal-actions"><button class="btn" id="cancelWatchAdd">Cancel</button><button class="btn primary" id="saveWatchAdd">Add to Watchlist</button></div>
@@ -666,9 +665,9 @@ body.light .favorite-browse-box{background:#fff}
 <div class="modal-wrap" id="customItemModal">
  <div class="modal">
   <h2 id="customItemModalTitle">Add Item</h2>
-  <div class="field"><label>Search title</label><input id="customTitleSearch" type="search" name="silver-custom-title-search" autocomplete="off" placeholder="Start typing a movie or series name..."><small>Choose the exact result from OMDb. The release year will be filled automatically.</small><div id="omdbSearchResults" class="omdb-results"></div></div>
-  <div class="field"><label>Selected title</label><input id="customSelectedTitle" placeholder="Select a result above" readonly></div>
-  <div class="field"><label>Release Year</label><input id="customSelectedYear" readonly placeholder="Automatically filled"></div>
+  <div class="field" id="customSearchField"><label>Search title</label><input id="customTitleSearch" type="search" name="silver-custom-title-search" autocomplete="off" placeholder="Start typing a movie or series name..."><small>Choose the exact result from OMDb. The release year will be filled automatically.</small><div id="omdbSearchResults" class="omdb-results"></div></div>
+  <div class="field"><label>Selected title</label><input id="customSelectedTitle" placeholder="Enter title manually"></div>
+  <div class="field"><label>Release Year</label><input id="customSelectedYear" type="text" inputmode="numeric" placeholder="Enter release year"></div>
   <div class="field"><label>Watch Status</label><select id="customSelectedStatus"><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select></div>
   <div class="field"><label>Rating (0–10)</label><input id="customSelectedRating" type="number" min="0" max="10" step="0.01" placeholder="Optional"></div>
   <div class="field"><label>Position in List (Optional)</label><input id="customSelectedPosition" type="number" min="1" step="1" placeholder="Leave empty to add at the end"><small>Choose where this item should appear. For editing, enter its new position.</small></div>
@@ -676,6 +675,15 @@ body.light .favorite-browse-box{background:#fff}
  </div>
 </div>
 <div class="modal-wrap" id="customBulkModal"><div class="modal"><h2>Add Multiple Titles</h2><div class="field"><label>One title per line</label><textarea id="customBulkNames" placeholder="Breaking Bad&#10;Dark&#10;The Wire"></textarea><small>Duplicate names are skipped. Values below are applied to every new title.</small></div><div class="field"><label>Default Release Year (Optional)</label><input id="customBulkDefaultYear" type="number" min="1900" max="2100" placeholder="e.g. 2020"></div><div class="field"><label>Default Watch Status</label><select id="customBulkAddStatus"><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select></div><div class="field"><label>Default Rating (Optional)</label><input id="customBulkAddRating" type="number" min="0" max="10" step="0.01" placeholder="Leave empty"></div><div class="modal-actions"><button class="btn" id="cancelCustomBulk">Cancel</button><button class="btn primary" id="saveCustomBulk">Add All</button></div></div></div>
+<div class="modal-wrap" id="favoriteItemModal">
+ <div class="modal">
+  <h2 id="favoriteItemModalTitle">Add Favorite</h2>
+  <div class="field" id="favoriteSearchField"><label for="favoriteItemSearch">Search in My List and custom lists</label><input id="favoriteItemSearch" type="search" autocomplete="off" placeholder="Search a title..."><div id="favoriteItemResults" class="omdb-results" style="max-height:240px;overflow:auto"></div></div>
+  <div class="field"><label>Selected title</label><input id="favoriteSelectedName" readonly placeholder="Choose a title from the search results"></div>
+  <div class="field"><label>Position in Favorites</label><input id="favoriteItemPosition" type="number" min="1" step="1" placeholder="Leave empty to add at the end"><small>Enter the position where this favorite should appear.</small></div>
+  <div class="modal-actions"><button class="btn" id="favoriteItemCancel">Cancel</button><button class="btn primary" id="favoriteItemSave">Add to Favorites</button></div>
+ </div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -779,6 +787,7 @@ function loadData(){
         item=normalizeItem(entry);
       }
       if(!item)return;
+      item.status="Planned";
       if(watchIds.has(item.id))item.id=uid();
       const key=item.name.toLowerCase();
       if(watchNames.has(key))return;
@@ -1011,22 +1020,11 @@ function renderWatchlist(){
     :`<div class="empty">No watchlist series found.</div>`;
 }
 
-const favoritePickerSelection=new Set();
-let favoritePickerSearchActive=false;
 function renderTop(){
   const query=(document.getElementById("topSearch")?.value||"").trim().toLowerCase();
   const mode=document.getElementById("topSortSelect")?.value||"manual";
   const items=sortItems(data.topList.map(resolveFavorite).filter(Boolean),mode).filter(x=>x.name.toLowerCase().includes(query));
-  document.getElementById("topList").innerHTML=items.length?items.map((item,i)=>seriesCard(item,i,items.length,{select:editModes.topList?"topList":null,move:editModes.topList&&mode==="manual",edit:false,remove:editModes.topList})).join(""):`<div class="empty">${query?"No matching favorites found.":"Your favorites list is empty."}</div>`;
-}
-function renderFavoritePicker(){
-  const host=document.getElementById("topPickerResults");if(!host)return;
-  const q=(document.getElementById("topPickerSearch")?.value||"").trim().toLowerCase();
-  if(!favoritePickerSearchActive||!q){host.innerHTML="";host.hidden=true;document.getElementById("topPickerCount").textContent=`${favoritePickerSelection.size} selected`;return;}
-  const candidates=favoriteCandidates().filter(c=>!favoriteExists(c.source,c.listId,c.itemId)&&(c.item.name.toLowerCase().includes(q)||c.listName.toLowerCase().includes(q)));
-  host.hidden=false;
-  host.innerHTML=candidates.length?candidates.map(c=>{const key=`${c.source}|${c.listId}|${c.itemId}`;return `<label class="omdb-result" style="cursor:pointer"><input type="checkbox" data-favorite-pick="${escapeHTML(key)}" ${favoritePickerSelection.has(key)?"checked":""}><span style="flex:1">${escapeHTML(c.item.name)}<small>${c.source==="series"?"My List":escapeHTML(c.listName)} · ${c.item.year?escapeHTML(c.item.year):"Year unknown"} · ${c.item.poster?"Poster available":""}</small></span><small>${c.item.type==="movie"?"Movie":"Series"}</small></label>`;}).join(""):`<div class="empty">No matching items found in your lists.</div>`;
-  document.getElementById("topPickerCount").textContent=`${favoritePickerSelection.size} selected`;
+  document.getElementById("topList").innerHTML=items.length?items.map((item,i)=>seriesCard(item,i,items.length,{select:editModes.topList?"topList":null,move:editModes.topList&&mode==="manual",edit:editModes.topList,remove:editModes.topList})).join(""):`<div class="empty">${query?"No matching favorites found.":"Your favorites list is empty."}</div>`;
 }
 
 function renderPrivateList(key){
@@ -1082,12 +1080,15 @@ function updateEditButtons(){
     ["amirWant","amirWantEditToggle","amirWantEditHint"]
   ];
   configs.forEach(([key,buttonId,hintId])=>{
-    const active=editModes[key];
+    const active=Boolean(editModes[key]);
     const button=document.getElementById(buttonId);
-    button.textContent=active?"Done":"Edit";
-    button.classList.toggle("editing",active);
-    button.classList.toggle("editing",active);
-    document.getElementById(hintId).hidden=!active;
+    if(button){
+      button.textContent=active?"Done":"Edit";
+      button.classList.toggle("editing",active);
+      button.setAttribute("aria-pressed",String(active));
+    }
+    const hint=document.getElementById(hintId);
+    if(hint)hint.hidden=!active;
     const tools=document.querySelector(`[data-selection-tools="${key}"]`);
     if(tools)tools.hidden=!active;
     if(!active&&selectedItems[key])selectedItems[key].clear();
@@ -1095,22 +1096,63 @@ function updateEditButtons(){
 }
 
 function toggleEditMode(key){
+  if(!Object.prototype.hasOwnProperty.call(editModes,key))return;
+
   if(key==="amirWatched"||key==="amirWant"){
-    if(editModes[key]){editModes[key]=false;privateEditUnlocked[key]=false;render();toast("Edit mode finished.");return;}
+    if(editModes[key]){
+      editModes[key]=false;
+      privateEditUnlocked[key]=false;
+      if(selectedItems[key])selectedItems[key].clear();
+      render();
+      toast("Edit mode finished.");
+      return;
+    }
     let allowed=false;
     requestPrivateAccess(key,()=>{allowed=true;});
     if(!allowed)return;
   }
+
+  // Update the state first, then refresh both the button and the list UI.
   editModes[key]=!editModes[key];
+  if(!editModes[key]&&selectedItems[key])selectedItems[key].clear();
+
+  const buttonId={
+    series:"seriesEditToggle",
+    watchlist:"watchEditToggle",
+    topList:"topEditToggle",
+    amirWatched:"amirWatchedEditToggle",
+    amirWant:"amirWantEditToggle"
+  }[key];
+
+  const button=document.getElementById(buttonId);
+  if(button){
+    button.textContent=editModes[key]?"Done":"Edit";
+    button.classList.toggle("editing",editModes[key]);
+    button.setAttribute("aria-pressed",String(editModes[key]));
+  }
+
   render();
+  // Re-apply after render so no other render routine can leave a stale label.
+  updateEditButtons();
   toast(editModes[key]?"Edit mode enabled.":"Edit mode finished.");
 }
 
-document.getElementById("seriesEditToggle").onclick=()=>toggleEditMode("series");
-document.getElementById("watchEditToggle").onclick=()=>toggleEditMode("watchlist");
-document.getElementById("topEditToggle").onclick=()=>toggleEditMode("topList");
-document.getElementById("amirWatchedEditToggle").onclick=()=>toggleEditMode("amirWatched");
-document.getElementById("amirWantEditToggle").onclick=()=>toggleEditMode("amirWant");
+[
+  ["seriesEditToggle","series"],
+  ["watchEditToggle","watchlist"],
+  ["topEditToggle","topList"],
+  ["amirWatchedEditToggle","amirWatched"],
+  ["amirWantEditToggle","amirWant"]
+].forEach(([buttonId,key])=>{
+  const button=document.getElementById(buttonId);
+  if(!button)return;
+  button.type="button";
+  button.onclick=(event)=>{
+    event.preventDefault();
+    event.stopPropagation();
+    toggleEditMode(key);
+  };
+});
 
 /* Add and edit modal */
 function openAdd(target="series"){
@@ -1123,6 +1165,7 @@ function openAdd(target="series"){
   document.getElementById("formRating").value="";
   document.getElementById("formEpisodesWatched").value="";
   document.getElementById("formEpisodeMinutes").value="";
+  document.getElementById("formStatusField").hidden=target==="watchlist";
   const showWatchedFields=target==="amirWatched";
   document.getElementById("watchedEpisodesField").hidden=!showWatchedFields;
   document.getElementById("watchedEpisodeMinutesField").hidden=!showWatchedFields;
@@ -1144,6 +1187,7 @@ function openEdit(target,id){
   document.getElementById("formRating").value=item.rating;
   document.getElementById("formEpisodesWatched").value=item.episodesWatched??"";
   document.getElementById("formEpisodeMinutes").value=item.episodeMinutes??"";
+  document.getElementById("formStatusField").hidden=target==="watchlist";
   const showWatchedFields=target==="amirWatched";
   document.getElementById("watchedEpisodesField").hidden=!showWatchedFields;
   document.getElementById("watchedEpisodeMinutesField").hidden=!showWatchedFields;
@@ -1161,7 +1205,7 @@ function saveItem(){
   if((editingTarget==="amirWatched"||editingTarget==="amirWant")&&!privateEditUnlocked[editingTarget])return toast("Private edit access required.");
   const name=cleanName(document.getElementById("formName").value);
   const year=document.getElementById("formYear").value.trim();
-  const status=document.getElementById("formStatus").value;
+  const status=editingTarget==="watchlist"?"Planned":document.getElementById("formStatus").value;
   const rating=document.getElementById("formRating").value.trim();
   const position=document.getElementById("formPosition").value.trim();
   const episodesWatched=document.getElementById("formEpisodesWatched").value.trim();
@@ -1211,13 +1255,14 @@ function saveItem(){
 function openBulk(target="series"){
   bulkTarget=target;
   document.getElementById("bulkTitle").textContent=target==="watchlist"?"Bulk Add to Watchlist":target==="amirWatched"?"Bulk Add Watched Series":target==="amirWant"?"Bulk Add Want to Watch":"Bulk Add Series";
+  document.getElementById("bulkStatusField").hidden=target==="watchlist";
   document.getElementById("bulkEpisodesField").hidden=target!=="amirWatched";
   document.getElementById("bulkEpisodeMinutesField").hidden=target!=="amirWatched";
   document.getElementById("bulkEpisodesWatched").value="";
   document.getElementById("bulkEpisodeMinutes").value="";
   document.getElementById("bulkNames").value="";
   document.getElementById("bulkYear").value="";
-  document.getElementById("bulkStatus").value="Planned";
+  if(document.getElementById("bulkStatus"))document.getElementById("bulkStatus").value="Planned";
   document.getElementById("bulkRating").value="";
   document.getElementById("bulkSave").textContent=target==="watchlist"?"Add All to Watchlist":target==="amirWatched"?"Add All Watched Series":target==="amirWant"?"Add All to Want to Watch":"Add All Series";
   document.getElementById("bulkWrap").classList.add("open");
@@ -1229,7 +1274,7 @@ function bulkAdd(){
   if((bulkTarget==="amirWatched"||bulkTarget==="amirWant")&&!privateEditUnlocked[bulkTarget])return toast("Private edit access required.");
   const names=[...new Set(document.getElementById("bulkNames").value.split(/\r?\n/).map(cleanName).filter(Boolean))];
   const year=document.getElementById("bulkYear").value.trim();
-  const status=document.getElementById("bulkStatus").value;
+  const status=bulkTarget==="watchlist"?"Planned":(document.getElementById("bulkStatus")?.value||"Planned");
   const rating=document.getElementById("bulkRating").value.trim();
   const episodesWatched=document.getElementById("bulkEpisodesWatched").value.trim();
   const episodeMinutes=document.getElementById("bulkEpisodeMinutes").value.trim();
@@ -1309,7 +1354,8 @@ function handleWatchAction(action,id){
 
 function handleTopAction(action,id){
   const index=data.topList.findIndex(f=>f.id===id);if(index<0)return;
-  if(action==="remove"){const item=resolveFavorite(data.topList[index]);data.topList.splice(index,1);favoritePickerSelection.clear();toast(item?`Removed "${item.name}" from favorites.`:"Removed from favorites.");}
+  if(action==="edit"){openFavoriteEdit(id);return;}
+  if(action==="remove"){const item=resolveFavorite(data.topList[index]);data.topList.splice(index,1);toast(item?`Removed "${item.name}" from favorites.`:"Removed from favorites.");}
   if(action==="up")moveItem(data.topList,index,-1);
   if(action==="down")moveItem(data.topList,index,1);
   if(!save())return;render();
@@ -1408,19 +1454,29 @@ document.getElementById("topList").addEventListener("click",e=>{
   if(btn)handleTopAction(btn.dataset.action,btn.dataset.id);
 });
 
-/* Favorites picker: search and multi-select from My List and every custom collection. */
-document.getElementById("topPickerSearchBtn").onclick=()=>{
-  const q=document.getElementById("topPickerSearch").value.trim();
-  if(!q){favoritePickerSearchActive=false;renderFavoritePicker();return toast("Enter a title to search your lists.");}
-  favoritePickerSearchActive=true;renderFavoritePicker();
-};
-document.getElementById("topPickerSearch").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();document.getElementById("topPickerSearchBtn").click();}});
-document.getElementById("topPickerSearch").addEventListener("input",()=>{if(favoritePickerSearchActive)renderFavoritePicker();});
-document.getElementById("topPickerResults").addEventListener("change",e=>{const box=e.target.closest("[data-favorite-pick]");if(!box)return;box.checked?favoritePickerSelection.add(box.dataset.favoritePick):favoritePickerSelection.delete(box.dataset.favoritePick);renderFavoritePicker();});
-document.getElementById("topAdd").onclick=()=>{
-  if(!favoritePickerSelection.size)return toast("Search and select at least one movie or series.");
-  let added=0;for(const key of favoritePickerSelection){const [source,listId,itemId]=key.split("|");if(favoriteExists(source,listId,itemId))continue;const item=source==="series"?findSeries(itemId):data.customLists.find(l=>l.id===listId)?.items.find(x=>x.id===itemId);if(item){data.topList.push({id:uid(),source,listId,itemId});added++;}}
-  favoritePickerSelection.clear();if(!save())return;render();toast(`${added} item(s) added to Favorites.`);
+/* Favorites picker: one item at a time, sourced from My List and custom collections. */
+let favoriteSelectedKey="";
+let editingFavoriteId="";
+function renderFavoriteItemResults(){
+  const host=document.getElementById("favoriteItemResults");
+  const q=document.getElementById("favoriteItemSearch").value.trim().toLowerCase();
+  if(!q){host.innerHTML='<div class="empty">Type a title to search your lists.</div>';return;}
+  const candidates=favoriteCandidates().filter(c=>!favoriteExists(c.source,c.listId,c.itemId)&&(c.item.name.toLowerCase().includes(q)||c.listName.toLowerCase().includes(q)));
+  host.innerHTML=candidates.length?candidates.map(c=>{const key=`${c.source}|${c.listId}|${c.itemId}`;return `<button type="button" class="omdb-result" data-favorite-choice="${escapeHTML(key)}" style="width:100%;text-align:left"><strong>${escapeHTML(c.item.name)}</strong><small>${escapeHTML(c.listName)}${c.item.year?` · ${escapeHTML(c.item.year)}`:""}${c.item.rating!==""&&c.item.rating!==null?` · ★ ${escapeHTML(formatRating(c.item.rating))}`:""}</small></button>`;}).join(""):'<div class="empty">No available matching titles found.</div>';
+}
+function openFavoriteAdd(){editingFavoriteId="";favoriteSelectedKey="";document.getElementById("favoriteItemModalTitle").textContent="Add Favorite";document.getElementById("favoriteSearchField").hidden=false;document.getElementById("favoriteItemSearch").value="";document.getElementById("favoriteItemResults").innerHTML='<div class="empty">Type a title to search your lists.</div>';document.getElementById("favoriteSelectedName").value="";document.getElementById("favoriteItemPosition").value="";document.getElementById("favoriteItemSave").textContent="Add to Favorites";document.getElementById("favoriteItemModal").classList.add("open");}
+function openFavoriteEdit(id){const index=data.topList.findIndex(f=>f.id===id);if(index<0)return;const fav=data.topList[index],item=resolveFavorite(fav);if(!item)return;editingFavoriteId=id;favoriteSelectedKey=`${fav.source}|${fav.listId||""}|${fav.itemId}`;document.getElementById("favoriteItemModalTitle").textContent="Edit Favorite Position";document.getElementById("favoriteSearchField").hidden=true;document.getElementById("favoriteSelectedName").value=item.name;document.getElementById("favoriteItemPosition").value=String(index+1);document.getElementById("favoriteItemSave").textContent="Save Position";document.getElementById("favoriteItemModal").classList.add("open");}
+function closeFavoriteItemModal(){document.getElementById("favoriteItemModal").classList.remove("open");}
+document.getElementById("topAddOpen").onclick=openFavoriteAdd;
+document.getElementById("favoriteItemCancel").onclick=closeFavoriteItemModal;
+document.getElementById("favoriteItemSearch").addEventListener("input",renderFavoriteItemResults);
+document.getElementById("favoriteItemResults").addEventListener("click",e=>{const btn=e.target.closest("[data-favorite-choice]");if(!btn)return;favoriteSelectedKey=btn.dataset.favoriteChoice;const [source,listId,itemId]=favoriteSelectedKey.split("|");const item=source==="series"?findSeries(itemId):data.customLists.find(l=>l.id===listId)?.items.find(x=>x.id===itemId);if(!item)return;document.getElementById("favoriteSelectedName").value=item.name;document.getElementById("favoriteItemResults").querySelectorAll("[data-favorite-choice]").forEach(x=>x.classList.toggle("selected",x===btn));});
+document.getElementById("favoriteItemSave").onclick=()=>{
+  const rawPosition=document.getElementById("favoriteItemPosition").value.trim();
+  if(rawPosition!==""&&(!Number.isInteger(+rawPosition)||+rawPosition<1))return toast("Position must be a positive whole number.");
+  if(editingFavoriteId){const index=data.topList.findIndex(f=>f.id===editingFavoriteId);if(index<0)return closeFavoriteItemModal();const [fav]=data.topList.splice(index,1);insertAt(data.topList,fav,rawPosition);}
+  else{if(!favoriteSelectedKey)return toast("Search and select one title first.");const [source,listId,itemId]=favoriteSelectedKey.split("|");if(favoriteExists(source,listId,itemId))return toast("This title is already in Favorites.");const item=source==="series"?findSeries(itemId):data.customLists.find(l=>l.id===listId)?.items.find(x=>x.id===itemId);if(!item)return toast("The selected title could not be found.");const fav={id:uid(),source,listId,itemId};insertAt(data.topList,fav,rawPosition);}
+  if(!save())return;render();closeFavoriteItemModal();toast(editingFavoriteId?"Favorite position updated.":"Added to Favorites.");editingFavoriteId="";favoriteSelectedKey="";
 };
 
 /* TXT Export */
@@ -1570,8 +1626,6 @@ document.getElementById("resetBtn").onclick=()=>{
   if(omdbKeyInput){omdbKeyInput.value="";omdbKeyInput.disabled=true;omdbKeyInput.type="password";}
   if(omdbStatus)omdbStatus.textContent="";
   const revealButton=document.getElementById("omdbRevealBtn");if(revealButton)revealButton.textContent="Show";
-  favoritePickerSelection.clear();favoritePickerSearchActive=false;
-  const pickerSearch=document.getElementById("topPickerSearch");if(pickerSearch)pickerSearch.value="";
   Object.keys(editModes).forEach(key=>editModes[key]=false);
   Object.keys(privateEditUnlocked).forEach(key=>privateEditUnlocked[key]=false);
   document.getElementById("sortSelect").value="manual";
@@ -1698,19 +1752,32 @@ document.addEventListener("click",e=>{
 let selectedWatchOmdbItem=null;
 let watchOmdbSearchTimer=null;
 let watchOmdbRequestToken=0;
+let watchManualMode=false;
 function openWatchAddModal(){
   clearTimeout(watchOmdbSearchTimer);selectedWatchOmdbItem=null;watchOmdbRequestToken++;
+  watchManualMode=false;
+  const manualFields=document.getElementById("watchManualFields");
+  const searchField=document.getElementById("watchTitleSearch").closest(".field");
+  if(!omdbApiKey){
+    const proceed=confirm("OMDb API key is not configured. Do you want to continue without the API and enter the title and year manually?");
+    if(!proceed)return;
+    watchManualMode=true;
+    searchField.hidden=true;manualFields.hidden=false;
+  }else{
+    searchField.hidden=false;manualFields.hidden=true;
+  }
   document.getElementById("watchTitleSearch").value="";
+  document.getElementById("watchManualName").value="";
+  document.getElementById("watchManualYear").value="";
   document.getElementById("watchOmdbResults").innerHTML="";
   document.getElementById("watchSelectedPreview").hidden=true;
   document.getElementById("watchSelectedPoster").removeAttribute("src");
   document.getElementById("watchSelectedName").textContent="";
   document.getElementById("watchSelectedYear").textContent="";
-  document.getElementById("watchAddStatus").value="Planned";
   document.getElementById("watchAddRating").value="";
   document.getElementById("watchAddPosition").value="";
   document.getElementById("watchAddModal").classList.add("open");
-  document.getElementById("watchTitleSearch").focus();
+  (watchManualMode?document.getElementById("watchManualName"):document.getElementById("watchTitleSearch")).focus();
 }
 function closeWatchAddModal(){clearTimeout(watchOmdbSearchTimer);document.getElementById("watchAddModal").classList.remove("open");}
 document.getElementById("cancelWatchAdd").onclick=closeWatchAddModal;
@@ -1758,24 +1825,26 @@ async function selectWatchOmdbResult(imdbID,button){
   }catch(error){console.error(error);if(token===watchOmdbRequestToken){selectedWatchOmdbItem=null;preview.hidden=true;toast("Could not load the selected title details.");}}
 }
 document.getElementById("saveWatchAdd").onclick=()=>{
-  if(!selectedWatchOmdbItem)return toast("Search OMDb and select a title first.");
-  const item=selectedWatchOmdbItem;
-  const name=cleanName(item.Title);
+  const manualName=document.getElementById("watchManualName").value.trim();
+  const manualYear=document.getElementById("watchManualYear").value.trim();
+  const item=watchManualMode?null:selectedWatchOmdbItem;
+  const name=cleanName(watchManualMode?manualName:item?.Title||"");
+  const year=watchManualMode?manualYear:(item?.Year||"");
   const rating=document.getElementById("watchAddRating").value.trim();
   const position=document.getElementById("watchAddPosition").value.trim();
-  const status=document.getElementById("watchAddStatus").value;
-  if(!name)return toast("The selected title has no valid name.");
+  if(!name)return toast("Enter a title first.");
+  if(manualYear&&(!Number.isInteger(+manualYear)||+manualYear<1888||+manualYear>2100))return toast("Enter a valid release year between 1888 and 2100.");
   if(isDuplicate(data.watchlist,name))return toast("This title is already in your Watchlist.");
   if(rating!==""&&(!Number.isFinite(+rating)||+rating<0||+rating>10))return toast("Rating must be between 0 and 10.");
   if(position!==""&&(!Number.isInteger(+position)||+position<1))return toast("Position must be a positive whole number.");
   const previousData=JSON.parse(JSON.stringify(data));
-  const poster=item.Poster&&item.Poster!=="N/A"?item.Poster:"";
-  const newItem=makeItem(name,{year:item.Year||"",status,rating,imdbID:item.imdbID||"",poster});
+  const poster=item?.Poster&&item.Poster!=="N/A"?item.Poster:"";
+  const newItem=makeItem(name,{year,status:"Planned",rating,imdbID:item?.imdbID||"",poster});
   if(poster){posterCache[posterKey(name)]=poster;try{localStorage.setItem(POSTER_CACHE_STORAGE,JSON.stringify(posterCache));}catch{}}
   insertAt(data.watchlist,newItem,position);
   document.getElementById("watchSortSelect").value="manual";
   if(!save()){data=previousData;return;}
-  render();closeWatchAddModal();toast("Added to Watchlist from OMDb.");
+  render();closeWatchAddModal();toast(watchManualMode?"Added to Watchlist manually.":"Added to Watchlist from OMDb.");
 };
 
 /* Custom My List collections: each list is independent and can hold movies or series. */
@@ -1784,6 +1853,7 @@ let editingCustomItemId="";
 let customEditMode=false;
 let customSelectedIds=new Set();
 let selectedOmdbItem=null;
+let customManualMode=false;
 let omdbSearchTimer=null;
 function currentCustomList(){return data.customLists.find(x=>x.id===activeCustomListId)||null;}
 function renderCustomLists(){
@@ -1912,6 +1982,15 @@ document.getElementById("saveCustomBulk").onclick=()=>{
 function openCustomItemModal(item=null){
   const list=currentCustomList();if(!list)return;
   editingCustomItemId=item?.id||"";clearTimeout(omdbSearchTimer);selectedOmdbItem=item?{Title:item.name,Year:item.year,imdbID:item.imdbID||""}:null;
+  customManualMode=false;
+  if(!item&&!omdbApiKey){
+    const proceed=confirm("OMDb API key is not configured. Do you want to continue without the API and enter the title and year manually?");
+    if(!proceed)return;
+    customManualMode=true;
+  }
+  document.getElementById("customSearchField").hidden=customManualMode||!!item;
+  document.getElementById("customSelectedTitle").readOnly=!customManualMode;
+  document.getElementById("customSelectedYear").readOnly=!customManualMode;
   document.getElementById("customItemModalTitle").textContent=item?"Edit Item":`Add ${list.type==="movie"?"Movie":"Series"}`;
   document.getElementById("customTitleSearch").value=item?.name||"";
   document.getElementById("customSelectedTitle").value=item?.name||"";
@@ -1926,6 +2005,7 @@ function openCustomItemModal(item=null){
 }
 document.getElementById("cancelCustomItem").onclick=()=>document.getElementById("customItemModal").classList.remove("open");
 document.getElementById("customTitleSearch").addEventListener("input",()=>{
+  if(customManualMode)return;
   clearTimeout(omdbSearchTimer);const query=document.getElementById("customTitleSearch").value.trim();selectedOmdbItem=null;document.getElementById("customSelectedTitle").value="";document.getElementById("customSelectedYear").value="";
   if(query.length<2){document.getElementById("omdbSearchResults").innerHTML="";return;}
   omdbSearchTimer=setTimeout(()=>searchOmdbSuggestions(query),400);
@@ -1956,8 +2036,11 @@ async function selectOmdbResult(imdbID){
 }
 document.getElementById("saveCustomItem").onclick=()=>{
   const list=currentCustomList();if(!list)return;
-  if(!selectedOmdbItem)return toast("Search and select a title from the database first.");
-  const name=cleanName(selectedOmdbItem.Title);const rating=document.getElementById("customSelectedRating").value.trim();
+  const name=cleanName(customManualMode?document.getElementById("customSelectedTitle").value:(selectedOmdbItem?.Title||""));
+  const year=customManualMode?document.getElementById("customSelectedYear").value.trim():(selectedOmdbItem?.Year||"");
+  const rating=document.getElementById("customSelectedRating").value.trim();
+  if(!name)return toast(customManualMode?"Enter a title first.":"Search and select a title from the database first.");
+  if(year&&(!Number.isInteger(+year)||+year<1888||+year>2100))return toast("Enter a valid release year between 1888 and 2100.");
   const position=document.getElementById("customSelectedPosition").value.trim();
   if(rating!==""&&(!Number.isFinite(+rating)||+rating<0||+rating>10))return toast("Rating must be between 0 and 10.");
   if(position!==""&&(!Number.isInteger(+position)||+position<1))return toast("Position must be a positive whole number.");
@@ -1968,11 +2051,11 @@ document.getElementById("saveCustomItem").onclick=()=>{
     const oldIndex=list.items.indexOf(item);list.items.splice(oldIndex,1);
     insertAt(list.items,item,position);
   }else{
-    const newItem={...makeItem(name,{year:selectedOmdbItem.Year||"",status:document.getElementById("customSelectedStatus").value,rating}),imdbID:selectedOmdbItem.imdbID||"",poster:selectedOmdbItem.Poster||""};
+    const newItem={...makeItem(name,{year,status:document.getElementById("customSelectedStatus").value,rating}),imdbID:selectedOmdbItem?.imdbID||"",poster:selectedOmdbItem?.Poster&&selectedOmdbItem.Poster!=="N/A"?selectedOmdbItem.Poster:""};
     insertAt(list.items,newItem,position);
   }
   document.getElementById("customItemSort").value="manual";
-  if(!save())return;document.getElementById("customItemModal").classList.remove("open");renderCustomItems();renderCustomLists();toast(editingCustomItemId?"Item updated.":"Added from OMDb.");
+  if(!save())return;document.getElementById("customItemModal").classList.remove("open");renderCustomItems();renderCustomLists();toast(editingCustomItemId?"Item updated.":(customManualMode?"Item added manually.":"Added from OMDb."));
 };
 document.getElementById("customItemsList").addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;const list=currentCustomList();if(!list)return;
