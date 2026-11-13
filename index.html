@@ -5,10 +5,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SILVER TV | Series Manager</title>
-<meta name="description" content="SILVER TV — a personal series collection manager. Organize your shows, watchlist and favorite series in one modern dashboard.">
+<meta name="description" content="SILVER TV — a personal movie and series manager. Organize your movies, shows, watchlist and favorites in one modern dashboard.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="SILVER TV | Series Manager">
-<meta property="og:description" content="Explore the SILVER TV series collection: track shows, manage your watchlist and keep your favorite series together.">
+<meta property="og:description" content="Explore the SILVER TV series collection: track movies and shows, manage your watchlist and keep your favorites together.">
 <meta property="og:image" content="https://user55191.na.imgto.link/public/20261112/af46ebb8909a3ce346703d9f-1000013733.avif">
 <meta property="og:image:alt" content="SILVER TV logo">
 <meta name="twitter:card" content="summary_large_image">
@@ -293,7 +293,6 @@ body.light .empty{border-color:#cbd5e1}
 .api-help{font-size:12px;line-height:1.8;color:var(--muted)}
 .api-help a{color:var(--accent)}
 .api-status{font-size:12px;color:var(--green);margin-top:8px;min-height:16px}
-.website-share-row{display:flex;justify-content:flex-end;margin:12px 0}
 @media(max-width:700px){.series-card{grid-template-columns:22px 34px 42px minmax(0,1fr)}.poster-wrap{width:38px;height:54px}.series-card .actions{grid-column:4}.series-card > :nth-child(4){grid-column:4;min-width:0}}
 /* Amir's two archive pages are read-only: only search, sorting and the lists remain visible. */
 #amirWatched .watched-summary,#amirWatched .private-edit,#amirWant .private-edit,
@@ -346,16 +345,18 @@ body.light .empty{border-color:#cbd5e1}
 </style>
 </head>
 <body>
+<!-- Prevent browsers from mistaking list-entry fields for login credentials. -->
+<div aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)"><input type="text" name="username" autocomplete="username" tabindex="-1"><input type="password" name="password" autocomplete="new-password" tabindex="-1"></div>
 
 <aside class="sidebar" id="sidebar">
   <div class="brand">SILVER<span>TV24</span></div>
-  <div class="version">SERIES MANAGER · VERSION 5.6</div>
+  <div class="version">SERIES MANAGER · VERSION 5.9</div>
   <div class="nav-label">MAIN MENU</div>
   <nav class="nav">
     <button class="active" data-page="dashboard">◫ Dashboard</button>
     <button data-page="series">▤ My List</button>
     <button data-page="watchlist">◷ Watchlist</button>
-    <button data-page="top">★ Favorite Series</button>
+    <button data-page="top">★ Favorites</button>
     <div class="nav-label">AMIR'S SERIES</div>
     <button data-page="amirWatched">✓ Series I've Watched</button>
     <button data-page="amirWant">＋ Watchlist</button>
@@ -386,14 +387,13 @@ body.light .empty{border-color:#cbd5e1}
       <p>YOUR SERIES COLLECTION</p>
     </div>
   </div>
-  <div class="website-share-row"><button class="btn" id="shareWebsiteBtn">↗ Share Website</button></div>
   <div class="grid" id="stats"></div>
   <div class="two-col">
     <div class="panel"><div class="panel-head"><h2>Recently Added</h2></div><div id="recent"></div></div>
     <div class="panel"><div class="panel-head"><h2>Top Rated</h2></div><div id="topRated"></div></div>
   </div>
 
-  <div class="panel"><div class="panel-head"><h2>Favorite Series</h2><span class="muted">Top 3</span></div><div class="dashboard-favorites" id="dashboardFavorites"></div></div>
+  <div class="panel"><div class="panel-head"><h2>Favorites</h2><span class="muted">Top 3</span></div><div class="dashboard-favorites" id="dashboardFavorites"></div></div>
 </section>
 
 <section class="page" id="series">
@@ -402,7 +402,7 @@ body.light .empty{border-color:#cbd5e1}
     <div class="create-list-box">
       <h3>＋ Create a New List</h3>
       <div class="toolbar">
-        <input id="newCustomListName" class="search" placeholder="Enter list name..." maxlength="50">
+        <input id="newCustomListName" autocomplete="off" class="search" placeholder="Enter list name..." maxlength="50">
         <select id="newCustomListType"><option value="series">Series</option><option value="movie">Movies</option></select>
         <button class="btn primary" id="createCustomListBtn">Create List</button>
       </div>
@@ -435,7 +435,7 @@ body.light .empty{border-color:#cbd5e1}
     <div class="panel-head">
       <h2>Watchlist</h2>
       <div style="display:flex;align-items:center;gap:8px">
-        <span class="muted" id="watchCount">0 series</span>
+        <span class="muted" id="watchCount">0 items</span>
         <button class="btn small" id="watchEditToggle">Edit</button>
       </div>
     </div>
@@ -472,25 +472,29 @@ body.light .empty{border-color:#cbd5e1}
 <section class="page" id="top">
   <div class="panel">
     <div class="panel-head">
-      <h2>Favorite Series</h2>
+      <h2>Favorites</h2>
       <div style="display:flex;align-items:center;gap:8px">
-        <span class="muted" id="topCount">0 series</span>
+        <span class="muted" id="topCount">0 items</span>
         <button class="btn small" id="topEditToggle">Edit</button>
       </div>
     </div>
-    <p class="muted" style="font-size:12px">Favorite Series are selected from your existing series collection.</p>
+    <p class="muted" style="font-size:12px">Favorites are selected from your existing series collection.</p>
     <p class="edit-hint" id="topEditHint" hidden>Edit mode: edit details, remove or move favorites.</p>
     <div class="toolbar">
-      <input class="search" id="topSearch" placeholder="Search favorite series...">
+      <input class="search" id="topSearch" placeholder="Search favorites...">
       <select id="topSortSelect" class="search">
         <option value="manual">Manual Order</option><option value="az">Name (A–Z)</option><option value="za">Name (Z–A)</option>
         <option value="oldest">Release Year (Oldest First)</option><option value="newest">Release Year (Newest First)</option>
         <option value="rating">Rating (Highest First)</option><option value="status">Watch Status</option>
       </select>
     </div>
-    <div class="toolbar">
-      <select id="topSelect" class="search"><option value="">Select a series...</option></select>
-      <button class="btn primary" id="topAdd">＋ Add Favorite</button>
+    <div class="toolbar" style="align-items:stretch;flex-direction:column">
+      <div style="display:flex;gap:8px;align-items:stretch;flex-wrap:wrap">
+        <input id="topPickerSearch" class="search" type="search" autocomplete="off" placeholder="Enter a movie or series name..." style="flex:1;min-width:180px">
+        <button class="btn primary" id="topPickerSearchBtn" type="button">Search</button>
+      </div>
+      <div id="topPickerResults" class="omdb-results" style="max-height:230px" hidden></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap"><small class="muted" id="topPickerCount">0 selected</small><button class="btn primary" id="topAdd">＋ Add selected to Favorites</button></div>
     </div>
     <div class="list-tools"><button class="btn small" data-backup="topList">Backup List</button><button class="btn small" data-copy="topList">Copy List</button><button class="btn small" data-share="topList">Share List</button></div>
     <div class="selection-tools" data-selection-tools="topList"><label><input class="select-box" type="checkbox" data-select-all="topList"> Select all</label><span class="muted" data-selected-count="topList">0 selected</span><button class="btn small danger" data-bulk-delete="topList">Remove</button><input type="number" min="0" max="10" step="0.01" placeholder="Rating" data-bulk-rating="topList"><button class="btn small" data-apply-rating="topList">Set rating</button></div>
@@ -501,7 +505,7 @@ body.light .empty{border-color:#cbd5e1}
 
 <section class="page" id="amirWatched">
   <div class="panel">
-    <div class="panel-head"><h2>Series I've Watched</h2><span class="muted" id="amirWatchedCount">0 series</span></div>
+    <div class="panel-head"><h2>Series I've Watched</h2><span class="muted" id="amirWatchedCount">0 items</span></div>
     <div class="toolbar">
       <input class="search" id="amirWatchedSearch" placeholder="Search watched series...">
       <select id="amirWatchedSortSelect" class="search"><option value="manual">Manual Order</option><option value="az">Name (A–Z)</option><option value="za">Name (Z–A)</option><option value="oldest">Release Year (Oldest First)</option><option value="newest">Release Year (Newest First)</option><option value="rating">Rating (Highest First)</option><option value="status">Watch Status</option></select>
@@ -513,7 +517,7 @@ body.light .empty{border-color:#cbd5e1}
 
 <section class="page" id="amirWant">
   <div class="panel">
-    <div class="panel-head"><h2>Amir's Watchlist</h2><span class="muted" id="amirWantCount">0 series</span></div>
+    <div class="panel-head"><h2>Amir's Watchlist</h2><span class="muted" id="amirWantCount">0 items</span></div>
     <div class="toolbar">
       <input class="search" id="amirWantSearch" placeholder="Search series...">
       <select id="amirWantSortSelect" class="search"><option value="manual">Manual Order</option><option value="az">Name (A–Z)</option><option value="za">Name (Z–A)</option><option value="oldest">Release Year (Oldest First)</option><option value="newest">Release Year (Newest First)</option><option value="rating">Rating (Highest First)</option><option value="status">Watch Status</option></select>
@@ -578,10 +582,10 @@ body.light .empty{border-color:#cbd5e1}
 <div class="modal-wrap" id="modalWrap">
  <div class="modal">
   <h2 id="modalTitle">Add Series</h2>
-  <div class="field"><label>Series Name</label><input id="formName" placeholder="Enter series name"></div>
-  <div class="field"><label>Release Year</label><input id="formYear" type="number" min="1900" max="2100" placeholder="e.g. 2019"></div>
+  <div class="field"><label>Series Name</label><input id="formName" type="text" name="silver-title-entry" autocomplete="off" autocapitalize="words" placeholder="Enter series or movie name"></div>
+  <div class="field"><label>Release Year</label><input id="formYear" autocomplete="off" type="number" min="1900" max="2100" placeholder="e.g. 2019"></div>
   <div class="field"><label>Watch Status</label><select id="formStatus"><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select></div>
-  <div class="field"><label>Rating (0–10)</label><input id="formRating" type="number" min="0" max="10" step="0.01" placeholder="Optional"></div>
+  <div class="field"><label>Rating (0–10)</label><input id="formRating" autocomplete="off" type="number" min="0" max="10" step="0.01" placeholder="Optional"></div>
   <div class="field" id="watchedEpisodesField" hidden><label>Episodes Watched</label><input id="formEpisodesWatched" type="number" min="0" step="1" placeholder="e.g. 62"><small>Enter the number of episodes you have watched for this series.</small></div>
   <div class="field" id="watchedEpisodeMinutesField" hidden><label>Average Episode Length (Minutes)</label><input id="formEpisodeMinutes" type="number" min="1" max="600" step="0.01" placeholder="e.g. 45"><small>Watch time = episodes watched × average episode length ÷ 60.</small></div>
   <div class="field"><label>Position (Optional)</label><input id="formPosition" type="number" min="1" step="1" placeholder="Leave empty to add at the end"><small>Enter a position number to insert the item at that place.</small></div>
@@ -609,7 +613,7 @@ body.light .empty{border-color:#cbd5e1}
 <div class="modal-wrap" id="customItemModal">
  <div class="modal">
   <h2 id="customItemModalTitle">Add Item</h2>
-  <div class="field"><label>Search title</label><input id="customTitleSearch" autocomplete="off" placeholder="Start typing a movie or series name..."><small>Choose the exact result from OMDb. The release year will be filled automatically.</small><div id="omdbSearchResults" class="omdb-results"></div></div>
+  <div class="field"><label>Search title</label><input id="customTitleSearch" type="search" name="silver-custom-title-search" autocomplete="off" placeholder="Start typing a movie or series name..."><small>Choose the exact result from OMDb. The release year will be filled automatically.</small><div id="omdbSearchResults" class="omdb-results"></div></div>
   <div class="field"><label>Selected title</label><input id="customSelectedTitle" placeholder="Select a result above" readonly></div>
   <div class="field"><label>Release Year</label><input id="customSelectedYear" readonly placeholder="Automatically filled"></div>
   <div class="field"><label>Watch Status</label><select id="customSelectedStatus"><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select></div>
@@ -660,7 +664,7 @@ async function getPosterByTitle(title,type="series"){
 }
 function hydratePosters(){
   if(!omdbApiKey)return;
-  const names=[...data.series,...data.watchlist,...data.amirWatched,...data.amirWant,...data.topList.map(findSeries).filter(Boolean),]
+  const names=[...data.series,...data.watchlist,...data.amirWatched,...data.amirWant,...data.topList.map(resolveFavorite).filter(Boolean),...data.customLists.flatMap(l=>l.items),]
     .map(item=>item.name).filter(Boolean);
   [...new Set(names.map(posterKey))].forEach(key=>{
     if(!Object.prototype.hasOwnProperty.call(posterCache,key)&&!posterRequests.has(key))getPosterByTitle(key);
@@ -729,12 +733,17 @@ function loadData(){
       watchlist.push(item);
     });
 
-    const topList=[...new Set((Array.isArray(saved.topList)?saved.topList:[]).map(String))]
-      .filter(id=>seriesById.has(id));
+    const customLists=Array.isArray(saved.customLists)?saved.customLists.map(list=>({id:String(list.id||uid()),name:cleanName(list.name),type:list.type==="movie"?"movie":"series",items:Array.isArray(list.items)?list.items.map(normalizeItem).filter(Boolean):[]})).filter(list=>list.name):[{id:"legacy-series",name:"My Series",type:"series",items:series.map(item=>({...item}))}];
+    const topList=[];
+    (Array.isArray(saved.topList)?saved.topList:[]).forEach(entry=>{
+      if(entry&&typeof entry==="object"&&entry.source&&entry.itemId){
+        const valid=entry.source==="series"?seriesById.has(String(entry.itemId)):entry.source==="custom"&&customLists.some(list=>list.id===String(entry.listId)&&list.items.some(item=>item.id===String(entry.itemId)));
+        if(valid&&!topList.some(f=>f.source===entry.source&&f.listId===(entry.listId||"")&&f.itemId===String(entry.itemId)))topList.push({id:String(entry.id||uid()),source:entry.source,listId:String(entry.listId||""),itemId:String(entry.itemId)});
+      }else{const id=String(entry);if(seriesById.has(id)&&!topList.some(f=>f.source==="series"&&f.itemId===id))topList.push({id:uid(),source:"series",listId:"",itemId:id});}
+    });
 
     const amirWatched=Array.isArray(saved.amirWatched)?saved.amirWatched.map(normalizeItem).filter(Boolean):[];
     const amirWant=Array.isArray(saved.amirWant)?saved.amirWant.map(normalizeItem).filter(Boolean):[];
-    const customLists=Array.isArray(saved.customLists)?saved.customLists.map(list=>({id:String(list.id||uid()),name:cleanName(list.name),type:list.type==="movie"?"movie":"series",items:Array.isArray(list.items)?list.items.map(normalizeItem).filter(Boolean):[]})).filter(list=>list.name):[{id:"legacy-series",name:"My Series",type:"series",items:series.map(item=>({...item}))}];
     return{series,watchlist,topList,amirWatched,amirWant,customLists,telegramUrl:"https://t.me/silvertv24"};
   }catch(error){
     console.error("Could not load saved data:",error);
@@ -784,6 +793,10 @@ function insertAt(list,item,position){
 }
 
 function findSeries(id){return data.series.find(s=>s.id===id);}
+function resolveFavorite(fav){if(!fav)return null;const item=fav.source==="series"?findSeries(fav.itemId):fav.source==="custom"?data.customLists.find(l=>l.id===fav.listId)?.items.find(x=>x.id===fav.itemId):null;return item?{...item,id:fav.id,_favoriteSource:fav.source,_favoriteListId:fav.listId||"",_favoriteItemId:fav.itemId}:null;}
+function favoriteExists(source,listId,itemId){return data.topList.some(f=>f.source===source&&f.listId===(listId||"")&&f.itemId===itemId);}
+function favoriteSourceItem(fav){return fav?.source==="series"?findSeries(fav.itemId):fav?.source==="custom"?data.customLists.find(l=>l.id===fav.listId)?.items.find(x=>x.id===fav.itemId):null;}
+function favoriteCandidates(){const out=[];data.series.forEach(x=>out.push({source:"series",listId:"",itemId:x.id,item:x,listName:"My List"}));data.customLists.forEach(l=>l.items.forEach(x=>out.push({source:"custom",listId:l.id,itemId:x.id,item:x,listName:l.name})));return out;}
 function findWatchItem(id){return data.watchlist.find(s=>s.id===id);}
 function getListByKey(key){return data[key]||[];}
 function findItemInList(key,id){return getListByKey(key).find(s=>s.id===id);}
@@ -833,7 +846,7 @@ function render(){
 
   document.getElementById("seriesCount").textContent=data.series.length+" series";
   document.getElementById("watchCount").textContent=data.watchlist.length+" series";
-  document.getElementById("topCount").textContent=data.topList.length+" series";
+  document.getElementById("topCount").textContent=data.topList.length+" items";
   document.getElementById("amirWatchedCount").textContent=data.amirWatched.length+" series";
   document.getElementById("amirWantCount").textContent=data.amirWant.length+" series";
   updateEditButtons();
@@ -850,7 +863,7 @@ function renderStats(){
     ["Total Series",data.series.length,"In your collection"],
     ["Watched",watched,"Completed series"],
     ["Watchlist",data.watchlist.length,"Independently saved"],
-    ["Favorites",data.topList.length,"Your favorite series"],
+    ["Favorites",data.topList.length,"Your favorite movies and series"],
     ["Currently Watching",watching,"In progress"],
     ["Planned",planned,"Not started yet"],
     ["Stop Watching",stopped,"Paused or stopped"]
@@ -941,18 +954,22 @@ function renderWatchlist(){
     :`<div class="empty">No watchlist series found.</div>`;
 }
 
+const favoritePickerSelection=new Set();
+let favoritePickerSearchActive=false;
 function renderTop(){
   const query=(document.getElementById("topSearch")?.value||"").trim().toLowerCase();
   const mode=document.getElementById("topSortSelect")?.value||"manual";
-  const items=sortItems(data.topList.map(findSeries).filter(Boolean),mode).filter(s=>s.name.toLowerCase().includes(query));
-  document.getElementById("topList").innerHTML=items.length
-    ?items.map((s,i)=>seriesCard(s,i,items.length,{
-      select:editModes.topList?"topList":null,
-      move:editModes.topList&&mode==="manual",
-      edit:editModes.topList,
-      remove:editModes.topList
-    })).join("")
-    :`<div class="empty">${query?"No matching favorites found.":"Your favorites list is empty."}</div>`;
+  const items=sortItems(data.topList.map(resolveFavorite).filter(Boolean),mode).filter(x=>x.name.toLowerCase().includes(query));
+  document.getElementById("topList").innerHTML=items.length?items.map((item,i)=>seriesCard(item,i,items.length,{select:editModes.topList?"topList":null,move:editModes.topList&&mode==="manual",edit:false,remove:editModes.topList})).join(""):`<div class="empty">${query?"No matching favorites found.":"Your favorites list is empty."}</div>`;
+}
+function renderFavoritePicker(){
+  const host=document.getElementById("topPickerResults");if(!host)return;
+  const q=(document.getElementById("topPickerSearch")?.value||"").trim().toLowerCase();
+  if(!favoritePickerSearchActive||!q){host.innerHTML="";host.hidden=true;document.getElementById("topPickerCount").textContent=`${favoritePickerSelection.size} selected`;return;}
+  const candidates=favoriteCandidates().filter(c=>!favoriteExists(c.source,c.listId,c.itemId)&&(c.item.name.toLowerCase().includes(q)||c.listName.toLowerCase().includes(q)));
+  host.hidden=false;
+  host.innerHTML=candidates.length?candidates.map(c=>{const key=`${c.source}|${c.listId}|${c.itemId}`;return `<label class="omdb-result" style="cursor:pointer"><input type="checkbox" data-favorite-pick="${escapeHTML(key)}" ${favoritePickerSelection.has(key)?"checked":""}><span style="flex:1">${escapeHTML(c.item.name)}<small>${c.source==="series"?"My List":escapeHTML(c.listName)} · ${c.item.year?escapeHTML(c.item.year):"Year unknown"} · ${c.item.poster?"Poster available":""}</small></span><small>${c.item.type==="movie"?"Movie":"Series"}</small></label>`;}).join(""):`<div class="empty">No matching items found in your lists.</div>`;
+  document.getElementById("topPickerCount").textContent=`${favoritePickerSelection.size} selected`;
 }
 
 function renderPrivateList(key){
@@ -980,19 +997,7 @@ function renderPrivateStats(){
   document.getElementById("amirWatchedHours").textContent=hours.toFixed(2)+" h";
 }
 
-function renderSelectors(){
-  const top=document.getElementById("topSelect");
-  const oldTop=top.value;
-  top.innerHTML='<option value="">Select a series...</option>';
-  data.series.forEach(s=>{
-    if(data.topList.includes(s.id))return;
-    const option=document.createElement("option");
-    option.value=s.id;
-    option.textContent=s.name;
-    top.appendChild(option);
-  });
-  top.value=oldTop;
-}
+function renderSelectors(){renderFavoritePicker();}
 
 function renderDashboardLists(){
   const recent=[...data.series].reverse().slice(0,5);
@@ -1000,8 +1005,8 @@ function renderDashboardLists(){
     ?recent.map(s=>`<div class="recent-item"><span>${escapeHTML(s.name)}</span><span class="muted">${escapeHTML(s.year||"")}</span></div>`).join("")
     :`<div class="empty">No series added yet.</div>`;
 
-  const favorites=data.topList.slice(0,3).map(findSeries).filter(Boolean);
-  document.getElementById("dashboardFavorites").innerHTML=favorites.length?favorites.map((s,i)=>`<div class="favorite-mini"><strong>${i+1}. ${escapeHTML(s.name)}</strong><small>★ ${formatRating(s.rating)} · ${escapeHTML(s.year||"Year unknown")}</small></div>`).join(""):`<div class="empty" style="grid-column:1/-1">No favorite series selected.</div>`;
+  const favorites=data.topList.slice(0,3).map(resolveFavorite).filter(Boolean);
+  document.getElementById("dashboardFavorites").innerHTML=favorites.length?favorites.map((s,i)=>`<div class="favorite-mini"><strong>${i+1}. ${escapeHTML(s.name)}</strong><small>★ ${formatRating(s.rating)} · ${escapeHTML(s.year||"Year unknown")}</small></div>`).join(""):`<div class="empty" style="grid-column:1/-1">No favorites selected.</div>`;
 
   const rated=[...data.series].filter(s=>s.rating!==""&&s.rating!==null&&s.rating!==undefined)
     .sort((a,b)=>Number(b.rating)-Number(a.rating)).slice(0,5);
@@ -1221,7 +1226,7 @@ function handleSeriesAction(action,id){
     const item=data.series[index];
     if(!confirm(`Delete "${item.name}" from Series List and favorites? It will remain in your independent Watchlist.`))return;
     data.series.splice(index,1);
-    data.topList=data.topList.filter(seriesId=>seriesId!==id);
+    data.topList=data.topList.filter(f=>!(f.source==="series"&&f.itemId===id));
   }
   if(action==="up")moveItem(data.series,index,-1);
   if(action==="down")moveItem(data.series,index,1);
@@ -1246,18 +1251,11 @@ function handleWatchAction(action,id){
 }
 
 function handleTopAction(action,id){
-  const index=data.topList.indexOf(id);
-  if(index<0)return;
-  if(action==="edit"){openEdit("series",id);return;}
-  if(action==="remove"){
-    const item=findSeries(id);
-    data.topList.splice(index,1);
-    toast(item?`Removed "${item.name}" from favorites.`:"Removed from favorites.");
-  }
+  const index=data.topList.findIndex(f=>f.id===id);if(index<0)return;
+  if(action==="remove"){const item=resolveFavorite(data.topList[index]);data.topList.splice(index,1);favoritePickerSelection.clear();toast(item?`Removed "${item.name}" from favorites.`:"Removed from favorites.");}
   if(action==="up")moveItem(data.topList,index,-1);
   if(action==="down")moveItem(data.topList,index,1);
-  if(!save())return;
-  render();
+  if(!save())return;render();
 }
 
 function handlePrivateAction(key,action,id){
@@ -1276,7 +1274,7 @@ function showPage(pageId,title){
   document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===pageId));
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   const page=document.getElementById(pageId);if(page)page.classList.add("active");
-  document.getElementById("pageTitle").textContent=title||({dashboard:"Dashboard",series:"My List",customListDetail:"My List",watchlist:"Watchlist",top:"Favorite Series",amirWatched:"Series I've Watched",amirWant:"Watchlist",telegram:"Telegram Channel",deleteData:"Delete Data",omdbSettings:"OMDb API Settings"})[pageId]||"My List";
+  document.getElementById("pageTitle").textContent=title||({dashboard:"Dashboard",series:"My List",customListDetail:"My List",watchlist:"Watchlist",top:"Favorites",amirWatched:"Series I've Watched",amirWant:"Watchlist",telegram:"Telegram Channel",deleteData:"Delete Data",omdbSettings:"OMDb API Settings"})[pageId]||"My List";
   closeSidebar();
 }
 document.querySelectorAll(".nav button").forEach(btn=>btn.addEventListener("click",()=>showPage(btn.dataset.page)));
@@ -1358,16 +1356,19 @@ document.getElementById("topList").addEventListener("click",e=>{
   if(btn)handleTopAction(btn.dataset.action,btn.dataset.id);
 });
 
-/* Favorites: only Series List entries are eligible */
+/* Favorites picker: search and multi-select from My List and every custom collection. */
+document.getElementById("topPickerSearchBtn").onclick=()=>{
+  const q=document.getElementById("topPickerSearch").value.trim();
+  if(!q){favoritePickerSearchActive=false;renderFavoritePicker();return toast("Enter a title to search your lists.");}
+  favoritePickerSearchActive=true;renderFavoritePicker();
+};
+document.getElementById("topPickerSearch").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();document.getElementById("topPickerSearchBtn").click();}});
+document.getElementById("topPickerSearch").addEventListener("input",()=>{if(favoritePickerSearchActive)renderFavoritePicker();});
+document.getElementById("topPickerResults").addEventListener("change",e=>{const box=e.target.closest("[data-favorite-pick]");if(!box)return;box.checked?favoritePickerSelection.add(box.dataset.favoritePick):favoritePickerSelection.delete(box.dataset.favoritePick);renderFavoritePicker();});
 document.getElementById("topAdd").onclick=()=>{
-  const id=document.getElementById("topSelect").value;
-  if(!id)return toast("Select a series first.");
-  if(!findSeries(id))return toast("This series is not available in your current series collection.");
-  if(data.topList.includes(id))return toast("This series is already in favorites.");
-  data.topList.push(id);
-  if(!save())return;
-  render();
-  toast("Added to favorites.");
+  if(!favoritePickerSelection.size)return toast("Search and select at least one movie or series.");
+  let added=0;for(const key of favoritePickerSelection){const [source,listId,itemId]=key.split("|");if(favoriteExists(source,listId,itemId))continue;const item=source==="series"?findSeries(itemId):data.customLists.find(l=>l.id===listId)?.items.find(x=>x.id===itemId);if(item){data.topList.push({id:uid(),source,listId,itemId});added++;}}
+  favoritePickerSelection.clear();if(!save())return;render();toast(`${added} item(s) added to Favorites.`);
 };
 
 /* TXT Export */
@@ -1385,7 +1386,7 @@ function exportTXT(){
     lines.push(["WATCH",s.id,encodeURIComponent(s.name),s.year,s.status,s.rating,i+1].join("\t"));
   });
 
-  data.topList.forEach((id,i)=>{lines.push(["TOP",id,"","","","",i+1].join("\t"));});
+  data.topList.forEach((fav,i)=>{lines.push(["TOP",fav.source==="series"?fav.itemId:`custom:${fav.listId}:${fav.itemId}`,"","","","",i+1].join("\t"));});
   data.amirWatched.forEach((item,i)=>lines.push(["AMIR_WATCHED",item.id,encodeURIComponent(item.name),item.year,item.status,item.rating,i+1,item.episodesWatched??"",item.episodeMinutes??""].join("\t")));
   data.amirWant.forEach((item,i)=>lines.push(["AMIR_WANT",item.id,encodeURIComponent(item.name),item.year,item.status,item.rating,i+1].join("\t")));
 
@@ -1479,7 +1480,7 @@ function importTXT(text){
   data={
     series,
     watchlist:finalWatch,
-    topList:[...new Set(top)].filter(id=>seriesIds.has(id)),
+    topList:[...new Set(top)].filter(id=>seriesIds.has(id)).map(itemId=>({id:uid(),source:"series",listId:"",itemId})),
     amirWatched,amirWant,customLists:data.customLists||[],
     telegramUrl:"https://t.me/silvertv24"
   };
@@ -1509,6 +1510,16 @@ document.getElementById("resetBtn").onclick=()=>{
   if(!secondConfirm)return;
 
   data=cloneDefault();
+  // Delete OMDb API credentials and cached poster data as part of Delete All Data.
+  omdbApiKey="";
+  posterCache={};
+  posterRequests.clear();
+  try{localStorage.removeItem(OMDB_KEY_STORAGE);localStorage.removeItem(POSTER_CACHE_STORAGE);}catch(error){console.warn("Could not clear OMDb local data:",error);}
+  if(omdbKeyInput){omdbKeyInput.value="";omdbKeyInput.disabled=true;omdbKeyInput.type="password";}
+  if(omdbStatus)omdbStatus.textContent="";
+  const revealButton=document.getElementById("omdbRevealBtn");if(revealButton)revealButton.textContent="Show";
+  favoritePickerSelection.clear();favoritePickerSearchActive=false;
+  const pickerSearch=document.getElementById("topPickerSearch");if(pickerSearch)pickerSearch.value="";
   Object.keys(editModes).forEach(key=>editModes[key]=false);
   Object.keys(privateEditUnlocked).forEach(key=>privateEditUnlocked[key]=false);
   document.getElementById("sortSelect").value="manual";
@@ -1528,7 +1539,7 @@ const selectedItems={series:new Set(),watchlist:new Set(),topList:new Set(),amir
 function getListItems(key){
   if(key==="series")return data.series;
   if(key==="watchlist")return data.watchlist;
-  if(key==="topList")return data.topList.map(findSeries).filter(Boolean);
+  if(key==="topList")return data.topList.map(resolveFavorite).filter(Boolean);
   return getListByKey(key);
 }
 function renderSelectionCounts(){
@@ -1552,20 +1563,20 @@ function applyBulk(key,kind,value){
   if((key==="amirWatched"||key==="amirWant")&&(!privateEditUnlocked[key]||!editModes[key]))return toast("Enter the password and enable Edit mode first.");
   const previousData=JSON.parse(JSON.stringify(data));
   const ids=selectedTargets(key);if(!ids.length)return toast("Select at least one item first.");
-  const list=key==="series"?data.series:key==="watchlist"?data.watchlist:(key==="topList"?data.series:getListByKey(key));
+  const list=key==="series"?data.series:key==="watchlist"?data.watchlist:(key==="topList"?data.topList.map(resolveFavorite).filter(Boolean):getListByKey(key));
   const targets=list.filter(x=>ids.includes(x.id));if(!targets.length)return toast("No selected items found.");
   if(kind==="delete"){
     const message=key==="topList"?`Remove ${ids.length} selected favorite(s)?`:`Delete ${ids.length} selected item(s)?`;
     if(!confirm(message))return;
-    if(key==="topList")data.topList=data.topList.filter(id=>!ids.includes(id));
+    if(key==="topList")data.topList=data.topList.filter(f=>!ids.includes(f.id));
     else if(key==="amirWatched"||key==="amirWant")data[key]=data[key].filter(x=>!ids.includes(x.id));
-    else if(key==="series"){data.series=data.series.filter(x=>!ids.includes(x.id));data.topList=data.topList.filter(id=>!ids.includes(id));}
+    else if(key==="series"){data.series=data.series.filter(x=>!ids.includes(x.id));data.topList=data.topList.filter(f=>!(f.source==="series"&&ids.includes(f.itemId)));}
     else data.watchlist=data.watchlist.filter(x=>!ids.includes(x.id));
   }else{
     if(kind==="year"&&value!==""&&(!Number.isInteger(+value)||+value<1900||+value>2100))return toast("Enter a valid year between 1900 and 2100.");
     if(kind==="rating"&&value!==""&&(!Number.isFinite(+value)||+value<0||+value>10))return toast("Rating must be between 0 and 10.");
     if(kind==="status"&&!value)return toast("Choose a status first.");
-    targets.forEach(item=>{if(kind==="year")item.year=value;if(kind==="rating")item.rating=value;if(kind==="status")item.status=value;});
+    targets.forEach(item=>{const target=key==="topList"?favoriteSourceItem(data.topList.find(f=>f.id===item.id)):item;if(!target)return;if(kind==="year")target.year=value;if(kind==="rating")target.rating=value;if(kind==="status")target.status=value;});
   }
   if(!save()){data=previousData;return;}
   selectedItems[key].clear();render();toast(kind==="delete"?"Selected items removed.":"Selected items updated.");
@@ -1597,7 +1608,9 @@ document.getElementById("fullBackupFile").onchange=async e=>{
       const series=parsed.series.map(normalizeItem).filter(Boolean);const ids=new Set(series.map(x=>x.id));
       const watchlist=parsed.watchlist.map(normalizeItem).filter(Boolean);
       const uniqueWatch=[];const names=new Set();watchlist.forEach(x=>{const k=x.name.toLowerCase();if(!names.has(k)){names.add(k);uniqueWatch.push(x);}});
-      data={series,watchlist:uniqueWatch,topList:[...new Set(parsed.topList.map(String))].filter(id=>ids.has(id)),amirWatched:Array.isArray(parsed.amirWatched)?parsed.amirWatched.map(normalizeItem).filter(Boolean):[],amirWant:Array.isArray(parsed.amirWant)?parsed.amirWant.map(normalizeItem).filter(Boolean):[],customLists:Array.isArray(parsed.customLists)?parsed.customLists.map(list=>({id:String(list.id||uid()),name:cleanName(list.name),type:list.type==="movie"?"movie":"series",items:Array.isArray(list.items)?list.items.map(normalizeItem).filter(Boolean):[]})).filter(list=>list.name):data.customLists,telegramUrl:"https://t.me/silvertv24"};
+      const restoredCustomLists=Array.isArray(parsed.customLists)?parsed.customLists.map(list=>({id:String(list.id||uid()),name:cleanName(list.name),type:list.type==="movie"?"movie":"series",items:Array.isArray(list.items)?list.items.map(normalizeItem).filter(Boolean):[]})).filter(list=>list.name):data.customLists;
+      const restoredFavorites=parsed.topList.map(entry=>entry&&typeof entry==="object"?entry:{id:uid(),source:"series",listId:"",itemId:String(entry)}).filter(f=>f.source==="series"?ids.has(f.itemId):f.source==="custom"&&restoredCustomLists.some(list=>list.id===f.listId&&list.items.some(item=>item.id===f.itemId)));
+      data={series,watchlist:uniqueWatch,topList:restoredFavorites,amirWatched:Array.isArray(parsed.amirWatched)?parsed.amirWatched.map(normalizeItem).filter(Boolean):[],amirWant:Array.isArray(parsed.amirWant)?parsed.amirWant.map(normalizeItem).filter(Boolean):[],customLists:restoredCustomLists,telegramUrl:"https://t.me/silvertv24"};
       if(!save())return;Object.keys(selectedItems).forEach(k=>selectedItems[k].clear());render();toast("Complete backup restored.");
     }
   }catch(err){console.error(err);toast("Invalid or unreadable backup file.");}
@@ -1608,7 +1621,7 @@ document.getElementById("fullBackupFile").onchange=async e=>{
 function listExportData(key){
   if(key==="series")return data.series;
   if(key==="watchlist")return data.watchlist;
-  if(key==="topList")return data.topList.map(findSeries).filter(Boolean);
+  if(key==="topList")return data.topList.map(resolveFavorite).filter(Boolean);
   if(key.startsWith("custom:")){const list=data.customLists.find(x=>x.id===key.slice(7));return list?.items||[];}
   return getListByKey(key);
 }
@@ -1817,7 +1830,7 @@ document.getElementById("customItemsList").addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;const list=currentCustomList();if(!list)return;
   const id=b.dataset.customEdit||b.dataset.customRemove||b.dataset.customUp||b.dataset.customDown;const index=list.items.findIndex(x=>x.id===id);if(index<0)return;
   if(b.dataset.customEdit){openCustomItemModal(list.items[index]);return;}
-  if(b.dataset.customRemove){if(!confirm(`Remove "${list.items[index].name}" from this list?`))return;list.items.splice(index,1);}
+  if(b.dataset.customRemove){if(!confirm(`Remove "${list.items[index].name}" from this list?`))return;const removedId=list.items[index].id;list.items.splice(index,1);data.topList=data.topList.filter(f=>!(f.source==="custom"&&f.listId===list.id&&f.itemId===removedId));}
   if(b.dataset.customUp&&index>0)[list.items[index-1],list.items[index]]=[list.items[index],list.items[index-1]];
   if(b.dataset.customDown&&index<list.items.length-1)[list.items[index+1],list.items[index]]=[list.items[index],list.items[index+1]];
   if(!save())return;renderCustomItems();renderCustomLists();
@@ -1825,7 +1838,7 @@ document.getElementById("customItemsList").addEventListener("click",e=>{
 document.getElementById("customListsGrid").addEventListener("click",e=>{
   const rename=e.target.closest("[data-rename-custom-list]");const del=e.target.closest("[data-delete-custom-list]");const card=e.target.closest("[data-open-custom-list]");
   if(rename){e.stopPropagation();const list=data.customLists.find(x=>x.id===rename.dataset.renameCustomList);if(!list)return;const next=cleanName(prompt("Enter a new list name:",list.name));if(!next)return;if(data.customLists.some(x=>x.id!==list.id&&x.name.toLowerCase()===next.toLowerCase()))return toast("That list name already exists.");list.name=next;if(save())renderCustomLists();return;}
-  if(del){e.stopPropagation();const list=data.customLists.find(x=>x.id===del.dataset.deleteCustomList);if(!list)return;if(!confirm(`Delete "${list.name}" and all its items?`))return;data.customLists=data.customLists.filter(x=>x.id!==list.id);if(!save())return;renderCustomLists();toast("List deleted.");return;}
+  if(del){e.stopPropagation();const list=data.customLists.find(x=>x.id===del.dataset.deleteCustomList);if(!list)return;if(!confirm(`Delete "${list.name}" and all its items?`))return;data.customLists=data.customLists.filter(x=>x.id!==list.id);data.topList=data.topList.filter(f=>!(f.source==="custom"&&f.listId===list.id));if(!save())return;renderCustomLists();toast("List deleted.");return;}
   if(card)openCustomList(card.dataset.openCustomList);
 });
 
@@ -1847,17 +1860,6 @@ document.getElementById("omdbSaveBtn").onclick=()=>{
   posterCache={};try{localStorage.removeItem(POSTER_CACHE_STORAGE);}catch{}
   render();
   setTimeout(()=>{omdbStatus.textContent="Poster lookup is enabled. Results are cached in this browser.";},1200);
-};
-
-/* Share the website URL with social-preview metadata. */
-document.getElementById("shareWebsiteBtn").onclick=async()=>{
-  const url=window.location.href;
-  const shareData={title:"SILVER TV | Series Manager",text:"Explore SILVER TV — manage your series collection, watchlist and favorite shows.",url};
-  try{
-    if(navigator.share)await navigator.share(shareData);
-    else if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(url);toast("Website link copied.");}
-    else{const area=document.createElement("textarea");area.value=url;document.body.appendChild(area);area.select();document.execCommand("copy");area.remove();toast("Website link copied.");}
-  }catch(error){if(error.name!=="AbortError")toast("Could not share the website link.");}
 };
 
 /* Persistent dark / light theme */
