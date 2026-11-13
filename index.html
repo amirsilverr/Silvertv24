@@ -5,6 +5,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SILVER TV | Series Manager</title>
+<meta name="description" content="SILVER TV — a personal series collection manager. Organize your shows, watchlist and favorite series in one modern dashboard.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SILVER TV | Series Manager">
+<meta property="og:description" content="Explore the SILVER TV series collection: track shows, manage your watchlist and keep your favorite series together.">
+<meta property="og:image" content="https://user55191.na.imgto.link/public/20261112/af46ebb8909a3ce346703d9f-1000013733.avif">
+<meta property="og:image:alt" content="SILVER TV logo">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SILVER TV | Series Manager">
+<meta name="twitter:description" content="A modern home for your series collection, watchlist and favorite shows.">
+<meta name="twitter:image" content="https://user55191.na.imgto.link/public/20261112/af46ebb8909a3ce346703d9f-1000013733.avif">
 <link rel="icon" type="image/avif" href="https://user55191.na.imgto.link/public/20261112/af46ebb8909a3ce346703d9f-1000013733.avif">
 <style>
 :root{--bg:#0b0e14;--panel:#131925;--panel2:#1a2230;--text:#edf1f7;--muted:#8995a8;--accent:#8b7cff;--border:#273144;--green:#39c98a;--red:#f16b78}
@@ -23,7 +33,7 @@ button{cursor:pointer}
 .nav button.active{box-shadow:inset 3px 0 var(--accent)}
 .nav button[data-page="deleteData"]{margin-top:24px;background:#2b1d25;color:#e99aa5;border:1px solid #4b2c37}
 .nav button[data-page="deleteData"]:hover{background:#3a222c;color:#ffb2bc;border-color:#70404e}
-.sidebar-footer{margin-top:24px;padding:15px 0 4px;background:#101620;color:var(--muted);font-size:11px}
+.sidebar-footer{position:sticky;bottom:0;margin-top:24px;padding:15px 0 4px;background:#101620;color:var(--muted);font-size:11px}
 .main{margin-left:245px;padding:30px;max-width:1600px}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;gap:15px}
 .topbar h1{font-size:25px;margin:0}
@@ -150,14 +160,14 @@ textarea{width:100%;min-height:150px;resize:vertical}
 .icon-btn[data-action="remove"]:hover{background:#512936;border-color:#a64f64}
 .icon-btn[data-action="up"],.icon-btn[data-action="down"]{background:#1c3041;border-color:#315a78;color:#8bd0ff}
 .icon-btn[data-action="up"]:hover,.icon-btn[data-action="down"]:hover{background:#25445d;border-color:#4784ad}
-#seriesEditToggle,#watchEditToggle,#topEditToggle{background:#292342;border-color:#55488d;color:#c9bdff}
-#seriesEditToggle.editing,#watchEditToggle.editing,#topEditToggle.editing{background:#18392f;border-color:#32785d;color:#8ce0b5}
+#seriesEditToggle,#watchEditToggle,#topEditToggle,#customEditToggle{background:#292342;border-color:#55488d;color:#c9bdff}
+#seriesEditToggle.editing,#watchEditToggle.editing,#topEditToggle.editing,#customEditToggle.editing{background:#18392f;border-color:#32785d;color:#8ce0b5}
 .list-tools [data-backup]{background:#18372f;border-color:#2e7258;color:#91e3bd}
 .list-tools [data-copy]{background:#1b3044;border-color:#315d82;color:#91ceff}
 .list-tools [data-share]{background:#302442;border-color:#674b83;color:#d8b5ff}
 .selection-tools [data-bulk-delete]{background:#3a222b;border-color:#75404e;color:#ff9eaa}
-.selection-tools [data-apply-year],.selection-tools [data-apply-rating]{background:#1b3044;border-color:#315d82;color:#91ceff}
-.selection-tools [data-apply-status]{background:#18372f;border-color:#2e7258;color:#91e3bd}
+.selection-tools [data-apply-year],.selection-tools [data-apply-rating],#customApplyYear,#customApplyRating{background:#1b3044;border-color:#315d82;color:#91ceff}
+.selection-tools [data-apply-status],#customApplyStatus{background:#18372f;border-color:#2e7258;color:#91e3bd}
 .list-tools .btn,.selection-tools .btn,.panel-head .btn{transition:filter .18s,transform .18s}
 .list-tools .btn:hover,.selection-tools .btn:hover,.panel-head .btn:hover{filter:brightness(1.18);transform:translateY(-1px)}
 .app-credit{margin:34px 0 8px;padding:17px 10px 5px;border-top:1px solid var(--border);text-align:center;color:#738096;font-size:11px;letter-spacing:1.6px;font-weight:650}
@@ -271,23 +281,86 @@ body.light .empty{border-color:#cbd5e1}
   .theme-toggle{flex:0 0 52px;width:52px;min-width:52px;margin-left:0;padding:3px;min-height:29px;height:29px}
 }
 
+
+/* OMDb poster thumbnails and API settings */
+.series-card{grid-template-columns:24px 38px 48px minmax(0,1fr) auto}
+.poster-wrap{width:42px;height:58px;border-radius:7px;overflow:hidden;background:#20283a;border:1px solid var(--border);display:grid;place-items:center;position:relative}
+.poster-thumb{width:100%;height:100%;object-fit:cover;display:block}
+.poster-placeholder{font-size:17px;color:var(--muted)}
+.series-card .series-info{min-width:0}
+.api-key-row{display:flex;gap:8px;align-items:stretch;flex-wrap:wrap}
+.api-key-row input{flex:1;min-width:180px}
+.api-help{font-size:12px;line-height:1.8;color:var(--muted)}
+.api-help a{color:var(--accent)}
+.api-status{font-size:12px;color:var(--green);margin-top:8px;min-height:16px}
+.website-share-row{display:flex;justify-content:flex-end;margin:12px 0}
+@media(max-width:700px){.series-card{grid-template-columns:22px 34px 42px minmax(0,1fr)}.poster-wrap{width:38px;height:54px}.series-card .actions{grid-column:4}.series-card > :nth-child(4){grid-column:4;min-width:0}}
+/* Amir's two archive pages are read-only: only search, sorting and the lists remain visible. */
+#amirWatched .watched-summary,#amirWatched .private-edit,#amirWant .private-edit,
+#amirWatched .edit-hint,#amirWant .edit-hint,
+#amirWatched .list-tools,#amirWant .list-tools,
+#amirWatched .selection-tools,#amirWant .selection-tools,
+#amirWatched #amirWatchedStatusFilter,#amirWant #amirWantStatusFilter,
+#amirWatched #amirWatchedSortReset,#amirWant #amirWantSortReset,
+#amirWatched #amirWatchedAdd,#amirWant #amirWantAdd,
+#amirWatched #amirWatchedBulkOpen,#amirWant #amirWantBulkOpen{display:none!important}
+
+/* My List collections */
+.create-list-box{padding:16px;background:var(--panel2);border:1px solid var(--border);border-radius:13px;margin-top:16px}
+.create-list-box h3{font-size:14px;margin:0 0 8px}
+.custom-lists-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.custom-list-card{padding:16px;background:var(--panel2);border:1px solid var(--border);border-radius:13px;cursor:pointer;transition:transform .18s,border-color .18s,background .18s;min-width:0}
+.custom-list-card:hover{transform:translateY(-2px);border-color:var(--accent)}
+.custom-list-card h3{font-size:15px;margin:0 0 9px;overflow-wrap:anywhere}
+.custom-list-card p{font-size:11px;color:var(--muted);margin:0}
+.custom-list-card .custom-list-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:8px}
+.custom-list-card .custom-list-actions{display:flex;gap:6px}
+
+/* Reliable title layout for both movie and series collection rows. */
+.custom-detail-head-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+#customItemsList .series-card{grid-template-columns:24px 38px minmax(0,1fr) auto!important;column-gap:12px;align-items:center;min-width:0}
+#customItemsList .series-card> :nth-child(3){grid-column:auto!important;min-width:0;width:auto}
+#customItemsList .series-card .series-name{display:flex;align-items:center;gap:9px;min-width:0;white-space:normal;overflow-wrap:anywhere;word-break:normal;line-height:1.45}
+#customItemsList .series-card .series-name span{min-width:0;overflow-wrap:anywhere}
+#customItemsList .series-card .actions{grid-column:auto!important;display:flex;justify-content:flex-end;flex-wrap:wrap;max-width:100%}
+#customItemsList .custom-item-select{width:17px;height:17px;accent-color:var(--accent)}
+#customSelectionTools{display:none;margin:0 0 12px;align-items:center;gap:8px;flex-wrap:wrap}
+#customSelectionTools.visible{display:flex}
+@media(max-width:700px){
+ #customItemsList .series-card{grid-template-columns:22px 34px minmax(0,1fr)!important;column-gap:8px;padding:11px 10px}
+ #customItemsList .series-card> :nth-child(3){grid-column:3!important;min-width:0;width:auto}
+ #customItemsList .series-card .actions{grid-column:3!important;justify-content:flex-start;margin-top:8px}
+ #customItemsList .series-card .series-name{align-items:flex-start}
+ #customItemsList .series-card .meta{gap:6px;flex-wrap:wrap}
+}
+@media(max-width:420px){#customItemsList .series-card{column-gap:6px;padding:10px 8px}#customItemsList .series-card .actions .icon-btn{padding:6px 8px}}
+.omdb-results{display:flex;flex-direction:column;gap:6px;max-height:230px;overflow:auto}
+.omdb-result{display:flex;align-items:center;gap:10px;text-align:left;width:100%;padding:8px;background:var(--panel2);border:1px solid var(--border);border-radius:9px;color:var(--text)}
+.omdb-result:hover{border-color:var(--accent)}
+.omdb-result img{width:35px;height:48px;object-fit:cover;border-radius:4px;background:#111}
+.omdb-result span{font-size:12px;line-height:1.5}
+.omdb-result small{display:block;color:var(--muted)}
+.omdb-results:empty{display:none}
+@media(max-width:600px){.custom-lists-grid{grid-template-columns:1fr}.create-list-box .toolbar>*{width:100%}}
+
 </style>
 </head>
 <body>
 
 <aside class="sidebar" id="sidebar">
   <div class="brand">SILVER<span>TV24</span></div>
-  <div class="version">SERIES MANAGER · VERSION 5.3</div>
+  <div class="version">SERIES MANAGER · VERSION 5.6</div>
   <div class="nav-label">MAIN MENU</div>
   <nav class="nav">
     <button class="active" data-page="dashboard">◫ Dashboard</button>
-    <button data-page="series">▤ Series List</button>
+    <button data-page="series">▤ My List</button>
     <button data-page="watchlist">◷ Watchlist</button>
     <button data-page="top">★ Favorite Series</button>
     <div class="nav-label">AMIR'S SERIES</div>
     <button data-page="amirWatched">✓ Series I've Watched</button>
     <button data-page="amirWant">＋ Watchlist</button>
     <button data-page="telegram">➤ Telegram Channel</button>
+    <button data-page="omdbSettings">▣ OMDb API Settings</button>
     <button data-page="deleteData">⌫ Delete Data</button>
   </nav>
   <div class="sidebar-footer">CREATED BY AMIR SILVER</div>
@@ -313,6 +386,7 @@ body.light .empty{border-color:#cbd5e1}
       <p>YOUR SERIES COLLECTION</p>
     </div>
   </div>
+  <div class="website-share-row"><button class="btn" id="shareWebsiteBtn">↗ Share Website</button></div>
   <div class="grid" id="stats"></div>
   <div class="two-col">
     <div class="panel"><div class="panel-head"><h2>Recently Added</h2></div><div id="recent"></div></div>
@@ -323,43 +397,39 @@ body.light .empty{border-color:#cbd5e1}
 </section>
 
 <section class="page" id="series">
-  <div class="panel">
-    <div class="panel-head">
-      <h2>All Series</h2>
-      <div style="display:flex;align-items:center;gap:8px">
-        <span class="muted" id="seriesCount">0 series</span>
-        <button class="btn small" id="seriesEditToggle">Edit</button>
+  <div class="panel mylist-hub">
+    <div class="panel-head"><div><h2>My List</h2><p class="muted" style="font-size:12px;margin:7px 0 0">Create separate collections for your movies and series.</p></div><span class="badge" id="customListCount">0 Lists</span></div>
+    <div class="create-list-box">
+      <h3>＋ Create a New List</h3>
+      <div class="toolbar">
+        <input id="newCustomListName" class="search" placeholder="Enter list name..." maxlength="50">
+        <select id="newCustomListType"><option value="series">Series</option><option value="movie">Movies</option></select>
+        <button class="btn primary" id="createCustomListBtn">Create List</button>
       </div>
     </div>
-    <p class="edit-hint" id="seriesEditHint" hidden>Edit mode: rename, delete or move series.</p>
-    <div class="toolbar">
-      <input class="search" id="seriesSearch" placeholder="Search series...">
-      <select id="statusFilter">
-        <option value="all">All Status</option>
-        <option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option>
-      </select>
-      <button class="btn" id="sortReset">↺ Manual Order</button>
-      <button class="btn primary" id="addOne">＋ Add Series</button>
-      <button class="btn" id="bulkOpen">＋ Bulk Add</button>
-    </div>
-    <div class="toolbar" style="margin-top:-7px">
-      <span class="sort-label">SORT BY</span>
-      <select id="sortSelect" class="search">
-        <option value="manual">Manual Order</option>
-        <option value="az">Name (A–Z)</option>
-        <option value="za">Name (Z–A)</option>
-        <option value="oldest">Release Year (Oldest First)</option>
-        <option value="newest">Release Year (Newest First)</option>
-        <option value="rating">Rating (Highest First)</option>
-        <option value="status">Watch Status</option>
-      </select>
-    </div>
-    <div class="list-tools"><button class="btn small" data-backup="series">Backup List</button><button class="btn small" data-copy="series">Copy List</button><button class="btn small" data-share="series">Share List</button></div>
-    <div class="selection-tools" data-selection-tools="series"><label><input class="select-box" type="checkbox" data-select-all="series"> Select all</label><span class="muted" data-selected-count="series">0 selected</span><button class="btn small danger" data-bulk-delete="series">Delete</button><input type="number" min="1900" max="2100" placeholder="Year" data-bulk-year="series"><button class="btn small" data-apply-year="series">Set year</button><input type="number" min="0" max="10" step="0.01" placeholder="Rating" data-bulk-rating="series"><button class="btn small" data-apply-rating="series">Set rating</button><select data-bulk-status="series"><option value="">Set status…</option><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select><button class="btn small" data-apply-status="series">Apply</button></div>
-    <div class="series-list" id="seriesList"></div>
+    <div class="panel-head" style="margin-top:25px"><h2>Your Lists</h2></div>
+    <div class="toolbar"><input id="customListSearch" class="search" placeholder="Search list names..."></div>
+    <div id="customListsGrid" class="custom-lists-grid"></div>
+  </div>
+  <div hidden aria-hidden="true">
+    <span id="seriesCount"></span><button id="seriesEditToggle"></button><p id="seriesEditHint"></p>
+    <input id="seriesSearch"><select id="statusFilter"><option value="all">All Status</option><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select>
+    <button id="sortReset"></button><button id="addOne"></button><button id="bulkOpen"></button>
+    <select id="sortSelect"><option value="manual">Manual</option></select><div id="seriesList"></div>
+    <div class="selection-tools" data-selection-tools="series"></div>
   </div>
 </section>
 
+<section class="page" id="customListDetail">
+  <div class="panel">
+    <div class="panel-head"><div><button class="btn small" id="backToCustomLists">← My Lists</button><h2 id="customDetailTitle" style="margin-top:12px;overflow-wrap:anywhere">My List</h2><p class="muted" id="customDetailSubtitle" style="font-size:12px;margin:6px 0 0"></p></div><div class="custom-detail-head-actions"><span class="badge" id="customDetailCount">0 items</span><button class="btn small" id="customEditToggle">Edit</button></div></div>
+    <p class="edit-hint" id="customEditHint" hidden>Edit mode: select, rename, move or remove items.</p>
+    <div class="toolbar"><input id="customItemSearch" class="search" placeholder="Search titles..."><select id="customItemSort"><option value="manual">Manual Order</option><option value="az">Name (A–Z)</option><option value="za">Name (Z–A)</option><option value="oldest">Release Year (Oldest First)</option><option value="newest">Release Year (Newest First)</option><option value="rating">Rating (Highest First)</option><option value="status">Watch Status</option></select><button class="btn primary" id="customAddOne">＋ Add One</button><button class="btn" id="customBulkOpen">＋ Add Multiple</button></div>
+    <div class="list-tools"><button class="btn small" id="customBackupBtn" data-backup="custom:">Backup List</button><button class="btn small" id="customCopyBtn" data-copy="custom:">Copy List</button><button class="btn small" id="customShareBtn" data-share="custom:">Share List</button></div>
+    <div class="selection-tools" id="customSelectionTools"><label><input class="select-box" type="checkbox" id="customSelectAll"> Select all</label><span class="muted" id="customSelectedCount">0 selected</span><button class="btn small danger" id="customBulkDelete">Delete selected</button><input type="number" min="1900" max="2100" placeholder="Year" id="customBulkYear"><button class="btn small" id="customApplyYear">Set year</button><input type="number" min="0" max="10" step="0.01" placeholder="Rating" id="customBulkRating"><button class="btn small" id="customApplyRating">Set rating</button><select id="customBulkStatus"><option value="">Set status…</option><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select><button class="btn small" id="customApplyStatus">Apply</button></div>
+    <div class="series-list" id="customItemsList"></div>
+  </div>
+</section>
 <section class="page" id="watchlist">
   <div class="panel">
     <div class="panel-head">
@@ -408,47 +478,48 @@ body.light .empty{border-color:#cbd5e1}
         <button class="btn small" id="topEditToggle">Edit</button>
       </div>
     </div>
-    <p class="muted" style="font-size:12px">Only series from your Series List can be added here.</p>
+    <p class="muted" style="font-size:12px">Favorite Series are selected from your existing series collection.</p>
     <p class="edit-hint" id="topEditHint" hidden>Edit mode: edit details, remove or move favorites.</p>
+    <div class="toolbar">
+      <input class="search" id="topSearch" placeholder="Search favorite series...">
+      <select id="topSortSelect" class="search">
+        <option value="manual">Manual Order</option><option value="az">Name (A–Z)</option><option value="za">Name (Z–A)</option>
+        <option value="oldest">Release Year (Oldest First)</option><option value="newest">Release Year (Newest First)</option>
+        <option value="rating">Rating (Highest First)</option><option value="status">Watch Status</option>
+      </select>
+    </div>
     <div class="toolbar">
       <select id="topSelect" class="search"><option value="">Select a series...</option></select>
       <button class="btn primary" id="topAdd">＋ Add Favorite</button>
     </div>
     <div class="list-tools"><button class="btn small" data-backup="topList">Backup List</button><button class="btn small" data-copy="topList">Copy List</button><button class="btn small" data-share="topList">Share List</button></div>
-    <div class="selection-tools" data-selection-tools="topList"><label><input class="select-box" type="checkbox" data-select-all="topList"> Select all</label><span class="muted" data-selected-count="topList">0 selected</span><button class="btn small danger" data-bulk-delete="topList">Remove</button><input type="number" min="1900" max="2100" placeholder="Year" data-bulk-year="topList"><button class="btn small" data-apply-year="topList">Set year</button><input type="number" min="0" max="10" step="0.01" placeholder="Rating" data-bulk-rating="topList"><button class="btn small" data-apply-rating="topList">Set rating</button><select data-bulk-status="topList"><option value="">Set status…</option><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select><button class="btn small" data-apply-status="topList">Apply</button></div>
+    <div class="selection-tools" data-selection-tools="topList"><label><input class="select-box" type="checkbox" data-select-all="topList"> Select all</label><span class="muted" data-selected-count="topList">0 selected</span><button class="btn small danger" data-bulk-delete="topList">Remove</button><input type="number" min="0" max="10" step="0.01" placeholder="Rating" data-bulk-rating="topList"><button class="btn small" data-apply-rating="topList">Set rating</button></div>
     <div class="series-list" id="topList"></div>
   </div>
 </section>
 
 
 <section class="page" id="amirWatched">
-  <div class="stats-group watched-summary">
-    <h2 class="stats-group-title">WATCHING STATISTICS</h2>
-    <div class="status-stats watched-stats">
-      <div class="stat"><small>Total Watch Time</small><strong id="amirWatchedHours">0 h</strong><div class="hint">Episodes × average episode length ÷ 60</div></div>
-      <div class="stat"><small>Watched Episodes</small><strong id="amirWatchedEpisodes">0</strong><div class="hint">Total recorded episodes</div></div>
-    </div>
-  </div>
   <div class="panel">
-    <div class="panel-head"><h2>Series I've Watched</h2><div style="display:flex;align-items:center;gap:8px"><span class="muted" id="amirWatchedCount">0 series</span><button class="btn small private-edit" id="amirWatchedEditToggle">Edit</button></div></div>
-    <p class="edit-hint" id="amirWatchedEditHint" hidden>Edit mode: rename, delete, reorder or update watched details.</p>
-    <div class="toolbar"><input class="search" id="amirWatchedSearch" placeholder="Search watched series..."><select id="amirWatchedStatusFilter"><option value="all">All Status</option><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select><button class="btn" id="amirWatchedSortReset">↺ Manual Order</button><button class="btn primary" id="amirWatchedAdd">＋ Add Series</button><button class="btn" id="amirWatchedBulkOpen">＋ Bulk Add</button></div>
-    <div class="toolbar" style="margin-top:-7px"><span class="sort-label">SORT BY</span><select id="amirWatchedSortSelect" class="search"><option value="manual">Manual Order</option><option value="az">Name (A–Z)</option><option value="za">Name (Z–A)</option><option value="oldest">Release Year (Oldest First)</option><option value="newest">Release Year (Newest First)</option><option value="rating">Rating (Highest First)</option><option value="status">Watch Status</option></select></div>
-    <div class="list-tools"><button class="btn small" data-backup="amirWatched">Backup List</button><button class="btn small" data-copy="amirWatched">Copy List</button><button class="btn small" data-share="amirWatched">Share List</button></div>
-    <div class="selection-tools" data-selection-tools="amirWatched"><label><input class="select-box" type="checkbox" data-select-all="amirWatched"> Select all</label><span class="muted" data-selected-count="amirWatched">0 selected</span><button class="btn small danger" data-bulk-delete="amirWatched">Delete</button><input type="number" min="1900" max="2100" placeholder="Year" data-bulk-year="amirWatched"><button class="btn small" data-apply-year="amirWatched">Set year</button><input type="number" min="0" max="10" step="0.01" placeholder="Rating" data-bulk-rating="amirWatched"><button class="btn small" data-apply-rating="amirWatched">Set rating</button><select data-bulk-status="amirWatched"><option value="">Set status…</option><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select><button class="btn small" data-apply-status="amirWatched">Apply</button></div>
+    <div class="panel-head"><h2>Series I've Watched</h2><span class="muted" id="amirWatchedCount">0 series</span></div>
+    <div class="toolbar">
+      <input class="search" id="amirWatchedSearch" placeholder="Search watched series...">
+      <select id="amirWatchedSortSelect" class="search"><option value="manual">Manual Order</option><option value="az">Name (A–Z)</option><option value="za">Name (Z–A)</option><option value="oldest">Release Year (Oldest First)</option><option value="newest">Release Year (Newest First)</option><option value="rating">Rating (Highest First)</option><option value="status">Watch Status</option></select>
+    </div>
     <div class="series-list" id="amirWatchedList"></div>
+    <div hidden><select id="amirWatchedStatusFilter"><option value="all">All Status</option></select><button id="amirWatchedSortReset"></button><button id="amirWatchedAdd"></button><button id="amirWatchedBulkOpen"></button><button id="amirWatchedEditToggle"></button><p id="amirWatchedEditHint"></p><div id="amirWatchedHours"></div><div id="amirWatchedEpisodes"></div><div data-selection-tools="amirWatched"></div></div>
   </div>
 </section>
 
 <section class="page" id="amirWant">
   <div class="panel">
-    <div class="panel-head"><h2>Watchlist</h2><div style="display:flex;align-items:center;gap:8px"><span class="muted" id="amirWantCount">0 series</span><button class="btn small private-edit" id="amirWantEditToggle">Edit</button></div></div>
-    <p class="edit-hint" id="amirWantEditHint" hidden>Edit mode: rename, delete or reorder series.</p>
-    <div class="toolbar"><input class="search" id="amirWantSearch" placeholder="Search series..."><select id="amirWantStatusFilter"><option value="all">All Status</option><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select><button class="btn" id="amirWantSortReset">↺ Manual Order</button><button class="btn primary" id="amirWantAdd">＋ Add Series</button><button class="btn" id="amirWantBulkOpen">＋ Bulk Add</button></div>
-    <div class="toolbar" style="margin-top:-7px"><span class="sort-label">SORT BY</span><select id="amirWantSortSelect" class="search"><option value="manual">Manual Order</option><option value="az">Name (A–Z)</option><option value="za">Name (Z–A)</option><option value="oldest">Release Year (Oldest First)</option><option value="newest">Release Year (Newest First)</option><option value="rating">Rating (Highest First)</option><option value="status">Watch Status</option></select></div>
-    <div class="list-tools"><button class="btn small" data-backup="amirWant">Backup List</button><button class="btn small" data-copy="amirWant">Copy List</button><button class="btn small" data-share="amirWant">Share List</button></div>
-    <div class="selection-tools" data-selection-tools="amirWant"><label><input class="select-box" type="checkbox" data-select-all="amirWant"> Select all</label><span class="muted" data-selected-count="amirWant">0 selected</span><button class="btn small danger" data-bulk-delete="amirWant">Delete</button><input type="number" min="1900" max="2100" placeholder="Year" data-bulk-year="amirWant"><button class="btn small" data-apply-year="amirWant">Set year</button><input type="number" min="0" max="10" step="0.01" placeholder="Rating" data-bulk-rating="amirWant"><button class="btn small" data-apply-rating="amirWant">Set rating</button><select data-bulk-status="amirWant"><option value="">Set status…</option><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select><button class="btn small" data-apply-status="amirWant">Apply</button></div>
+    <div class="panel-head"><h2>Amir's Watchlist</h2><span class="muted" id="amirWantCount">0 series</span></div>
+    <div class="toolbar">
+      <input class="search" id="amirWantSearch" placeholder="Search series...">
+      <select id="amirWantSortSelect" class="search"><option value="manual">Manual Order</option><option value="az">Name (A–Z)</option><option value="za">Name (Z–A)</option><option value="oldest">Release Year (Oldest First)</option><option value="newest">Release Year (Newest First)</option><option value="rating">Rating (Highest First)</option><option value="status">Watch Status</option></select>
+    </div>
     <div class="series-list" id="amirWantList"></div>
+    <div hidden><select id="amirWantStatusFilter"><option value="all">All Status</option></select><button id="amirWantSortReset"></button><button id="amirWantAdd"></button><button id="amirWantBulkOpen"></button><button id="amirWantEditToggle"></button><p id="amirWantEditHint"></p><div data-selection-tools="amirWant"></div></div>
   </div>
 </section>
 
@@ -462,12 +533,41 @@ body.light .empty{border-color:#cbd5e1}
   </div>
 </section>
 
+<section class="page" id="omdbSettings">
+  <div class="panel delete-card">
+    <div class="panel-head"><h2>OMDb API Settings</h2><span class="badge">Poster Database</span></div>
+    <p class="muted" style="font-size:13px;line-height:1.7">Add your OMDb API key to load series poster images beside titles throughout the lists.</p>
+    <div class="field">
+      <label for="omdbApiKey">API Key</label>
+      <div class="api-key-row">
+        <input id="omdbApiKey" type="password" placeholder="Enter your OMDb API key" autocomplete="off" disabled>
+        <button class="btn" id="omdbRevealBtn" type="button">Show</button>
+        <button class="btn" id="omdbEditBtn" type="button">Edit</button>
+        <button class="btn primary" id="omdbSaveBtn" type="button">Save</button>
+      </div>
+      <div class="api-status" id="omdbStatus" aria-live="polite"></div>
+    </div>
+    <div class="backup-panel">
+      <h3>How to get your free API key</h3>
+      <ol class="api-help">
+        <li>Open the <a href="https://www.omdbapi.com/apikey.aspx" target="_blank" rel="noopener noreferrer">OMDb API Key page</a>.</li>
+        <li>Select <strong>FREE! (1,000 daily limit)</strong>.</li>
+        <li>Enter your email, name and a short description of your project, then submit.</li>
+        <li>Open the email from OMDb and follow its activation link. Copy the API key from that email.</li>
+        <li>Return here, press <strong>Edit</strong>, paste the key and press <strong>Save</strong>.</li>
+      </ol>
+      <p class="api-help"><strong>Free plan limit:</strong> 1,000 requests per day. Poster lookup is cached in this browser to reduce repeat requests.</p>
+    </div>
+    <div class="delete-warning" style="margin-top:16px"><strong>Privacy note:</strong> This is a front-end HTML app. The key is stored in this browser and can be seen by anyone who can inspect the page or browser requests. Do not use a private production key here if the website is public; a server-side API route is safer.</div>
+  </div>
+</section>
+
 <section class="page" id="deleteData">
   <div class="panel delete-card">
     <div class="panel-head"><h2>Delete Data</h2></div>
     <p class="muted" style="font-size:13px;line-height:1.7">Use this section to permanently delete the data saved by Series Manager in this browser.</p>
-    <div class="backup-panel"><h3>Complete Backup · All 5 Lists</h3><p class="backup-note">Create or restore one backup containing Series List, Watchlist, Favorite Series, Amir's two private lists and their metadata.</p><div class="toolbar"><button class="btn primary" id="fullBackupBtn">Download Full Backup</button><button class="btn" id="fullImportBtn">Restore Full Backup</button><input type="file" id="fullBackupFile" accept=".json,.txt" hidden></div></div>
-    <div class="delete-warning"><strong>Warning:</strong> This action permanently deletes all five lists, including Amir's Series. This cannot be undone. Create a complete backup first.</div>
+    <div class="backup-panel"><h3>Complete Backup · All Lists</h3><p class="backup-note">Create or restore one backup containing your existing lists, custom movie and series collections, and their metadata.</p><div class="toolbar"><button class="btn primary" id="fullBackupBtn">Download Full Backup</button><button class="btn" id="fullImportBtn">Restore Full Backup</button><input type="file" id="fullBackupFile" accept=".json,.txt" hidden></div></div>
+    <div class="delete-warning"><strong>Warning:</strong> This action permanently deletes all lists, including Amir's Series. This cannot be undone. Create a complete backup first.</div>
     <button class="btn danger" id="resetBtn">Delete All Data</button>
   </div>
 </section>
@@ -506,13 +606,68 @@ body.light .empty{border-color:#cbd5e1}
   <div class="modal-actions"><button class="btn" id="cancelBulk">Cancel</button><button class="btn primary" id="bulkSave">Add All</button></div>
  </div>
 </div>
+<div class="modal-wrap" id="customItemModal">
+ <div class="modal">
+  <h2 id="customItemModalTitle">Add Item</h2>
+  <div class="field"><label>Search title</label><input id="customTitleSearch" autocomplete="off" placeholder="Start typing a movie or series name..."><small>Choose the exact result from OMDb. The release year will be filled automatically.</small><div id="omdbSearchResults" class="omdb-results"></div></div>
+  <div class="field"><label>Selected title</label><input id="customSelectedTitle" placeholder="Select a result above" readonly></div>
+  <div class="field"><label>Release Year</label><input id="customSelectedYear" readonly placeholder="Automatically filled"></div>
+  <div class="field"><label>Watch Status</label><select id="customSelectedStatus"><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select></div>
+  <div class="field"><label>Rating (0–10)</label><input id="customSelectedRating" type="number" min="0" max="10" step="0.01" placeholder="Optional"></div>
+  <div class="modal-actions"><button class="btn" id="cancelCustomItem">Cancel</button><button class="btn primary" id="saveCustomItem">Add to List</button></div>
+ </div>
+</div>
+<div class="modal-wrap" id="customBulkModal"><div class="modal"><h2>Add Multiple Titles</h2><div class="field"><label>One title per line</label><textarea id="customBulkNames" placeholder="Breaking Bad&#10;Dark&#10;The Wire"></textarea><small>Duplicate names are skipped. Values below are applied to every new title.</small></div><div class="field"><label>Default Release Year (Optional)</label><input id="customBulkDefaultYear" type="number" min="1900" max="2100" placeholder="e.g. 2020"></div><div class="field"><label>Default Watch Status</label><select id="customBulkAddStatus"><option>Planned</option><option>Watching</option><option>Watched</option><option>Stop Watching</option></select></div><div class="field"><label>Default Rating (Optional)</label><input id="customBulkAddRating" type="number" min="0" max="10" step="0.01" placeholder="Leave empty"></div><div class="modal-actions"><button class="btn" id="cancelCustomBulk">Cancel</button><button class="btn primary" id="saveCustomBulk">Add All</button></div></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
 "use strict";
 
 const STORAGE_KEY="amir_series_manager_v3";
-const defaultData={series:[],watchlist:[],topList:[],amirWatched:[],amirWant:[],telegramUrl:"https://t.me/silvertv24"};
+const OMDB_KEY_STORAGE="silver_tv_omdb_api_key";
+const POSTER_CACHE_STORAGE="silver_tv_omdb_posters_v1";
+let omdbApiKey="";
+let posterCache={};
+const posterRequests=new Map();
+try{omdbApiKey=localStorage.getItem(OMDB_KEY_STORAGE)||"";}catch{}
+try{posterCache=JSON.parse(localStorage.getItem(POSTER_CACHE_STORAGE)||"{}");if(!posterCache||typeof posterCache!=="object")posterCache={};}catch{posterCache={};}
+function posterKey(title){return String(title||"").trim().toLowerCase();}
+function getCachedPoster(title){return posterCache[posterKey(title)]||"";}
+async function getPosterByTitle(title,type="series"){
+  if(typeof title!=="string"||!title.trim()||!omdbApiKey)return "";
+  const key=posterKey(title);
+  if(Object.prototype.hasOwnProperty.call(posterCache,key))return posterCache[key]||"";
+  if(posterRequests.has(key))return posterRequests.get(key);
+  const request=(async()=>{
+    try{
+      const url=`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&s=${encodeURIComponent(title.trim())}&type=${type==="movie"?"movie":"series"}`;
+      const response=await fetch(url);
+      const result=await response.json();
+      const poster=result?.Response==="True"&&result?.Search?.[0]?.Poster&&result.Search[0].Poster!=="N/A"?result.Search[0].Poster:"";
+      posterCache[key]=poster;
+      try{localStorage.setItem(POSTER_CACHE_STORAGE,JSON.stringify(posterCache));}catch{}
+      document.querySelectorAll("img[data-poster-title]").forEach(img=>{
+        if(img.dataset.posterTitle!==key||!poster)return;
+        img.src=poster;img.style.display="block";
+        const placeholder=img.parentElement?.querySelector(".poster-placeholder");if(placeholder)placeholder.style.display="none";
+      });
+      return poster;
+    }catch(error){console.warn("OMDb poster lookup failed:",error);return "";}
+    finally{posterRequests.delete(key);}
+  })();
+  posterRequests.set(key,request);
+  return request;
+}
+function hydratePosters(){
+  if(!omdbApiKey)return;
+  const names=[...data.series,...data.watchlist,...data.amirWatched,...data.amirWant,...data.topList.map(findSeries).filter(Boolean),]
+    .map(item=>item.name).filter(Boolean);
+  [...new Set(names.map(posterKey))].forEach(key=>{
+    if(!Object.prototype.hasOwnProperty.call(posterCache,key)&&!posterRequests.has(key))getPosterByTitle(key);
+  });
+}
+
+const defaultData={series:[],watchlist:[],topList:[],amirWatched:[],amirWant:[],customLists:[],telegramUrl:"https://t.me/silvertv24"};
 
 let data=loadData();
 let editingId=null;
@@ -539,6 +694,8 @@ function normalizeItem(item){
     rating:item.rating??"",
     episodesWatched:item.episodesWatched??"",
     episodeMinutes:item.episodeMinutes??"",
+    imdbID:item.imdbID||"",
+    poster:item.poster||"",
     addedAt:item.addedAt||new Date().toISOString()
   };
 }
@@ -577,7 +734,8 @@ function loadData(){
 
     const amirWatched=Array.isArray(saved.amirWatched)?saved.amirWatched.map(normalizeItem).filter(Boolean):[];
     const amirWant=Array.isArray(saved.amirWant)?saved.amirWant.map(normalizeItem).filter(Boolean):[];
-    return{series,watchlist,topList,amirWatched,amirWant,telegramUrl:"https://t.me/silvertv24"};
+    const customLists=Array.isArray(saved.customLists)?saved.customLists.map(list=>({id:String(list.id||uid()),name:cleanName(list.name),type:list.type==="movie"?"movie":"series",items:Array.isArray(list.items)?list.items.map(normalizeItem).filter(Boolean):[]})).filter(list=>list.name):[{id:"legacy-series",name:"My Series",type:"series",items:series.map(item=>({...item}))}];
+    return{series,watchlist,topList,amirWatched,amirWant,customLists,telegramUrl:"https://t.me/silvertv24"};
   }catch(error){
     console.error("Could not load saved data:",error);
     return cloneDefault();
@@ -660,6 +818,7 @@ function sortItems(items,mode){
 }
 
 function render(){
+  renderCustomLists();
   renderStats();
   renderSeries();
   renderWatchlist();
@@ -670,6 +829,7 @@ function render(){
   renderSelectors();
   renderDashboardLists();
   renderSelectionCounts();
+  hydratePosters();
 
   document.getElementById("seriesCount").textContent=data.series.length+" series";
   document.getElementById("watchCount").textContent=data.watchlist.length+" series";
@@ -715,7 +875,8 @@ function seriesCard(s,index,total,options={}){
   return `<div class="series-card">
     ${options.select?`<input class="select-box item-select" type="checkbox" data-item-select="${escapeHTML(options.select)}" data-id="${escapeHTML(s.id)}" aria-label="Select ${escapeHTML(s.name)}">`:`<span></span>`}
     <div class="number">${index+1}</div>
-    <div>
+    <div class="poster-wrap"><img class="poster-thumb" data-poster-title="${escapeHTML(s.name.toLowerCase())}" src="${escapeHTML(getCachedPoster(s.name))}" alt="${escapeHTML(s.name)} poster" loading="lazy" style="${getCachedPoster(s.name)?"":"display:none"}"><span class="poster-placeholder" style="${getCachedPoster(s.name)?"display:none":""}">▧</span></div>
+    <div class="series-info">
       <div class="series-name"><span>${escapeHTML(s.name)}</span>${options.titleExtra||""}</div>
       <div class="meta">
         ${s.year?`<span class="badge year-badge">${escapeHTML(s.year)}</span>`:""}
@@ -781,15 +942,17 @@ function renderWatchlist(){
 }
 
 function renderTop(){
-  const items=data.topList.map(findSeries).filter(Boolean);
+  const query=(document.getElementById("topSearch")?.value||"").trim().toLowerCase();
+  const mode=document.getElementById("topSortSelect")?.value||"manual";
+  const items=sortItems(data.topList.map(findSeries).filter(Boolean),mode).filter(s=>s.name.toLowerCase().includes(query));
   document.getElementById("topList").innerHTML=items.length
     ?items.map((s,i)=>seriesCard(s,i,items.length,{
       select:editModes.topList?"topList":null,
-      move:editModes.topList,
+      move:editModes.topList&&mode==="manual",
       edit:editModes.topList,
       remove:editModes.topList
     })).join("")
-    :`<div class="empty">Your favorites list is empty.</div>`;
+    :`<div class="empty">${query?"No matching favorites found.":"Your favorites list is empty."}</div>`;
 }
 
 function renderPrivateList(key){
@@ -806,7 +969,7 @@ function renderPrivateList(key){
     const seriesHours=(episodeCount*episodeMinutes)/60;
     const episodeMinutesText=episodeMinutes?String(Number(episodeMinutes.toFixed(2))):"—";
     const titleExtra=key==="amirWatched"?`<span class="watched-inline-meta">${episodeCount} eps · ${episodeMinutesText} min/ep · ${seriesHours.toFixed(2)} h</span>`:"";
-    return seriesCard(item,i,list.length,{select:editModes[key]?key:null,move:editModes[key]&&mode==="manual",canMoveUp:actualIndex>0,canMoveDown:actualIndex<items.length-1,edit:editModes[key],remove:editModes[key],titleExtra});
+    return seriesCard(item,i,list.length,{select:null,move:false,edit:false,remove:false,titleExtra});
   }).join(""):`<div class="empty">${key==="amirWatched"?"No watched series added yet.":"Your watch list is empty."}</div>`;
 }
 function renderPrivateStats(){
@@ -1109,17 +1272,14 @@ function handlePrivateAction(key,action,id){
 }
 
 /* Navigation */
-document.querySelectorAll(".nav button").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-    document.getElementById(btn.dataset.page).classList.add("active");
-    document.getElementById("pageTitle").textContent=({dashboard:"Dashboard",series:"Series List",watchlist:"Watchlist",top:"Favorite Series",amirWatched:"Series I've Watched",amirWant:"Watchlist",telegram:"Telegram Channel",deleteData:"Delete Data"})[btn.dataset.page]||btn.textContent.trim();
-    closeSidebar();
-  });
-});
-
+function showPage(pageId,title){
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===pageId));
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  const page=document.getElementById(pageId);if(page)page.classList.add("active");
+  document.getElementById("pageTitle").textContent=title||({dashboard:"Dashboard",series:"My List",customListDetail:"My List",watchlist:"Watchlist",top:"Favorite Series",amirWatched:"Series I've Watched",amirWant:"Watchlist",telegram:"Telegram Channel",deleteData:"Delete Data",omdbSettings:"OMDb API Settings"})[pageId]||"My List";
+  closeSidebar();
+}
+document.querySelectorAll(".nav button").forEach(btn=>btn.addEventListener("click",()=>showPage(btn.dataset.page)));
 function closeSidebar(){
   document.getElementById("sidebar").classList.remove("open");
   document.getElementById("overlay").classList.remove("show");
@@ -1132,7 +1292,7 @@ document.getElementById("menuBtn").onclick=()=>{
 document.getElementById("overlay").onclick=closeSidebar;
 
 document.addEventListener("keydown",e=>{
-  if(e.key==="Escape"){closeModal();closeBulk();closeSidebar();}
+  if(e.key==="Escape"){closeModal();closeBulk();closeSidebar();document.getElementById("customItemModal").classList.remove("open");document.getElementById("customBulkModal").classList.remove("open");}
 });
 
 document.getElementById("addOne").onclick=()=>openAdd("series");
@@ -1164,12 +1324,12 @@ document.getElementById("sortSelect").addEventListener("change",renderSeries);
 document.getElementById("watchSearch").addEventListener("input",renderWatchlist);
 document.getElementById("watchStatusFilter").addEventListener("change",renderWatchlist);
 document.getElementById("watchSortSelect").addEventListener("change",renderWatchlist);
+document.getElementById("topSearch").addEventListener("input",renderTop);
+document.getElementById("topSortSelect").addEventListener("change",renderTop);
 ["amirWatched","amirWant"].forEach(key=>{
   const prefix=listPrefix(key);
   document.getElementById(prefix+"Search").addEventListener("input",()=>renderPrivateList(key));
-  document.getElementById(prefix+"StatusFilter").addEventListener("change",()=>renderPrivateList(key));
   document.getElementById(prefix+"SortSelect").addEventListener("change",()=>renderPrivateList(key));
-  document.getElementById(prefix+"SortReset").onclick=()=>{document.getElementById(prefix+"SortSelect").value="manual";renderPrivateList(key);toast("Manual order restored.");};
   document.getElementById(prefix+"List").addEventListener("click",e=>{const btn=e.target.closest("[data-action]");if(btn)handlePrivateAction(key,btn.dataset.action,btn.dataset.id);});
 });
 
@@ -1202,7 +1362,7 @@ document.getElementById("topList").addEventListener("click",e=>{
 document.getElementById("topAdd").onclick=()=>{
   const id=document.getElementById("topSelect").value;
   if(!id)return toast("Select a series first.");
-  if(!findSeries(id))return toast("This series is not in your Series List.");
+  if(!findSeries(id))return toast("This series is not available in your current series collection.");
   if(data.topList.includes(id))return toast("This series is already in favorites.");
   data.topList.push(id);
   if(!save())return;
@@ -1320,7 +1480,7 @@ function importTXT(text){
     series,
     watchlist:finalWatch,
     topList:[...new Set(top)].filter(id=>seriesIds.has(id)),
-    amirWatched,amirWant,
+    amirWatched,amirWant,customLists:data.customLists||[],
     telegramUrl:"https://t.me/silvertv24"
   };
 
@@ -1342,7 +1502,7 @@ function importTXT(text){
 
 /* Delete all data: accessible only from the Delete Data page. */
 document.getElementById("resetBtn").onclick=()=>{
-  const firstConfirm=confirm("Are you sure you want to delete all your data? This includes all five lists.");
+  const firstConfirm=confirm("Are you sure you want to delete all your data? This includes all lists.");
   if(!firstConfirm)return;
 
   const secondConfirm=confirm("Final confirmation: permanently delete all data? Make sure you have exported a backup if needed.");
@@ -1363,7 +1523,7 @@ document.getElementById("resetBtn").onclick=()=>{
 };
 
 
-/* Independent selection and bulk editing for all five lists. */
+/* Independent selection and bulk editing for all lists. */
 const selectedItems={series:new Set(),watchlist:new Set(),topList:new Set(),amirWatched:new Set(),amirWant:new Set()};
 function getListItems(key){
   if(key==="series")return data.series;
@@ -1419,8 +1579,8 @@ document.addEventListener("click",e=>{
   if(b.hasAttribute("data-apply-status"))applyBulk(key,"status",document.querySelector(`[data-bulk-status="${key}"]`).value);
 });
 
-/* Full backup: JSON preserves all five lists and their order. */
-function fullBackupObject(){return{app:"SILVERTV24",version:6,exportedAt:new Date().toISOString(),series:data.series,watchlist:data.watchlist,topList:data.topList,amirWatched:data.amirWatched,amirWant:data.amirWant};}
+/* Full backup: JSON preserves all lists and their order. */
+function fullBackupObject(){return{app:"SILVERTV24",version:7,exportedAt:new Date().toISOString(),series:data.series,watchlist:data.watchlist,topList:data.topList,amirWatched:data.amirWatched,amirWant:data.amirWant,customLists:data.customLists};}
 function downloadText(filename,text,mime="application/json;charset=utf-8"){
   const blob=new Blob([text],{type:mime});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200);
 }
@@ -1433,11 +1593,11 @@ document.getElementById("fullBackupFile").onchange=async e=>{
     if(file.name.toLowerCase().endsWith(".txt")){importTXT(raw);}
     else{
       const parsed=JSON.parse(raw);if(!parsed||!Array.isArray(parsed.series)||!Array.isArray(parsed.watchlist)||!Array.isArray(parsed.topList))throw new Error("Invalid backup");
-      if(!confirm("Restore this complete backup? Your current five lists will be replaced."))return;
+      if(!confirm("Restore this complete backup? Your current lists and custom collections will be replaced."))return;
       const series=parsed.series.map(normalizeItem).filter(Boolean);const ids=new Set(series.map(x=>x.id));
       const watchlist=parsed.watchlist.map(normalizeItem).filter(Boolean);
       const uniqueWatch=[];const names=new Set();watchlist.forEach(x=>{const k=x.name.toLowerCase();if(!names.has(k)){names.add(k);uniqueWatch.push(x);}});
-      data={series,watchlist:uniqueWatch,topList:[...new Set(parsed.topList.map(String))].filter(id=>ids.has(id)),amirWatched:Array.isArray(parsed.amirWatched)?parsed.amirWatched.map(normalizeItem).filter(Boolean):[],amirWant:Array.isArray(parsed.amirWant)?parsed.amirWant.map(normalizeItem).filter(Boolean):[],telegramUrl:"https://t.me/silvertv24"};
+      data={series,watchlist:uniqueWatch,topList:[...new Set(parsed.topList.map(String))].filter(id=>ids.has(id)),amirWatched:Array.isArray(parsed.amirWatched)?parsed.amirWatched.map(normalizeItem).filter(Boolean):[],amirWant:Array.isArray(parsed.amirWant)?parsed.amirWant.map(normalizeItem).filter(Boolean):[],customLists:Array.isArray(parsed.customLists)?parsed.customLists.map(list=>({id:String(list.id||uid()),name:cleanName(list.name),type:list.type==="movie"?"movie":"series",items:Array.isArray(list.items)?list.items.map(normalizeItem).filter(Boolean):[]})).filter(list=>list.name):data.customLists,telegramUrl:"https://t.me/silvertv24"};
       if(!save())return;Object.keys(selectedItems).forEach(k=>selectedItems[k].clear());render();toast("Complete backup restored.");
     }
   }catch(err){console.error(err);toast("Invalid or unreadable backup file.");}
@@ -1449,6 +1609,7 @@ function listExportData(key){
   if(key==="series")return data.series;
   if(key==="watchlist")return data.watchlist;
   if(key==="topList")return data.topList.map(findSeries).filter(Boolean);
+  if(key.startsWith("custom:")){const list=data.customLists.find(x=>x.id===key.slice(7));return list?.items||[];}
   return getListByKey(key);
 }
 /* Plain list text is intentionally names-only. Backup files retain all metadata. */
@@ -1463,10 +1624,241 @@ async function shareList(key){const text=listText(key);if(navigator.share){try{a
 document.addEventListener("click",e=>{
   const b=e.target.closest("[data-backup],[data-copy],[data-share]");if(!b)return;
   const key=b.dataset.backup||b.dataset.copy||b.dataset.share;
-  if(b.dataset.backup){const payload={app:"SILVERTV24",list:key,exportedAt:new Date().toISOString(),items:listExportData(key)};downloadText(`SILVERTV24_${key}_Backup.json`,JSON.stringify(payload,null,2));toast("List backup downloaded.");}
+  if(b.dataset.backup){const custom=key.startsWith("custom:")?data.customLists.find(x=>x.id===key.slice(7)):null;const payload={app:"SILVERTV24",list:key,listName:custom?.name||key,listType:custom?.type||null,exportedAt:new Date().toISOString(),items:listExportData(key)};const safeName=(custom?.name||key).replace(/[^a-z0-9_-]+/gi,"_");downloadText(`SILVERTV24_${safeName}_Backup.json`,JSON.stringify(payload,null,2));toast("List backup downloaded.");}
   if(b.dataset.copy)copyList(key);
   if(b.dataset.share)shareList(key);
 });
+
+/* Custom My List collections: each list is independent and can hold movies or series. */
+let activeCustomListId="";
+let editingCustomItemId="";
+let customEditMode=false;
+let customSelectedIds=new Set();
+let selectedOmdbItem=null;
+let omdbSearchTimer=null;
+function currentCustomList(){return data.customLists.find(x=>x.id===activeCustomListId)||null;}
+function renderCustomLists(){
+  const query=(document.getElementById("customListSearch")?.value||"").trim().toLowerCase();
+  const lists=data.customLists.filter(x=>x.name.toLowerCase().includes(query));
+  document.getElementById("customListCount").textContent=`${data.customLists.length} Lists`;
+  document.getElementById("customListsGrid").innerHTML=lists.length?lists.map(list=>`<div class="custom-list-card" data-open-custom-list="${escapeHTML(list.id)}"><h3>${escapeHTML(list.name)}</h3><p>${list.type==="movie"?"MOVIE COLLECTION":"SERIES COLLECTION"}</p><div class="custom-list-footer"><span class="muted">${list.items.length} ${list.items.length===1?"item":"items"}</span><div class="custom-list-actions"><button class="btn small" data-rename-custom-list="${escapeHTML(list.id)}">Rename</button><button class="btn small danger" data-delete-custom-list="${escapeHTML(list.id)}">Delete</button></div></div></div>`).join(""):`<div class="empty" style="grid-column:1/-1">${query?"No matching lists found.":"You have not created any lists yet."}</div>`;
+}
+function openCustomList(id){
+  const list=data.customLists.find(x=>x.id===id);if(!list)return;
+  activeCustomListId=id;
+  const exportKey=`custom:${id}`;
+  document.getElementById("customBackupBtn").dataset.backup=exportKey;
+  document.getElementById("customCopyBtn").dataset.copy=exportKey;
+  document.getElementById("customShareBtn").dataset.share=exportKey;
+  document.getElementById("customDetailTitle").textContent=list.name;
+  document.getElementById("customDetailSubtitle").textContent=list.type==="movie"?"Movie collection":"Series collection";
+  document.getElementById("customTitleSearch").placeholder=list.type==="movie"?"Search movie title...":"Search series title...";
+  document.getElementById("customItemSearch").value="";
+  document.getElementById("customItemSort").value="manual";
+  customEditMode=false;customSelectedIds.clear();updateCustomEditUI();
+  renderCustomItems();showPage("customListDetail",list.name);
+}
+function updateCustomEditUI(){
+  const toggle=document.getElementById("customEditToggle");
+  if(!toggle)return;
+  toggle.textContent=customEditMode?"Done":"Edit";
+  toggle.classList.toggle("editing",customEditMode);
+  document.getElementById("customEditHint").hidden=!customEditMode;
+  document.getElementById("customSelectionTools").classList.toggle("visible",customEditMode);
+  if(!customEditMode)customSelectedIds.clear();
+  updateCustomSelectionUI();
+}
+function updateCustomSelectionUI(){
+  const list=currentCustomList();if(!list)return;
+  const visible=[...document.querySelectorAll("#customItemsList [data-custom-select]")];
+  const selected=visible.filter(x=>x.checked).length;
+  document.getElementById("customSelectedCount").textContent=`${customSelectedIds.size} selected`;
+  const all=document.getElementById("customSelectAll");
+  if(all){all.checked=visible.length>0&&selected===visible.length;all.indeterminate=selected>0&&selected<visible.length;}
+}
+function renderCustomItems(){
+  const list=currentCustomList();if(!list)return;
+  const q=document.getElementById("customItemSearch").value.trim().toLowerCase();
+  const mode=document.getElementById("customItemSort").value;
+  const items=sortItems(list.items,mode).filter(x=>x.name.toLowerCase().includes(q));
+  document.getElementById("customDetailCount").textContent=`${list.items.length} items`;
+  document.getElementById("customItemsList").innerHTML=items.length?items.map((item,i)=>{
+    const poster=item.poster||getCachedPoster(item.name);
+    return `<div class="series-card">
+      ${customEditMode?`<input class="custom-item-select" type="checkbox" data-custom-select="${escapeHTML(item.id)}" ${customSelectedIds.has(item.id)?"checked":""} aria-label="Select ${escapeHTML(item.name)}">`:`<span></span>`}
+      <div class="number">${i+1}</div>
+      <div class="series-info"><div class="series-name">${poster?`<img data-poster-title="${escapeHTML(item.name.toLowerCase())}" src="${escapeHTML(poster)}" alt="" style="width:34px;height:48px;flex:0 0 34px;object-fit:cover;border-radius:5px">`:`<img data-poster-title="${escapeHTML(item.name.toLowerCase())}" src="" alt="" style="display:none;width:34px;height:48px;flex:0 0 34px;object-fit:cover;border-radius:5px">`}<span>${escapeHTML(item.name)}</span></div><div class="meta">${item.year?`<span class="badge year-badge">${escapeHTML(item.year)}</span>`:""}<span class="badge">${escapeHTML(item.status||"Planned")}</span><span class="badge rating-badge">★ ${formatRating(item.rating)}</span></div></div>
+      <div class="actions">${customEditMode?`<button class="icon-btn" data-custom-up="${escapeHTML(item.id)}" ${i===0?"disabled":""}>↑</button><button class="icon-btn" data-custom-down="${escapeHTML(item.id)}" ${i===items.length-1?"disabled":""}>↓</button><button class="icon-btn" data-custom-edit="${escapeHTML(item.id)}">Edit</button><button class="icon-btn" data-custom-remove="${escapeHTML(item.id)}">✕</button>`:""}</div>
+    </div>`;
+  }).join(""):`<div class="empty">${q?"No matching titles found.":"This list is empty. Add your first title."}</div>`;
+  updateCustomSelectionUI();
+  hydrateCustomPosters(list);
+}
+function hydrateCustomPosters(list){if(!omdbApiKey)return;list.items.forEach(item=>{if(!item.poster&&!getCachedPoster(item.name))getPosterByTitle(item.name,list.type);});}
+function createCustomList(){
+  const name=cleanName(document.getElementById("newCustomListName").value);const type=document.getElementById("newCustomListType").value;
+  if(!name)return toast("Enter a name for your list.");
+  if(data.customLists.some(x=>x.name.toLowerCase()===name.toLowerCase()))return toast("A list with this name already exists.");
+  const list={id:uid(),name,type:type==="movie"?"movie":"series",items:[]};data.customLists.push(list);
+  if(!save())return;document.getElementById("newCustomListName").value="";renderCustomLists();openCustomList(list.id);toast("List created.");
+}
+document.getElementById("createCustomListBtn").onclick=createCustomList;
+document.getElementById("newCustomListName").addEventListener("keydown",e=>{if(e.key==="Enter")createCustomList();});
+document.getElementById("customListSearch").addEventListener("input",renderCustomLists);
+document.getElementById("backToCustomLists").onclick=()=>{renderCustomLists();showPage("series","My List");};
+document.getElementById("customItemSearch").addEventListener("input",renderCustomItems);
+document.getElementById("customItemSort").addEventListener("change",renderCustomItems);
+document.getElementById("customEditToggle").onclick=()=>{customEditMode=!customEditMode;customSelectedIds.clear();updateCustomEditUI();renderCustomItems();};
+document.getElementById("customSelectAll").onchange=e=>{
+  document.querySelectorAll("#customItemsList [data-custom-select]").forEach(box=>{box.checked=e.target.checked;if(box.checked)customSelectedIds.add(box.dataset.customSelect);else customSelectedIds.delete(box.dataset.customSelect);});
+  updateCustomSelectionUI();
+};
+document.getElementById("customItemsList").addEventListener("change",e=>{
+  const box=e.target.closest("[data-custom-select]");if(!box)return;
+  if(box.checked)customSelectedIds.add(box.dataset.customSelect);else customSelectedIds.delete(box.dataset.customSelect);
+  updateCustomSelectionUI();
+});
+document.getElementById("customBulkDelete").onclick=()=>{
+  const list=currentCustomList();if(!list)return;
+  const ids=[...customSelectedIds].filter(id=>list.items.some(item=>item.id===id));
+  if(!ids.length)return toast("Select at least one item first.");
+  if(!confirm(`Delete ${ids.length} selected item(s)?`))return;
+  list.items=list.items.filter(item=>!ids.includes(item.id));customSelectedIds.clear();
+  if(!save())return;renderCustomItems();renderCustomLists();toast(`${ids.length} item(s) deleted.`);
+};
+function selectedCustomItems(){const list=currentCustomList();return list?list.items.filter(item=>customSelectedIds.has(item.id)):[];}
+document.getElementById("customApplyYear").onclick=()=>{
+  const items=selectedCustomItems(),value=document.getElementById("customBulkYear").value.trim();
+  if(!items.length)return toast("Select at least one item first.");
+  if(!value||+value<1900||+value>2100)return toast("Enter a valid year (1900–2100).");
+  items.forEach(item=>item.year=value);if(!save())return;renderCustomItems();toast(`Year updated for ${items.length} item(s).`);
+};
+document.getElementById("customApplyRating").onclick=()=>{
+  const items=selectedCustomItems(),value=document.getElementById("customBulkRating").value.trim();
+  if(!items.length)return toast("Select at least one item first.");
+  if(value===""||!Number.isFinite(+value)||+value<0||+value>10)return toast("Enter a rating between 0 and 10.");
+  items.forEach(item=>item.rating=value);if(!save())return;renderCustomItems();toast(`Rating updated for ${items.length} item(s).`);
+};
+document.getElementById("customApplyStatus").onclick=()=>{
+  const items=selectedCustomItems(),value=document.getElementById("customBulkStatus").value;
+  if(!items.length)return toast("Select at least one item first.");
+  if(!value)return toast("Choose a status first.");
+  items.forEach(item=>item.status=value);if(!save())return;renderCustomItems();toast(`Status updated for ${items.length} item(s).`);
+};
+document.getElementById("customAddOne").onclick=()=>openCustomItemModal();
+document.getElementById("customBulkOpen").onclick=()=>document.getElementById("customBulkModal").classList.add("open");
+document.getElementById("cancelCustomBulk").onclick=()=>document.getElementById("customBulkModal").classList.remove("open");
+document.getElementById("saveCustomBulk").onclick=()=>{
+  const list=currentCustomList();if(!list)return;
+  const names=[...new Set(document.getElementById("customBulkNames").value.split(/\r?\n/).map(cleanName).filter(Boolean))];
+  const year=document.getElementById("customBulkDefaultYear").value.trim();
+  const status=document.getElementById("customBulkAddStatus").value;
+  const rating=document.getElementById("customBulkAddRating").value.trim();
+  if(!names.length)return toast("Enter at least one title.");
+  if(year&&(!Number.isInteger(+year)||+year<1900||+year>2100))return toast("Enter a valid release year (1900–2100).");
+  if(rating!==""&&(!Number.isFinite(+rating)||+rating<0||+rating>10))return toast("Rating must be between 0 and 10.");
+  let added=0;names.forEach(name=>{if(!list.items.some(x=>x.name.toLowerCase()===name.toLowerCase())){list.items.push(makeItem(name,{year,status,rating}));added++;}});
+  if(!save())return;document.getElementById("customBulkNames").value="";document.getElementById("customBulkDefaultYear").value="";document.getElementById("customBulkAddStatus").value="Planned";document.getElementById("customBulkAddRating").value="";document.getElementById("customBulkModal").classList.remove("open");renderCustomItems();renderCustomLists();toast(`${added} title(s) added${names.length-added?`; ${names.length-added} duplicate(s) skipped`:""}.`);
+};
+function openCustomItemModal(item=null){
+  const list=currentCustomList();if(!list)return;
+  editingCustomItemId=item?.id||"";clearTimeout(omdbSearchTimer);selectedOmdbItem=item?{Title:item.name,Year:item.year,imdbID:item.imdbID||""}:null;
+  document.getElementById("customItemModalTitle").textContent=item?"Edit Item":`Add ${list.type==="movie"?"Movie":"Series"}`;
+  document.getElementById("customTitleSearch").value=item?.name||"";
+  document.getElementById("customSelectedTitle").value=item?.name||"";
+  document.getElementById("customSelectedYear").value=item?.year||"";
+  document.getElementById("customSelectedStatus").value=item?.status||"Planned";
+  document.getElementById("customSelectedRating").value=item?.rating||"";
+  document.getElementById("customTitleSearch").disabled=!!item;
+  document.getElementById("omdbSearchResults").innerHTML=item?"<small class='muted'>Edit mode: title and year are kept from the selected database result.</small>":"";
+  document.getElementById("customItemModal").classList.add("open");if(!item)document.getElementById("customTitleSearch").focus();
+}
+document.getElementById("cancelCustomItem").onclick=()=>document.getElementById("customItemModal").classList.remove("open");
+document.getElementById("customTitleSearch").addEventListener("input",()=>{
+  clearTimeout(omdbSearchTimer);const query=document.getElementById("customTitleSearch").value.trim();selectedOmdbItem=null;document.getElementById("customSelectedTitle").value="";document.getElementById("customSelectedYear").value="";
+  if(query.length<2){document.getElementById("omdbSearchResults").innerHTML="";return;}
+  omdbSearchTimer=setTimeout(()=>searchOmdbSuggestions(query),400);
+});
+async function searchOmdbSuggestions(query){
+  const list=currentCustomList();if(!list)return;
+  const results=document.getElementById("omdbSearchResults");
+  if(!omdbApiKey){results.innerHTML='<div class="empty">First add your OMDb API key in OMDb API Settings.</div>';return;}
+  results.innerHTML='<div class="muted" style="font-size:12px;padding:8px">Searching database…</div>';
+  try{
+    const type=list.type==="movie"?"movie":"series";
+    const response=await fetch(`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&s=${encodeURIComponent(query)}&type=${type}`);
+    const dataResult=await response.json();
+    if(dataResult.Response!=="True"||!Array.isArray(dataResult.Search)){results.innerHTML='<div class="empty">No matching titles found.</div>';return;}
+    results.innerHTML=dataResult.Search.slice(0,8).map(item=>`<button type="button" class="omdb-result" data-omdb-id="${escapeHTML(item.imdbID)}"><img src="${item.Poster&&item.Poster!=="N/A"?escapeHTML(item.Poster):""}" onerror="this.style.visibility='hidden'" alt=""><span>${escapeHTML(item.Title)}<small>${escapeHTML(item.Year||"Year unknown")}</small></span></button>`).join("");
+    results.querySelectorAll("[data-omdb-id]").forEach(button=>button.onclick=()=>selectOmdbResult(button.dataset.omdbId));
+  }catch(error){console.error(error);results.innerHTML='<div class="empty">Could not connect to OMDb. Check your API key and connection.</div>';}
+}
+async function selectOmdbResult(imdbID){
+  const list=currentCustomList();if(!list)return;
+  const results=document.getElementById("omdbSearchResults");
+  const button=results.querySelector(`[data-omdb-id="${CSS.escape(imdbID)}"]`);if(button)button.style.borderColor="var(--accent)";
+  try{
+    const response=await fetch(`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&i=${encodeURIComponent(imdbID)}&plot=short`);const item=await response.json();
+    if(item.Response!=="True")return toast("Could not load the selected title.");
+    selectedOmdbItem=item;document.getElementById("customSelectedTitle").value=item.Title||"";document.getElementById("customSelectedYear").value=item.Year||"";
+  }catch(error){toast("Could not load the selected title.");}
+}
+document.getElementById("saveCustomItem").onclick=()=>{
+  const list=currentCustomList();if(!list)return;
+  if(!selectedOmdbItem)return toast("Search and select a title from the database first.");
+  const name=cleanName(selectedOmdbItem.Title);const rating=document.getElementById("customSelectedRating").value.trim();
+  if(rating!==""&&(!Number.isFinite(+rating)||+rating<0||+rating>10))return toast("Rating must be between 0 and 10.");
+  if(list.items.some(x=>x.name.toLowerCase()===name.toLowerCase()&&x.id!==editingCustomItemId))return toast("This title is already in this list.");
+  if(editingCustomItemId){const item=list.items.find(x=>x.id===editingCustomItemId);if(!item)return;item.status=document.getElementById("customSelectedStatus").value;item.rating=rating;}
+  else list.items.push({...makeItem(name,{year:selectedOmdbItem.Year||"",status:document.getElementById("customSelectedStatus").value,rating}),imdbID:selectedOmdbItem.imdbID||"",poster:selectedOmdbItem.Poster||""});
+  if(!save())return;document.getElementById("customItemModal").classList.remove("open");renderCustomItems();renderCustomLists();toast(editingCustomItemId?"Item updated.":"Added from OMDb.");
+};
+document.getElementById("customItemsList").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;const list=currentCustomList();if(!list)return;
+  const id=b.dataset.customEdit||b.dataset.customRemove||b.dataset.customUp||b.dataset.customDown;const index=list.items.findIndex(x=>x.id===id);if(index<0)return;
+  if(b.dataset.customEdit){openCustomItemModal(list.items[index]);return;}
+  if(b.dataset.customRemove){if(!confirm(`Remove "${list.items[index].name}" from this list?`))return;list.items.splice(index,1);}
+  if(b.dataset.customUp&&index>0)[list.items[index-1],list.items[index]]=[list.items[index],list.items[index-1]];
+  if(b.dataset.customDown&&index<list.items.length-1)[list.items[index+1],list.items[index]]=[list.items[index],list.items[index+1]];
+  if(!save())return;renderCustomItems();renderCustomLists();
+});
+document.getElementById("customListsGrid").addEventListener("click",e=>{
+  const rename=e.target.closest("[data-rename-custom-list]");const del=e.target.closest("[data-delete-custom-list]");const card=e.target.closest("[data-open-custom-list]");
+  if(rename){e.stopPropagation();const list=data.customLists.find(x=>x.id===rename.dataset.renameCustomList);if(!list)return;const next=cleanName(prompt("Enter a new list name:",list.name));if(!next)return;if(data.customLists.some(x=>x.id!==list.id&&x.name.toLowerCase()===next.toLowerCase()))return toast("That list name already exists.");list.name=next;if(save())renderCustomLists();return;}
+  if(del){e.stopPropagation();const list=data.customLists.find(x=>x.id===del.dataset.deleteCustomList);if(!list)return;if(!confirm(`Delete "${list.name}" and all its items?`))return;data.customLists=data.customLists.filter(x=>x.id!==list.id);if(!save())return;renderCustomLists();toast("List deleted.");return;}
+  if(card)openCustomList(card.dataset.openCustomList);
+});
+
+/* OMDb API key controls */
+const omdbKeyInput=document.getElementById("omdbApiKey");
+const omdbStatus=document.getElementById("omdbStatus");
+if(omdbKeyInput)omdbKeyInput.value=omdbApiKey;
+document.getElementById("omdbEditBtn").onclick=()=>{omdbKeyInput.disabled=false;omdbKeyInput.focus();omdbStatus.textContent="Enter or replace your API key, then save.";};
+document.getElementById("omdbRevealBtn").onclick=()=>{const visible=omdbKeyInput.type==="text";omdbKeyInput.type=visible?"password":"text";document.getElementById("omdbRevealBtn").textContent=visible?"Show":"Hide";};
+document.getElementById("omdbSaveBtn").onclick=()=>{
+  const key=omdbKeyInput.value.trim();
+  if(!key)return toast("Enter an OMDb API key first.");
+  omdbApiKey=key;
+  try{localStorage.setItem(OMDB_KEY_STORAGE,key);}catch{return toast("Could not save the API key in this browser.");}
+  omdbKeyInput.disabled=true;omdbKeyInput.type="password";document.getElementById("omdbRevealBtn").textContent="Show";
+  omdbStatus.textContent="API key saved. Loading posters for your series…";
+  toast("OMDb API key saved.");
+  // Clear negative cache entries so titles can be retried with the new key.
+  posterCache={};try{localStorage.removeItem(POSTER_CACHE_STORAGE);}catch{}
+  render();
+  setTimeout(()=>{omdbStatus.textContent="Poster lookup is enabled. Results are cached in this browser.";},1200);
+};
+
+/* Share the website URL with social-preview metadata. */
+document.getElementById("shareWebsiteBtn").onclick=async()=>{
+  const url=window.location.href;
+  const shareData={title:"SILVER TV | Series Manager",text:"Explore SILVER TV — manage your series collection, watchlist and favorite shows.",url};
+  try{
+    if(navigator.share)await navigator.share(shareData);
+    else if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(url);toast("Website link copied.");}
+    else{const area=document.createElement("textarea");area.value=url;document.body.appendChild(area);area.select();document.execCommand("copy");area.remove();toast("Website link copied.");}
+  }catch(error){if(error.name!=="AbortError")toast("Could not share the website link.");}
+};
 
 /* Persistent dark / light theme */
 const THEME_STORAGE_KEY="silver_tv_theme";
