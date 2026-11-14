@@ -33,7 +33,7 @@ button{cursor:pointer}
 .nav button.active{box-shadow:inset 3px 0 var(--accent)}
 .nav button[data-page="deleteData"]{margin-top:24px;background:#2b1d25;color:#e99aa5;border:1px solid #4b2c37}
 .nav button[data-page="deleteData"]:hover{background:#3a222c;color:#ffb2bc;border-color:#70404e}
-.sidebar-footer{position:sticky;bottom:0;margin-top:24px;padding:15px 0 4px;background:#101620;color:var(--muted);font-size:11px}
+.sidebar-footer{position:static;display:block;margin:24px 0 4px;padding:15px 0 4px;background:transparent;color:var(--muted);font-size:11px}
 .main{margin-left:245px;padding:30px;max-width:1600px}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;gap:15px}
 .topbar h1{font-size:25px;margin:0}
@@ -113,7 +113,7 @@ textarea{width:100%;min-height:150px;resize:vertical}
 .rating-stats .stat{background:#211f32;border-color:#393452;border-radius:11px}
 .rating-stats .stat:nth-child(2){background:#1b2930;border-color:#2c4650}
 .rating-stats .stat strong,.status-stats .stat strong{font-size:22px}
-.sidebar-footer{left:16px;right:16px;text-align:center;border-top:1px solid var(--border);padding-top:15px;color:#a99cff;font-size:10px;letter-spacing:1.1px;font-weight:700}
+.sidebar-footer{text-align:center;border-top:1px solid var(--border);padding-top:15px;color:#a99cff;font-size:10px;letter-spacing:1.1px;font-weight:700}
 .dashboard-favorites{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .favorite-mini{background:#101722;border:1px solid var(--border);border-radius:10px;padding:12px;min-width:0}
 .favorite-mini strong{display:block;overflow-wrap:anywhere;font-size:13px}
@@ -217,7 +217,7 @@ body.light{
   background:var(--bg);color:var(--text);
 }
 body.light .sidebar{background:#ffffff;border-right-color:#dbe3ee;box-shadow:4px 0 22px #24334a0a}
-body.light .sidebar-footer{background:#ffffff;color:#6554d9;border-top-color:#e2e8f0}
+body.light .sidebar-footer{background:transparent;color:#6554d9;border-top-color:#e2e8f0}
 body.light .nav button{color:#526078}
 body.light .nav button:hover,body.light .nav button.active{background:#eeeaff;color:#4938b5}
 body.light .nav button.active{box-shadow:inset 3px 0 #6554d9}
@@ -377,7 +377,36 @@ body.light .favorite-browse-box{background:#fff}
 #overviewSelectionTools.visible{display:flex}
 #overviewItemsList .overview-select{width:18px;height:18px;accent-color:var(--accent)}
 #overviewItemsList .series-card{grid-template-columns:24px 38px 48px minmax(0,1fr) auto}
-@media(max-width:700px){#overviewItemsList .series-card{grid-template-columns:22px 34px 42px minmax(0,1fr)}#overviewItemsList .series-card .actions{grid-column:4}#overviewItemsList .series-card .series-info{grid-column:4}}
+@media(max-width:700px){
+  /* Compact Overview controls on phones only; desktop layout remains unchanged. */
+  #overview>.panel{padding:12px;margin-top:12px}
+  #overview .panel-head{gap:7px;margin-bottom:10px;align-items:center}
+  #overview .panel-head h2{font-size:15px}
+  #overviewCount{font-size:10px;padding:4px 7px;white-space:nowrap}
+  #overview .overview-tabs,#overview .overview-status-tabs{gap:5px;margin:9px 0}
+  #overview .overview-tabs .btn{flex:1 1 0;min-width:0;padding:7px 5px;font-size:11px;border-radius:8px}
+  #overview .overview-status-tabs .btn{flex:1 1 calc(33.333% - 5px);min-width:0;padding:7px 5px;font-size:10px;line-height:1.25;border-radius:8px}
+  #overview .toolbar{gap:6px;margin:11px 0}
+  #overview .toolbar #overviewSearch{flex:1 1 100%;width:100%;min-width:0;padding:9px 10px;font-size:12px}
+  #overview .toolbar #overviewAddBtn,#overview .toolbar #overviewEditToggle{flex:1 1 0;padding:8px 10px;font-size:11px;border-radius:8px}
+  #overviewEditHint{font-size:11px;line-height:1.5;margin:7px 0}
+  #overviewSelectionTools{gap:6px;padding:8px;margin:9px 0;border-radius:9px}
+  #overviewSelectionTools label,#overviewSelectionTools .muted{font-size:10px}
+  #overviewSelectionTools .btn.small,#overviewSelectionTools select{font-size:10px;padding:6px 7px;min-height:31px}
+  #overviewItemsList{gap:7px}
+  #overviewItemsList .series-card{grid-template-columns:18px 28px 38px minmax(0,1fr);gap:7px;padding:8px 9px;border-radius:11px}
+  #overviewItemsList .overview-select{width:16px;height:16px;margin:0}
+  #overviewItemsList .series-card>.number{width:27px;height:27px;border-radius:8px;font-size:11px}
+  #overviewItemsList .series-card .poster-thumb,#overviewItemsList .series-card .poster-placeholder{width:38px;height:53px;object-fit:cover;border-radius:6px}
+  #overviewItemsList .series-card .series-info{grid-column:4;min-width:0}
+  #overviewItemsList .series-card .series-name{font-size:12px;gap:5px;line-height:1.35}
+  #overviewItemsList .series-card .meta{gap:4px;margin-top:5px;font-size:9px}
+  #overviewItemsList .series-card .meta .badge{font-size:9px;padding:3px 5px}
+  #overviewItemsList .series-card .actions{grid-column:4;justify-content:flex-start;gap:5px;margin-top:4px}
+  #overviewItemsList .series-card .actions .icon-btn{font-size:10px;padding:5px 8px;border-radius:6px}
+  #overviewItemsList .overview-move-inline{gap:3px;margin-left:3px}
+  #overviewItemsList .overview-move-inline .icon-btn{min-width:23px;padding:2px 6px;font-size:11px}
+}
 body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
 #overviewItemsList .overview-title-link{border:0;background:transparent;color:var(--text);font:inherit;font-weight:700;padding:0;text-align:left;cursor:pointer}
 #overviewItemsList .overview-title-link:hover{color:var(--accent);text-decoration:underline}
@@ -400,7 +429,7 @@ body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
 
 <aside class="sidebar" id="sidebar">
   <div class="brand">SILVER<span>TV24</span></div>
-  <div class="version">SERIES MANAGER · VERSION 1.0</div>
+  <div class="version">SERIES MANAGER · VERSION 5.9</div>
   <div class="nav-label">MAIN MENU</div>
   <nav class="nav">
     <button class="active" data-page="dashboard">◫ Dashboard</button>
@@ -414,8 +443,8 @@ body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
     <button data-page="telegram">➤ Telegram Channel</button>
     <button data-page="omdbSettings">▣ OMDb API Settings</button>
     <button data-page="deleteData">⌫ Delete Data</button>
+    <div class="sidebar-footer">CREATED BY AMIR SILVER</div>
   </nav>
-  <div class="sidebar-footer">CREATED BY AMIR SILVER</div>
 </aside>
 <div class="overlay" id="overlay"></div>
 
@@ -613,11 +642,11 @@ body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
 <section class="page" id="omdbSettings">
   <div class="panel delete-card">
     <div class="panel-head"><h2>OMDb API Settings</h2><span class="badge">Poster Database</span></div>
-    <p class="muted" style="font-size:13px;line-height:1.7">Add your OMDb API key to load series poster images beside titles throughout the lists.</p>
+    <p class="muted" style="font-size:13px;line-height:1.7">A default OMDb API key is already configured for everyone. You can optionally replace it with your own key below.</p>
     <div class="field">
       <label for="omdbApiKey">API Key</label>
       <div class="api-key-row">
-        <input id="omdbApiKey" type="password" placeholder="Enter your OMDb API key" autocomplete="off" disabled>
+        <input id="omdbApiKey" type="password" placeholder="Enter your own API key (optional)" autocomplete="off" disabled>
         <button class="btn" id="omdbRevealBtn" type="button">Show</button>
         <button class="btn" id="omdbEditBtn" type="button">Edit</button>
         <button class="btn primary" id="omdbSaveBtn" type="button">Save</button>
@@ -763,11 +792,12 @@ body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
 
 const STORAGE_KEY="amir_series_manager_v3";
 const OMDB_KEY_STORAGE="silver_tv_omdb_api_key";
+const DEFAULT_OMDB_API_KEY="d9393270";
 const POSTER_CACHE_STORAGE="silver_tv_omdb_posters_v1";
-let omdbApiKey="";
+let omdbApiKey=DEFAULT_OMDB_API_KEY;
 let posterCache={};
 const posterRequests=new Map();
-try{omdbApiKey=localStorage.getItem(OMDB_KEY_STORAGE)||"";}catch{}
+try{omdbApiKey=localStorage.getItem(OMDB_KEY_STORAGE)||DEFAULT_OMDB_API_KEY;}catch{omdbApiKey=DEFAULT_OMDB_API_KEY;}
 try{posterCache=JSON.parse(localStorage.getItem(POSTER_CACHE_STORAGE)||"{}");if(!posterCache||typeof posterCache!=="object")posterCache={};}catch{posterCache={};}
 function posterKey(title){return String(title||"").trim().toLowerCase();}
 function getCachedPoster(title){return posterCache[posterKey(title)]||"";}
@@ -1757,8 +1787,8 @@ document.getElementById("resetBtn").onclick=()=>{
   if(!secondConfirm)return;
 
   data=cloneDefault();
-  // Delete OMDb API credentials and cached poster data as part of Delete All Data.
-  omdbApiKey="";
+  // Remove any personal override; the built-in default API key remains available.
+  omdbApiKey=DEFAULT_OMDB_API_KEY;
   posterCache={};
   posterRequests.clear();
   try{localStorage.removeItem(OMDB_KEY_STORAGE);localStorage.removeItem(POSTER_CACHE_STORAGE);}catch(error){console.warn("Could not clear OMDb local data:",error);}
@@ -2396,7 +2426,7 @@ document.getElementById("overviewApplyStatus").onclick=()=>{
 /* OMDb API key controls */
 const omdbKeyInput=document.getElementById("omdbApiKey");
 const omdbStatus=document.getElementById("omdbStatus");
-if(omdbKeyInput)omdbKeyInput.value=omdbApiKey;
+if(omdbKeyInput){try{omdbKeyInput.value=localStorage.getItem(OMDB_KEY_STORAGE)||"";}catch{omdbKeyInput.value="";}}
 document.getElementById("omdbEditBtn").onclick=()=>{omdbKeyInput.disabled=false;omdbKeyInput.focus();omdbStatus.textContent="Enter or replace your API key, then save.";};
 document.getElementById("omdbRevealBtn").onclick=()=>{const visible=omdbKeyInput.type==="text";omdbKeyInput.type=visible?"password":"text";document.getElementById("omdbRevealBtn").textContent=visible?"Show":"Hide";};
 document.getElementById("omdbSaveBtn").onclick=()=>{
