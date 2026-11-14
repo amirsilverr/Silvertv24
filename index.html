@@ -421,6 +421,112 @@ body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
 .overview-detail-copy strong{color:var(--muted);font-weight:600}
 #overviewDetailLoading{color:var(--muted);font-size:13px;padding:18px 0}
 @media(max-width:520px){.overview-detail-layout{grid-template-columns:105px minmax(0,1fr);gap:12px}.overview-detail-layout img{max-height:165px}}
+
+
+/* Final list-row alignment: selection space exists only while Edit mode is active. */
+.series-card:not(.has-select){
+  grid-template-columns:38px 48px minmax(0,1fr) auto;
+  column-gap:7px;
+}
+.series-card.has-select{
+  grid-template-columns:24px 38px 48px minmax(0,1fr) auto;
+  column-gap:12px;
+}
+@media(max-width:700px){
+  .series-card:not(.has-select){
+    grid-template-columns:34px 38px minmax(0,1fr);
+    column-gap:6px;
+  }
+  .series-card:not(.has-select) > .series-info,
+  .series-card:not(.has-select) > .actions{grid-column:3;min-width:0;}
+  .series-card.has-select{
+    grid-template-columns:22px 34px 38px minmax(0,1fr);
+    column-gap:8px;
+  }
+  .series-card.has-select > .series-info,
+  .series-card.has-select > .actions{grid-column:4;min-width:0;}
+  .series-card .series-name{font-size:16px;line-height:1.4;font-weight:700;}
+}
+/* Extend the same collapsing selection column to Overview and custom lists. */
+#overviewItemsList .series-card:not(.has-select){grid-template-columns:34px 38px minmax(0,1fr);column-gap:6px;}
+#overviewItemsList .series-card.has-select{grid-template-columns:22px 34px 38px minmax(0,1fr);column-gap:8px;}
+#overviewItemsList .series-card:not(.has-select) .series-info,
+#overviewItemsList .series-card:not(.has-select) .actions{grid-column:3;min-width:0;}
+#overviewItemsList .series-card.has-select .series-info,
+#overviewItemsList .series-card.has-select .actions{grid-column:4;min-width:0;}
+#customItemsList .series-card:not(.has-select){grid-template-columns:34px minmax(0,1fr) auto!important;column-gap:6px;padding:11px 10px;}
+#customItemsList .series-card.has-select{grid-template-columns:22px 34px minmax(0,1fr) auto!important;column-gap:8px;padding:11px 10px;}
+#customItemsList .series-card:not(.has-select) .series-info,
+#customItemsList .series-card:not(.has-select) .actions{grid-column:auto!important;min-width:0;}
+#customItemsList .series-card.has-select .series-info,
+#customItemsList .series-card.has-select .actions{grid-column:auto!important;min-width:0;}
+#customItemsList .series-card:not(.has-select) .number{grid-column:1;}
+#customItemsList .series-card.has-select .number{grid-column:2;}
+@media(max-width:420px){
+ #overviewItemsList .series-card:not(.has-select){column-gap:5px;padding:8px 9px;}
+ #overviewItemsList .series-card.has-select{column-gap:7px;padding:8px 9px;}
+ #customItemsList .series-card:not(.has-select){grid-template-columns:32px minmax(0,1fr) auto!important;column-gap:5px;padding:10px 8px;}
+ #customItemsList .series-card.has-select{grid-template-columns:21px 32px minmax(0,1fr) auto!important;column-gap:7px;padding:10px 8px;}
+}
+/* Match Overview typography and poster sizing to the Watchlist/Favorites cards. */
+@media(max-width:700px){
+ /* Override the earlier, more-specific compact square-number rule. */
+ /* Keep the same purple numbered tile used by Watchlist and Favorites. */
+ #overviewItemsList .series-card>.number{width:34px!important;min-width:34px;height:34px!important;min-height:34px;border-radius:10px!important;padding:0;white-space:nowrap;overflow:visible;font-size:13px!important;line-height:normal;display:grid;place-items:center;}
+ #overviewItemsList .series-card .poster-wrap{width:38px;height:54px;border-radius:7px;}
+ #overviewItemsList .series-card .series-name{font-size:16px!important;line-height:1.4!important;font-weight:700;}
+ #overviewItemsList .series-card .overview-title-link{font-size:inherit!important;line-height:inherit;font-weight:inherit;}
+ #overviewItemsList .series-card .meta{gap:6px;margin-top:5px;font-size:11px;}
+ #overviewItemsList .series-card .meta .badge{font-size:10px;padding:3px 6px;}
+}
+/* My List rows now use the same separate left poster column as Watchlist/Favorites. */
+#customItemsList .series-card .poster-wrap{width:42px;height:58px;}
+@media(max-width:700px){
+ #customItemsList .series-card:not(.has-select){grid-template-columns:34px 38px minmax(0,1fr)!important;column-gap:6px;padding:11px 10px;}
+ #customItemsList .series-card.has-select{grid-template-columns:22px 34px 38px minmax(0,1fr)!important;column-gap:8px;padding:11px 10px;}
+ #customItemsList .series-card .poster-wrap{width:38px;height:54px;}
+ #customItemsList .series-card .series-info{grid-column:auto!important;min-width:0;}
+ #customItemsList .series-card .actions{grid-column:3/-1!important;justify-content:flex-start;margin-top:8px;}
+ #customItemsList .series-card.has-select .actions{grid-column:4/-1!important;}
+ #customItemsList .series-card .series-name{font-size:16px;line-height:1.4;font-weight:700;}
+}
+
+
+/* Desktop alignment correction: keep poster and title in their own columns. */
+@media (min-width:701px) {
+  #overviewItemsList .series-card:not(.has-select),
+  #customItemsList .series-card:not(.has-select) {
+    grid-template-columns:38px 48px minmax(0,1fr) auto !important;
+    column-gap:12px !important;
+    align-items:center;
+  }
+  #overviewItemsList .series-card.has-select,
+  #customItemsList .series-card.has-select {
+    grid-template-columns:24px 38px 48px minmax(0,1fr) auto !important;
+    column-gap:12px !important;
+    align-items:center;
+  }
+  #overviewItemsList .series-card .number,
+  #customItemsList .series-card .number { grid-column:auto !important; }
+  #overviewItemsList .series-card .poster-wrap,
+  #customItemsList .series-card .poster-wrap {
+    grid-column:auto !important;
+    width:48px;
+    height:66px;
+  }
+  #overviewItemsList .series-card .series-info,
+  #customItemsList .series-card .series-info {
+    grid-column:auto !important;
+    min-width:0;
+  }
+  #overviewItemsList .series-card .actions,
+  #customItemsList .series-card .actions {
+    grid-column:auto !important;
+    justify-content:flex-end;
+    min-width:0;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1086,8 +1192,8 @@ function renderStats(){
 function seriesCard(s,index,total,options={}){
   const statusClass=String(s.status||"Planned").toLowerCase();
   const poster=s.poster||getCachedPoster(s.name);
-  return `<div class="series-card">
-    ${options.select?`<input class="select-box item-select" type="checkbox" data-item-select="${escapeHTML(options.select)}" data-id="${escapeHTML(s.id)}" aria-label="Select ${escapeHTML(s.name)}">`:`<span></span>`}
+  return `<div class="series-card${options.select?" has-select":""}">
+    ${options.select?`<input class="select-box item-select" type="checkbox" data-item-select="${escapeHTML(options.select)}" data-id="${escapeHTML(s.id)}" aria-label="Select ${escapeHTML(s.name)}">`:``}
     <div class="number">${index+1}</div>
     <div class="poster-wrap"><img class="poster-thumb" data-poster-title="${escapeHTML(s.name.toLowerCase())}" src="${escapeHTML(poster)}" alt="${escapeHTML(s.name)} poster" loading="lazy" style="${poster?"":"display:none"}" onerror="this.style.display='none'"><span class="poster-placeholder" style="${poster?"display:none":""}">▧</span></div>
     <div class="series-info">
@@ -2072,10 +2178,11 @@ function renderCustomItems(){
   document.getElementById("customDetailCount").textContent=`${list.items.length} items`;
   document.getElementById("customItemsList").innerHTML=items.length?items.map((item,i)=>{
     const poster=item.poster||getCachedPoster(item.name);
-    return `<div class="series-card">
-      ${customEditMode?`<input class="custom-item-select" type="checkbox" data-custom-select="${escapeHTML(item.id)}" ${customSelectedIds.has(item.id)?"checked":""} aria-label="Select ${escapeHTML(item.name)}">`:`<span></span>`}
+    return `<div class="series-card${customEditMode?" has-select":""}">
+      ${customEditMode?`<input class="custom-item-select" type="checkbox" data-custom-select="${escapeHTML(item.id)}" ${customSelectedIds.has(item.id)?"checked":""} aria-label="Select ${escapeHTML(item.name)}">`:``}
       <div class="number">${i+1}</div>
-      <div class="series-info"><div class="series-name">${poster?`<img data-poster-title="${escapeHTML(item.name.toLowerCase())}" src="${escapeHTML(poster)}" alt="" style="width:34px;height:48px;flex:0 0 34px;object-fit:cover;border-radius:5px">`:`<img data-poster-title="${escapeHTML(item.name.toLowerCase())}" src="" alt="" style="display:none;width:34px;height:48px;flex:0 0 34px;object-fit:cover;border-radius:5px">`}<span>${escapeHTML(item.name)}</span></div><div class="meta">${item.year?`<span class="badge year-badge">${escapeHTML(item.year)}</span>`:""}<span class="badge">${escapeHTML(item.status||"Planned")}</span><span class="badge rating-badge">★ ${formatRating(item.rating)}</span></div></div>
+      <div class="poster-wrap"><img class="poster-thumb" data-poster-title="${escapeHTML(item.name.toLowerCase())}" src="${escapeHTML(poster)}" alt="${escapeHTML(item.name)} poster" loading="lazy" style="${poster?"":"display:none"}" onerror="this.style.display='none'"><span class="poster-placeholder" style="${poster?"display:none":""}">▧</span></div>
+      <div class="series-info"><div class="series-name"><span>${escapeHTML(item.name)}</span></div><div class="meta">${item.year?`<span class="badge year-badge">${escapeHTML(item.year)}</span>`:""}<span class="badge">${escapeHTML(item.status||"Planned")}</span><span class="badge rating-badge">★ ${formatRating(item.rating)}</span></div></div>
       <div class="actions">${customEditMode?`<button class="icon-btn" data-custom-up="${escapeHTML(item.id)}" ${i===0?"disabled":""}>↑</button><button class="icon-btn" data-custom-down="${escapeHTML(item.id)}" ${i===items.length-1?"disabled":""}>↓</button><button class="icon-btn" data-custom-edit="${escapeHTML(item.id)}">Edit</button><button class="icon-btn" data-custom-remove="${escapeHTML(item.id)}">✕</button>`:""}</div>
     </div>`;
   }).join(""):`<div class="empty">${q?"No matching titles found.":"This list is empty. Add your first title."}</div>`;
@@ -2274,8 +2381,8 @@ function renderOverview(){
   document.getElementById("overviewCount").textContent=`${items.length} items`;
   document.getElementById("overviewItemsList").innerHTML=items.length?items.map((item,index)=>{
     const poster=item.poster||getCachedPoster(item.name);
-    return `<div class="series-card">
-      ${overviewEditMode?`<input class="overview-select" type="checkbox" data-overview-select="${escapeHTML(item.id)}" ${overviewSelectedIds.has(item.id)?"checked":""} aria-label="Select ${escapeHTML(item.name)}">`:`<span></span>`}
+    return `<div class="series-card${overviewEditMode?" has-select":""}">
+      ${overviewEditMode?`<input class="overview-select" type="checkbox" data-overview-select="${escapeHTML(item.id)}" ${overviewSelectedIds.has(item.id)?"checked":""} aria-label="Select ${escapeHTML(item.name)}">`:``}
       <div class="number">${index+1}</div>
       <div class="poster-wrap"><img class="poster-thumb" src="${escapeHTML(poster)}" alt="${escapeHTML(item.name)} poster" style="${poster?"":"display:none"}" onerror="this.style.display='none'"><span class="poster-placeholder" style="${poster?"display:none":""}">▧</span></div>
       <div class="series-info"><div class="series-name"><button type="button" class="overview-title-link" data-overview-details="${escapeHTML(item.id)}">${escapeHTML(item.name)}</button>${overviewEditMode?`<span class="overview-move-inline"><button type="button" class="icon-btn" title="Move up" aria-label="Move ${escapeHTML(item.name)} up" data-overview-move="up" data-id="${escapeHTML(item.id)}" ${index===0?"disabled":""}>↑</button><button type="button" class="icon-btn" title="Move down" aria-label="Move ${escapeHTML(item.name)} down" data-overview-move="down" data-id="${escapeHTML(item.id)}" ${index===items.length-1?"disabled":""}>↓</button></span>`:""}</div><div class="meta">${item.year?`<span class="badge year-badge">${escapeHTML(item.year)}</span>`:""}<span class="badge">${item.mediaType==="movie"?"Movie":"Series"}</span><span class="badge ${String(item.status).toLowerCase()}">${escapeHTML(item.status)}</span><span class="badge rating-badge">★ ${formatRating(item.rating)}</span></div></div>
@@ -2474,3 +2581,32 @@ render();
 </script>
 </body>
 </html>
+
+<style>
+/* Final Overview number tile: match the exact purple numbered tile used by Watchlist/Favorites. */
+@media(max-width:700px){
+  #overviewItemsList .series-card:not(.has-select){
+    grid-template-columns:34px 38px minmax(0,1fr)!important;
+    column-gap:6px!important;
+  }
+  #overviewItemsList .series-card.has-select{
+    grid-template-columns:22px 34px 38px minmax(0,1fr)!important;
+    column-gap:8px!important;
+  }
+  #overviewItemsList .series-card>.number{
+    box-sizing:border-box!important;
+    width:34px!important;min-width:34px!important;max-width:34px!important;
+    height:34px!important;min-height:34px!important;
+    border-radius:10px!important;
+    background:#24233c!important;color:#c7c0ff!important;
+    display:grid!important;place-items:center!important;
+    padding:0!important;margin:0!important;
+    font-size:13px!important;font-weight:700!important;
+    line-height:1!important;white-space:nowrap!important;
+    overflow:visible!important;
+  }
+  body.light #overviewItemsList .series-card>.number{
+    background:#eeeaff!important;color:#5948c7!important;
+  }
+}
+</style>
