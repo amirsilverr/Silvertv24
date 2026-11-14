@@ -379,6 +379,19 @@ body.light .favorite-browse-box{background:#fff}
 #overviewItemsList .series-card{grid-template-columns:24px 38px 48px minmax(0,1fr) auto}
 @media(max-width:700px){#overviewItemsList .series-card{grid-template-columns:22px 34px 42px minmax(0,1fr)}#overviewItemsList .series-card .actions{grid-column:4}#overviewItemsList .series-card .series-info{grid-column:4}}
 body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
+#overviewItemsList .overview-title-link{border:0;background:transparent;color:var(--text);font:inherit;font-weight:700;padding:0;text-align:left;cursor:pointer}
+#overviewItemsList .overview-title-link:hover{color:var(--accent);text-decoration:underline}
+#overviewItemsList .overview-move-inline{display:inline-flex;gap:4px;margin-left:8px;vertical-align:middle}
+#overviewItemsList .overview-move-inline .icon-btn{min-width:27px;padding:3px 7px;font-size:13px}
+.overview-detail-modal{width:min(720px,94vw);max-height:88vh;overflow:auto}
+.overview-detail-layout{display:grid;grid-template-columns:170px minmax(0,1fr);gap:20px;margin:14px 0}
+.overview-detail-layout img{width:100%;max-height:255px;object-fit:contain;object-position:top;border-radius:10px;background:var(--panel2)}
+.overview-detail-layout img[hidden]{display:none}
+.overview-detail-copy{font-size:13px;line-height:1.75;color:var(--text)}
+.overview-detail-copy p{margin:0 0 10px}
+.overview-detail-copy strong{color:var(--muted);font-weight:600}
+#overviewDetailLoading{color:var(--muted);font-size:13px;padding:18px 0}
+@media(max-width:520px){.overview-detail-layout{grid-template-columns:105px minmax(0,1fr);gap:12px}.overview-detail-layout img{max-height:165px}}
 </style>
 </head>
 <body>
@@ -387,7 +400,7 @@ body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
 
 <aside class="sidebar" id="sidebar">
   <div class="brand">SILVER<span>TV24</span></div>
-  <div class="version">SERIES MANAGER · VERSION 1.0</div>
+  <div class="version">SERIES MANAGER · VERSION 5.9</div>
   <div class="nav-label">MAIN MENU</div>
   <nav class="nav">
     <button class="active" data-page="dashboard">◫ Dashboard</button>
@@ -545,9 +558,9 @@ body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
   <div class="panel">
     <div class="panel-head"><div><h2>OVERVIEW</h2><p class="muted" style="font-size:12px;margin:6px 0 0">A separate collection for movies and series with watch-status filters.</p></div><span class="badge" id="overviewCount">0 items</span></div>
     <div class="overview-tabs" id="overviewTypeTabs">
-      <button class="btn active" data-overview-type="series">Series</button>
+      <button class="btn active" data-overview-type="all">All</button>
+      <button class="btn" data-overview-type="series">Series</button>
       <button class="btn" data-overview-type="movie">Movies</button>
-      <button class="btn" data-overview-type="all">All</button>
     </div>
     <div class="overview-status-tabs" id="overviewStatusTabs">
       <button class="btn active" data-overview-status="all">All Status</button>
@@ -726,6 +739,21 @@ body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
   <div class="field"><label for="overviewSelectedRating">Rating (0–10)</label><input id="overviewSelectedRating" type="number" min="0" max="10" step="0.01" placeholder="Optional"></div>
   <div class="field"><label for="overviewPosition">Position in Overview</label><input id="overviewPosition" type="number" min="1" step="1" placeholder="Leave empty to add at the end"></div>
   <div class="modal-actions"><button class="btn" id="overviewCancel">Cancel</button><button class="btn primary" id="overviewSave">Add to Overview</button></div>
+ </div>
+</div>
+<div class="modal-wrap" id="overviewDetailModal">
+ <div class="modal overview-detail-modal">
+  <h2 id="overviewDetailTitle">Title details</h2>
+  <div id="overviewDetailLoading">Loading details from OMDb…</div>
+  <div class="overview-detail-layout" id="overviewDetailContent" hidden>
+   <img id="overviewDetailPoster" alt="Title poster" hidden>
+   <div class="overview-detail-copy">
+    <p id="overviewDetailYear"></p><p id="overviewDetailType"></p><p id="overviewDetailRating"></p>
+    <p id="overviewDetailPlot"></p><p id="overviewDetailActors"></p><p id="overviewDetailDirector"></p>
+    <p id="overviewDetailGenre"></p><p id="overviewDetailRuntime"></p>
+   </div>
+  </div>
+  <div class="modal-actions"><button class="btn" id="overviewDetailClose">Close</button></div>
  </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -2185,7 +2213,7 @@ document.getElementById("customListsGrid").addEventListener("click",e=>{
 });
 
 /* OVERVIEW: independent collection, with OMDb-only single add and multi-edit. */
-let overviewTypeFilter="series";
+let overviewTypeFilter="all";
 let overviewStatusFilter="all";
 let overviewEditMode=false;
 let overviewSelectedIds=new Set();
@@ -2220,7 +2248,7 @@ function renderOverview(){
       ${overviewEditMode?`<input class="overview-select" type="checkbox" data-overview-select="${escapeHTML(item.id)}" ${overviewSelectedIds.has(item.id)?"checked":""} aria-label="Select ${escapeHTML(item.name)}">`:`<span></span>`}
       <div class="number">${index+1}</div>
       <div class="poster-wrap"><img class="poster-thumb" src="${escapeHTML(poster)}" alt="${escapeHTML(item.name)} poster" style="${poster?"":"display:none"}" onerror="this.style.display='none'"><span class="poster-placeholder" style="${poster?"display:none":""}">▧</span></div>
-      <div class="series-info"><div class="series-name"><span>${escapeHTML(item.name)}</span></div><div class="meta">${item.year?`<span class="badge year-badge">${escapeHTML(item.year)}</span>`:""}<span class="badge">${item.mediaType==="movie"?"Movie":"Series"}</span><span class="badge ${String(item.status).toLowerCase()}">${escapeHTML(item.status)}</span><span class="badge rating-badge">★ ${formatRating(item.rating)}</span></div></div>
+      <div class="series-info"><div class="series-name"><button type="button" class="overview-title-link" data-overview-details="${escapeHTML(item.id)}">${escapeHTML(item.name)}</button>${overviewEditMode?`<span class="overview-move-inline"><button type="button" class="icon-btn" title="Move up" aria-label="Move ${escapeHTML(item.name)} up" data-overview-move="up" data-id="${escapeHTML(item.id)}" ${index===0?"disabled":""}>↑</button><button type="button" class="icon-btn" title="Move down" aria-label="Move ${escapeHTML(item.name)} down" data-overview-move="down" data-id="${escapeHTML(item.id)}" ${index===items.length-1?"disabled":""}>↓</button></span>`:""}</div><div class="meta">${item.year?`<span class="badge year-badge">${escapeHTML(item.year)}</span>`:""}<span class="badge">${item.mediaType==="movie"?"Movie":"Series"}</span><span class="badge ${String(item.status).toLowerCase()}">${escapeHTML(item.status)}</span><span class="badge rating-badge">★ ${formatRating(item.rating)}</span></div></div>
       <div class="actions">${overviewEditMode?`<button class="icon-btn" data-overview-edit="${escapeHTML(item.id)}">Edit</button><button class="icon-btn" data-overview-remove="${escapeHTML(item.id)}">✕</button>`:""}</div>
     </div>`;
   }).join(""):`<div class="empty">No ${overviewTypeFilter==="all"?"items":overviewTypeFilter+"s"} found for this filter.</div>`;
@@ -2246,6 +2274,42 @@ function openOverviewModal(item=null){
 function closeOverviewModal(){clearTimeout(overviewSearchTimer);document.getElementById("overviewAddModal").classList.remove("open");}
 document.getElementById("overviewAddBtn").onclick=()=>openOverviewModal();
 document.getElementById("overviewCancel").onclick=closeOverviewModal;
+async function openOverviewDetails(itemId){
+  const item=data.overviewItems.find(x=>x.id===itemId);if(!item)return;
+  const modal=document.getElementById("overviewDetailModal");
+  const loading=document.getElementById("overviewDetailLoading");
+  const content=document.getElementById("overviewDetailContent");
+  document.getElementById("overviewDetailTitle").textContent=item.name;
+  content.hidden=true;loading.hidden=false;loading.textContent="Loading details from OMDb…";modal.classList.add("open");
+  if(!omdbApiKey){loading.textContent="Add your OMDb API key in OMDb API Settings to load the full title details.";return;}
+  try{
+    let url;
+    if(item.imdbID){url=`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&i=${encodeURIComponent(item.imdbID)}&plot=full`;}
+    else{url=`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&t=${encodeURIComponent(item.name)}&type=${item.mediaType==="movie"?"movie":"series"}&plot=full`;}
+    const response=await fetch(url);const result=await response.json();
+    if(!modal.classList.contains("open"))return;
+    if(result.Response!=="True")throw new Error(result.Error||"Title details were not found.");
+    if(!item.imdbID&&result.imdbID){item.imdbID=result.imdbID;if(!item.poster&&result.Poster&&result.Poster!=="N/A")item.poster=result.Poster;if(!item.year&&result.Year)item.year=result.Year;save();}
+    const poster=document.getElementById("overviewDetailPoster");
+    poster.src=result.Poster&&result.Poster!=="N/A"?result.Poster:"";poster.hidden=!poster.src;
+    const put=(id,label,value)=>{document.getElementById(id).innerHTML=`<strong>${label}:</strong> ${escapeHTML(value&&value!=="N/A"?value:"Not available")}`;};
+    put("overviewDetailYear","Year",result.Year);put("overviewDetailType","Type",result.Type==="movie"?"Movie":"Series");put("overviewDetailRating","IMDb rating",result.imdbRating);put("overviewDetailPlot","Plot",result.Plot);put("overviewDetailActors","Actors",result.Actors);put("overviewDetailDirector","Director",result.Director);put("overviewDetailGenre","Genre",result.Genre);put("overviewDetailRuntime","Runtime",result.Runtime);
+    document.getElementById("overviewDetailTitle").textContent=result.Title||item.name;
+    loading.hidden=true;content.hidden=false;
+  }catch(error){loading.textContent=error.message||"Could not load title details. Check your API key and connection.";}
+}
+function moveOverviewItem(itemId,direction){
+  const visible=overviewVisibleItems();const index=visible.findIndex(x=>x.id===itemId);const nextIndex=index+(direction==="up"?-1:1);
+  if(index<0||nextIndex<0||nextIndex>=visible.length)return;
+  const current=visible[index],target=visible[nextIndex];
+  const from=data.overviewItems.findIndex(x=>x.id===current.id),to=data.overviewItems.findIndex(x=>x.id===target.id);
+  if(from<0||to<0)return;
+  [data.overviewItems[from],data.overviewItems[to]]=[data.overviewItems[to],data.overviewItems[from]];
+  if(save())renderOverview();
+}
+document.getElementById("overviewDetailClose").onclick=()=>document.getElementById("overviewDetailModal").classList.remove("open");
+document.getElementById("overviewDetailModal").addEventListener("click",event=>{if(event.target.id==="overviewDetailModal")event.currentTarget.classList.remove("open");});
+
 document.querySelectorAll("[data-overview-type]").forEach(button=>button.addEventListener("click",()=>{overviewTypeFilter=button.dataset.overviewType;overviewSelectedIds.clear();renderOverview();}));
 document.querySelectorAll("[data-overview-status]").forEach(button=>button.addEventListener("click",()=>{overviewStatusFilter=button.dataset.overviewStatus;overviewSelectedIds.clear();renderOverview();}));
 document.getElementById("overviewSearch").addEventListener("input",renderOverview);
@@ -2311,7 +2375,10 @@ document.getElementById("overviewSelectAll").onchange=event=>{
   overviewVisibleItems().forEach(item=>event.target.checked?overviewSelectedIds.add(item.id):overviewSelectedIds.delete(item.id));renderOverview();
 };
 document.getElementById("overviewItemsList").addEventListener("click",event=>{
+  const details=event.target.closest("[data-overview-details]");const move=event.target.closest("[data-overview-move]");
   const edit=event.target.closest("[data-overview-edit]");const remove=event.target.closest("[data-overview-remove]");
+  if(details){openOverviewDetails(details.dataset.overviewDetails);return;}
+  if(move){moveOverviewItem(move.dataset.id,move.dataset.overviewMove);return;}
   if(edit){const item=data.overviewItems.find(x=>x.id===edit.dataset.overviewEdit);if(item)openOverviewModal(item);}
   if(remove){const item=data.overviewItems.find(x=>x.id===remove.dataset.overviewRemove);if(!item)return;if(!confirm(`Remove "${item.name}" from Overview?`))return;data.overviewItems=data.overviewItems.filter(x=>x.id!==item.id);data.topList=data.topList.filter(f=>f.itemId!==item.id);overviewSelectedIds.delete(item.id);if(save())renderOverview();}
 });
