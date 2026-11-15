@@ -304,6 +304,24 @@ body.light .empty{border-color:#cbd5e1}
 #amirWatched #amirWatchedAdd,#amirWant #amirWantAdd,
 #amirWatched #amirWatchedBulkOpen,#amirWant #amirWantBulkOpen{display:none!important}
 
+/* Amir watched-series summary cards */
+.amir-watch-stats{margin:0 0 16px;padding:12px}
+.amir-watch-stats .status-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+.amir-watch-stats .stat{min-height:84px;display:flex;flex-direction:column;justify-content:center;gap:7px}
+.amir-watch-stats .stat strong{font-size:25px;line-height:1.15;margin:0;white-space:nowrap}
+.amir-hours-unit{font-size:13px;font-weight:650;color:var(--muted)}
+body.light .amir-watch-stats .stat{background:#f1f5f9;border-color:#dbe3ee}
+body.light .amir-watch-stats .stat:nth-child(2){background:#eaf7f1;border-color:#ccebdc}
+body.light .amir-watch-stats .stat:nth-child(3){background:#f0efff;border-color:#dedbff}
+@media(max-width:700px){
+  .amir-watch-stats{padding:9px}
+  .amir-watch-stats .status-stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .amir-watch-stats .stat{padding:9px 6px;min-height:76px}
+  .amir-watch-stats .stat small{font-size:10px;line-height:1.3}
+  .amir-watch-stats .stat strong{font-size:clamp(15px,4.5vw,21px)}
+  .amir-hours-unit{font-size:10px}
+}
+
 /* My List collections */
 .create-list-box{padding:16px;background:var(--panel2);border:1px solid var(--border);border-radius:13px;margin-top:16px}
 .create-list-box h3{font-size:14px;margin:0 0 8px}
@@ -527,7 +545,67 @@ body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
   }
 }
 
+
+
+/* Amir archive lists: poster + clickable title only, with Overview-style number placement. */
+#amirWatchedList .amir-archive-card,#amirWantList .amir-archive-card{
+  grid-template-columns:34px 38px minmax(0,1fr)!important;
+  column-gap:6px!important;
+  align-items:center;
+}
+#amirWatchedList .amir-archive-card .number,#amirWantList .amir-archive-card .number{
+  grid-column:1!important;box-sizing:border-box;width:34px;min-width:34px;height:34px;
+  margin:0;padding:0;display:grid;place-items:center;white-space:nowrap;
+}
+#amirWatchedList .amir-archive-card .poster-wrap,#amirWantList .amir-archive-card .poster-wrap{
+  grid-column:2!important;width:38px;height:54px;border-radius:7px;
+}
+#amirWatchedList .amir-archive-card .series-info,#amirWantList .amir-archive-card .series-info{
+  grid-column:3!important;min-width:0;
+}
+#amirWatchedList .amir-archive-card .series-name,#amirWantList .amir-archive-card .series-name{
+  display:block;font-size:16px;line-height:1.4;font-weight:700;
+}
+#amirWatchedList .amir-title-link,#amirWantList .amir-title-link{
+  border:0;background:transparent;color:var(--text);font:inherit;font-weight:inherit;
+  padding:0;text-align:left;cursor:pointer;overflow-wrap:anywhere;
+}
+#amirWatchedList .amir-title-link:hover,#amirWantList .amir-title-link:hover{color:var(--accent);text-decoration:underline}
+@media(max-width:700px){
+  #amirWatchedList .amir-archive-card,#amirWantList .amir-archive-card{grid-template-columns:34px 38px minmax(0,1fr)!important;column-gap:6px!important;padding:11px 10px!important}
+  #amirWatchedList .amir-archive-card .number,#amirWantList .amir-archive-card .number{width:34px!important;min-width:34px!important;height:34px!important;min-height:34px!important;border-radius:10px!important;background:#24233c!important;color:#c7c0ff!important;font-size:13px!important;font-weight:700!important;line-height:1!important}
+  body.light #amirWatchedList .amir-archive-card .number,body.light #amirWantList .amir-archive-card .number{background:#eeeaff!important;color:#5948c7!important}
+}
+
+/* Final Overview number tile: match the exact purple numbered tile used by Watchlist/Favorites. */
+@media(max-width:700px){
+  #overviewItemsList .series-card:not(.has-select){
+    grid-template-columns:34px 38px minmax(0,1fr)!important;
+    column-gap:6px!important;
+  }
+  #overviewItemsList .series-card.has-select{
+    grid-template-columns:22px 34px 38px minmax(0,1fr)!important;
+    column-gap:8px!important;
+  }
+  #overviewItemsList .series-card>.number{
+    box-sizing:border-box!important;
+    width:34px!important;min-width:34px!important;max-width:34px!important;
+    height:34px!important;min-height:34px!important;
+    border-radius:10px!important;
+    background:#24233c!important;color:#c7c0ff!important;
+    display:grid!important;place-items:center!important;
+    padding:0!important;margin:0!important;
+    font-size:13px!important;font-weight:700!important;
+    line-height:1!important;white-space:nowrap!important;
+    overflow:visible!important;
+  }
+  body.light #overviewItemsList .series-card>.number{
+    background:#eeeaff!important;color:#5948c7!important;
+  }
+}
 </style>
+
+
 </head>
 <body>
 <!-- Prevent browsers from mistaking list-entry fields for login credentials. -->
@@ -535,7 +613,7 @@ body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
 
 <aside class="sidebar" id="sidebar">
   <div class="brand">SILVER<span>TV24</span></div>
-  <div class="version">SERIES MANAGER · VERSION 1.1</div>
+  <div class="version">SERIES MANAGER · VERSION 5.9</div>
   <div class="nav-label">MAIN MENU</div>
   <nav class="nav">
     <button class="active" data-page="dashboard">◫ Dashboard</button>
@@ -714,6 +792,13 @@ body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
 <section class="page" id="amirWatched">
   <div class="panel">
     <div class="panel-head"><h2>Series I've Watched</h2><span class="muted" id="amirWatchedCount">0 items</span></div>
+    <div class="stats-group amir-watch-stats">
+      <div class="status-stats">
+        <div class="stat"><small>Total Series</small><strong>88</strong></div>
+        <div class="stat"><small>Episodes Watched</small><strong>3,225</strong></div>
+        <div class="stat"><small>Time Spent</small><strong>2,196 <span class="amir-hours-unit">Hours</span></strong></div>
+      </div>
+    </div>
     <div class="toolbar">
       <input class="search" id="amirWatchedSearch" placeholder="Search watched series...">
       <select id="amirWatchedSortSelect" class="search"><option value="manual">Manual Order</option><option value="az">Name (A–Z)</option><option value="za">Name (Z–A)</option><option value="oldest">Release Year (Oldest First)</option><option value="newest">Release Year (Newest First)</option><option value="rating">Rating (Highest First)</option><option value="status">Watch Status</option></select>
@@ -944,6 +1029,30 @@ function hydratePosters(){
 const defaultData={series:[],watchlist:[],topList:[],amirWatched:[],amirWant:[],customLists:[],overviewItems:[],telegramUrl:"https://t.me/silvertv24"};
 
 let data=loadData();
+
+// One-time import of Amir's supplied read-only series collections.
+const AMIR_COLLECTIONS_MIGRATION="silver_tv_amir_collections_v1";
+const AMIR_WATCHED_SEED=["Breaking Bad","Better call Saul","Game of Thrones","Dark","Chernobyl","Mr.robot","Money Heist","Peaky blinders","Attack on titan","Hannibal","Dexter","Sopranos","Prison Break","Vikings","Gravity Falls","Death Note","Loki","Sherlock","Punisher","Stranger Things","Dr House","House of the Dragon","Grimm","The Boys","Arcane","Band of Brothers","Lucifer","Severance","Moon Knight","Dexter(Resurrection)","Andor","Succession","Ben 10(Ultimate Alien)","Ben 10(Alien Force)","Ben 10","Rick and Morty","Avatar","Clone Wars","Bojack Horseman","Ben 10(Omniverse)","The Queen's Gambit","Alice in Borderland","Squid Game","Doctor who","Disenchantment","Berlin and the Lady with an Ermine","Berlin","VisionQuest","It(welcome to Derry)","Dexter(New Blood)","Knight of Seven Kingdoms","Pluribus","Wednesday","Merlin","Obi-Wan kenobi","Mandalorian","Maul","Avatar: The Last Airbender","Dexter(Original Sin)","Vikings(Valhalla)","Gen V","Black mirror","What if","Star Wars: Rebels","Bad Batch","Takopi's Original Sin","Kung Fu Panda: Legends of Awesomeness","Lost in space","The Last of Us","Narcos","Tales of the jedi","Penguin","Hawkeye","Ahsoka","WandaVision","Tales of underworld","Tales of the empire","Boba fett","From","Legend of the korra","Under the dome","War Land and Sea","Adolescence","Kaleidoscope","Baymax","I am Groot","The silent sea","Acolyte"];
+const AMIR_WANT_SEED=["the wire","westworld","Person of Interest","lost","the oA","Mentalist","spartacus","you","Six feet under","Fringe","House of cards","Fargo","vampire","the 100","Mindhunter","Last kingdom","Ozark","Twin Peaks","mad men","mouse","friends","Office","Walking dead","Witcher","Daredevil","Invincible","Silo","True Detective","Supernatural"];
+function seedAmirCollection(key,names,status){
+  const list=Array.isArray(data[key])?data[key]:[];
+  const existing=new Set(list.map(item=>cleanName(item?.name).toLowerCase()));
+  names.forEach(name=>{
+    const clean=cleanName(name),normalized=clean.toLowerCase();
+    if(!clean||existing.has(normalized))return;
+    list.push(normalizeItem({id:uid(),name:clean,status,addedAt:new Date().toISOString()}));
+    existing.add(normalized);
+  });
+  data[key]=list;
+}
+try{
+  if(localStorage.getItem(AMIR_COLLECTIONS_MIGRATION)!=="done"){
+    seedAmirCollection("amirWatched",AMIR_WATCHED_SEED,"Watched");
+    seedAmirCollection("amirWant",AMIR_WANT_SEED,"Planned");
+    if(save())localStorage.setItem(AMIR_COLLECTIONS_MIGRATION,"done");
+  }
+}catch(error){console.warn("Could not import Amir's collections:",error);}
+
 let editingId=null;
 let editingTarget="series";
 let bulkTarget="series";
@@ -1271,20 +1380,19 @@ function renderTop(){
 function renderPrivateList(key){
   const prefix=listPrefix(key);
   const query=document.getElementById(prefix+"Search").value.trim().toLowerCase();
-  const filter=document.getElementById(prefix+"StatusFilter").value;
   const mode=document.getElementById(prefix+"SortSelect").value;
   const items=getListByKey(key);
-  const list=sortItems(items,mode).filter(item=>item.name.toLowerCase().includes(query)&&(filter==="all"||item.status===filter));
-  document.getElementById(prefix+"List").innerHTML=list.length?list.map((item,i)=>{
-    const actualIndex=items.findIndex(x=>x.id===item.id);
-    const episodeCount=Number(item.episodesWatched)||0;
-    const episodeMinutes=Number(item.episodeMinutes)||0;
-    const seriesHours=(episodeCount*episodeMinutes)/60;
-    const episodeMinutesText=episodeMinutes?String(Number(episodeMinutes.toFixed(2))):"—";
-    const titleExtra=key==="amirWatched"?`<span class="watched-inline-meta">${episodeCount} eps · ${episodeMinutesText} min/ep · ${seriesHours.toFixed(2)} h</span>`:"";
-    return seriesCard(item,i,list.length,{select:null,move:false,edit:false,remove:false,titleExtra});
+  const list=sortItems(items,mode).filter(item=>item.name.toLowerCase().includes(query));
+  document.getElementById(prefix+"List").innerHTML=list.length?list.map((item,index)=>{
+    const poster=item.poster||getCachedPoster(item.name);
+    return `<div class="series-card amir-archive-card">
+      <div class="number">${index+1}</div>
+      <div class="poster-wrap"><img class="poster-thumb" data-poster-title="${escapeHTML(item.name.toLowerCase())}" src="${escapeHTML(poster)}" alt="${escapeHTML(item.name)} poster" loading="lazy" style="${poster?"":"display:none"}" onerror="this.style.display='none'"><span class="poster-placeholder" style="${poster?"display:none":""}">▧</span></div>
+      <div class="series-info"><div class="series-name"><button type="button" class="overview-title-link amir-title-link" data-amir-details="${escapeHTML(key)}:${escapeHTML(item.id)}">${escapeHTML(item.name)}</button></div></div>
+    </div>`;
   }).join(""):`<div class="empty">${key==="amirWatched"?"No watched series added yet.":"Your watch list is empty."}</div>`;
 }
+
 function renderPrivateStats(){
   const episodes=data.amirWatched.reduce((sum,item)=>sum+(Number(item.episodesWatched)||0),0);
   const minutes=data.amirWatched.reduce((sum,item)=>sum+(Number(item.episodesWatched)||0)*(Number(item.episodeMinutes)||0),0);
@@ -2411,8 +2519,9 @@ function openOverviewModal(item=null){
 function closeOverviewModal(){clearTimeout(overviewSearchTimer);document.getElementById("overviewAddModal").classList.remove("open");}
 document.getElementById("overviewAddBtn").onclick=()=>openOverviewModal();
 document.getElementById("overviewCancel").onclick=closeOverviewModal;
-async function openOverviewDetails(itemId){
-  const item=data.overviewItems.find(x=>x.id===itemId);if(!item)return;
+async function openOverviewDetails(itemId,source="overview"){
+  const sourceList=source==="amirWatched"?data.amirWatched:source==="amirWant"?data.amirWant:data.overviewItems;
+  const item=sourceList.find(x=>x.id===itemId);if(!item)return;
   const modal=document.getElementById("overviewDetailModal");
   const loading=document.getElementById("overviewDetailLoading");
   const content=document.getElementById("overviewDetailContent");
@@ -2519,6 +2628,16 @@ document.getElementById("overviewItemsList").addEventListener("click",event=>{
   if(edit){const item=data.overviewItems.find(x=>x.id===edit.dataset.overviewEdit);if(item)openOverviewModal(item);}
   if(remove){const item=data.overviewItems.find(x=>x.id===remove.dataset.overviewRemove);if(!item)return;if(!confirm(`Remove "${item.name}" from Overview?`))return;data.overviewItems=data.overviewItems.filter(x=>x.id!==item.id);data.topList=data.topList.filter(f=>f.itemId!==item.id);overviewSelectedIds.delete(item.id);if(save())renderOverview();}
 });
+["amirWatched","amirWant"].forEach(key=>{
+  const listEl=document.getElementById(key+"List");
+  listEl.addEventListener("click",event=>{
+    const title=event.target.closest("[data-amir-details]");
+    if(!title)return;
+    const [source,...idParts]=title.dataset.amirDetails.split(":");
+    openOverviewDetails(idParts.join(":"),source);
+  });
+});
+
 document.getElementById("overviewBulkDelete").onclick=()=>{
   const ids=[...overviewSelectedIds];if(!ids.length)return toast("Select at least one item first.");
   if(!confirm(`Delete ${ids.length} selected item(s) from Overview?`))return;
@@ -2582,31 +2701,3 @@ render();
 </body>
 </html>
 
-<style>
-/* Final Overview number tile: match the exact purple numbered tile used by Watchlist/Favorites. */
-@media(max-width:700px){
-  #overviewItemsList .series-card:not(.has-select){
-    grid-template-columns:34px 38px minmax(0,1fr)!important;
-    column-gap:6px!important;
-  }
-  #overviewItemsList .series-card.has-select{
-    grid-template-columns:22px 34px 38px minmax(0,1fr)!important;
-    column-gap:8px!important;
-  }
-  #overviewItemsList .series-card>.number{
-    box-sizing:border-box!important;
-    width:34px!important;min-width:34px!important;max-width:34px!important;
-    height:34px!important;min-height:34px!important;
-    border-radius:10px!important;
-    background:#24233c!important;color:#c7c0ff!important;
-    display:grid!important;place-items:center!important;
-    padding:0!important;margin:0!important;
-    font-size:13px!important;font-weight:700!important;
-    line-height:1!important;white-space:nowrap!important;
-    overflow:visible!important;
-  }
-  body.light #overviewItemsList .series-card>.number{
-    background:#eeeaff!important;color:#5948c7!important;
-  }
-}
-</style>
