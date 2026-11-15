@@ -613,7 +613,7 @@ body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
 
 <aside class="sidebar" id="sidebar">
   <div class="brand">SILVER<span>TV24</span></div>
-  <div class="version">SERIES MANAGER · VERSION 1.1</div>
+  <div class="version">SERIES MANAGER · VERSION 5.9</div>
   <div class="nav-label">MAIN MENU</div>
   <nav class="nav">
     <button class="active" data-page="dashboard">◫ Dashboard</button>
@@ -864,7 +864,7 @@ body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
     <div class="panel-head"><h2>Delete Data</h2></div>
     <p class="muted" style="font-size:13px;line-height:1.7">Use this section to permanently delete the data saved by Series Manager in this browser.</p>
     <div class="backup-panel"><h3>Complete Backup · All Lists</h3><p class="backup-note">Create or restore one backup containing your existing lists, custom movie and series collections, and their metadata.</p><div class="toolbar"><button class="btn primary" id="fullBackupBtn">Download Full Backup</button><button class="btn" id="fullImportBtn">Restore Full Backup</button><input type="file" id="fullBackupFile" accept=".json,.txt" hidden></div></div>
-    <div class="delete-warning"><strong>Warning:</strong> This action permanently deletes all lists, including Amir's Series. This cannot be undone. Create a complete backup first.</div>
+    <div class="delete-warning"><strong>Warning:</strong> This action deletes your regular lists, favorites, custom lists and OVERVIEW data. Amir's watched series and Amir's watchlist are protected and will remain untouched. Create a complete backup first.</div>
     <button class="btn danger" id="resetBtn">Delete All Data</button>
   </div>
 </section>
@@ -1992,15 +1992,20 @@ function importTXT(text){
 
 
 
-/* Delete all data: accessible only from the Delete Data page. */
+/* Delete regular app data while keeping Amir's two protected collections. */
 document.getElementById("resetBtn").onclick=()=>{
-  const firstConfirm=confirm("Are you sure you want to delete all your data? This includes all lists.");
+  const firstConfirm=confirm("Delete your regular lists and OVERVIEW data? Amir's watched series and Amir's watchlist will be kept.");
   if(!firstConfirm)return;
 
-  const secondConfirm=confirm("Final confirmation: permanently delete all data? Make sure you have exported a backup if needed.");
+  const secondConfirm=confirm("Final confirmation: delete all other data? Amir's two collections will NOT be deleted.");
   if(!secondConfirm)return;
 
+  // Keep independent copies so resetting the rest of the app cannot erase these lists.
+  const protectedAmirWatched=Array.isArray(data.amirWatched)?data.amirWatched.map(item=>({...item})):[];
+  const protectedAmirWant=Array.isArray(data.amirWant)?data.amirWant.map(item=>({...item})):[];
   data=cloneDefault();
+  data.amirWatched=protectedAmirWatched;
+  data.amirWant=protectedAmirWant;
   // Remove any personal override; the built-in default API key remains available.
   omdbApiKey=DEFAULT_OMDB_API_KEY;
   posterCache={};
@@ -2019,7 +2024,7 @@ document.getElementById("resetBtn").onclick=()=>{
   document.getElementById("watchStatusFilter").value="all";
   if(!save())return;
   render();
-  toast("All data deleted.");
+  toast("Other data deleted. Amir's two collections were kept.");
 };
 
 
