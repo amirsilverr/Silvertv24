@@ -843,6 +843,7 @@ body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
         <button class="btn primary" id="omdbSaveBtn" type="button">Save</button>
       </div>
       <div class="api-status" id="omdbStatus" aria-live="polite"></div>
+      <div class="api-status" id="omdbActiveStatus" aria-live="polite">Active default API: #1</div>
     </div>
     <div class="backup-panel">
       <h3>How to get your free API key</h3>
@@ -983,12 +984,52 @@ body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
 
 const STORAGE_KEY="amir_series_manager_v3";
 const OMDB_KEY_STORAGE="silver_tv_omdb_api_key";
-const DEFAULT_OMDB_API_KEY="d9393270";
+const DEFAULT_OMDB_API_KEYS=["d9393270","e48f39d4","5e376a0c","76a3cfaf","16b790e1"];
+const DEFAULT_OMDB_API_KEY=DEFAULT_OMDB_API_KEYS[0];
+const OMDB_ACTIVE_INDEX_STORAGE="silver_tv_omdb_active_default_index";
+let omdbDefaultKeyIndex=0;
 const POSTER_CACHE_STORAGE="silver_tv_omdb_posters_v1";
 let omdbApiKey=DEFAULT_OMDB_API_KEY;
+let omdbPersonalKey="";
 let posterCache={};
 const posterRequests=new Map();
-try{omdbApiKey=localStorage.getItem(OMDB_KEY_STORAGE)||DEFAULT_OMDB_API_KEY;}catch{omdbApiKey=DEFAULT_OMDB_API_KEY;}
+try{
+  omdbPersonalKey=localStorage.getItem(OMDB_KEY_STORAGE)||"";
+  omdbDefaultKeyIndex=Math.max(0,Math.min(DEFAULT_OMDB_API_KEYS.length-1,Number(localStorage.getItem(OMDB_ACTIVE_INDEX_STORAGE)||0)||0));
+  omdbApiKey=omdbPersonalKey||DEFAULT_OMDB_API_KEYS[omdbDefaultKeyIndex];
+}catch{omdbPersonalKey="";omdbDefaultKeyIndex=0;omdbApiKey=DEFAULT_OMDB_API_KEY;}
+function updateOmdbActiveStatus(message=""){
+  const el=document.getElementById("omdbActiveStatus");
+  if(!el)return;
+  el.textContent=omdbPersonalKey?"Active API: Your personal key" : `Active default API: #${omdbDefaultKeyIndex+1} of ${DEFAULT_OMDB_API_KEYS.length}`;
+  if(message)el.textContent+=` — ${message}`;
+}
+function isOmdbLimitError(data){
+  const error=String(data?.Error||"").toLowerCase();
+  return error.includes("request limit")||error.includes("daily limit")||error.includes("limit reached")||error.includes("too many requests");
+}
+async function omdbFetch(url,options){
+  const personal=!!omdbPersonalKey;
+  const attempts=personal?1:DEFAULT_OMDB_API_KEYS.length;
+  let lastResponse=null;
+  for(let attempt=0;attempt<attempts;attempt++){
+    const key=personal?omdbPersonalKey:DEFAULT_OMDB_API_KEYS[omdbDefaultKeyIndex];
+    const requestUrl=new URL(url,location.href);
+    requestUrl.searchParams.set("apikey",key);
+    const response=await fetch(requestUrl.toString(),options);
+    const data=await response.clone().json().catch(()=>null);
+    lastResponse=response;
+    if(!isOmdbLimitError(data))return response;
+    if(personal) return response;
+    if(attempt<attempts-1){
+      omdbDefaultKeyIndex=(omdbDefaultKeyIndex+1)%DEFAULT_OMDB_API_KEYS.length;
+      omdbApiKey=DEFAULT_OMDB_API_KEYS[omdbDefaultKeyIndex];
+      try{localStorage.setItem(OMDB_ACTIVE_INDEX_STORAGE,String(omdbDefaultKeyIndex));}catch{}
+      updateOmdbActiveStatus("Limit reached; switched automatically");
+    }
+  }
+  return lastResponse;
+}
 try{posterCache=JSON.parse(localStorage.getItem(POSTER_CACHE_STORAGE)||"{}");if(!posterCache||typeof posterCache!=="object")posterCache={};}catch{posterCache={};}
 function posterKey(title){return String(title||"").trim().toLowerCase();}
 function getCachedPoster(title){return posterCache[posterKey(title)]||"";}
@@ -1000,7 +1041,7 @@ async function getPosterByTitle(title,type="series"){
   const request=(async()=>{
     try{
       const url=`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&s=${encodeURIComponent(title.trim())}&type=${type==="movie"?"movie":"series"}`;
-      const response=await fetch(url);
+      const response=await omdbFetch(url);
       const result=await response.json();
       const poster=result?.Response==="True"&&result?.Search?.[0]?.Poster&&result.Search[0].Poster!=="N/A"?result.Search[0].Poster:"";
       posterCache[key]=poster;
@@ -2007,12 +2048,13 @@ document.getElementById("resetBtn").onclick=()=>{
   data.amirWatched=protectedAmirWatched;
   data.amirWant=protectedAmirWant;
   // Remove any personal override; the built-in default API key remains available.
-  omdbApiKey=DEFAULT_OMDB_API_KEY;
+  omdbPersonalKey="";omdbDefaultKeyIndex=0;omdbApiKey=DEFAULT_OMDB_API_KEY;
   posterCache={};
   posterRequests.clear();
-  try{localStorage.removeItem(OMDB_KEY_STORAGE);localStorage.removeItem(POSTER_CACHE_STORAGE);}catch(error){console.warn("Could not clear OMDb local data:",error);}
+  try{localStorage.removeItem(OMDB_KEY_STORAGE);localStorage.removeItem(OMDB_ACTIVE_INDEX_STORAGE);localStorage.removeItem(POSTER_CACHE_STORAGE);}catch(error){console.warn("Could not clear OMDb local data:",error);}
   if(omdbKeyInput){omdbKeyInput.value="";omdbKeyInput.disabled=true;omdbKeyInput.type="password";}
   if(omdbStatus)omdbStatus.textContent="";
+  updateOmdbActiveStatus();
   const revealButton=document.getElementById("omdbRevealBtn");if(revealButton)revealButton.textContent="Show";
   Object.keys(editModes).forEach(key=>editModes[key]=false);
   Object.keys(privateEditUnlocked).forEach(key=>privateEditUnlocked[key]=false);
@@ -2183,7 +2225,7 @@ async function searchWatchOmdb(query){
   const token=++watchOmdbRequestToken;
   host.innerHTML='<div class="muted" style="font-size:12px;padding:8px">Searching OMDb database…</div>';
   try{
-    const response=await fetch(`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&s=${encodeURIComponent(query)}`);
+    const response=await omdbFetch(`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&s=${encodeURIComponent(query)}`);
     const result=await response.json();
     if(token!==watchOmdbRequestToken)return;
     if(result.Response!=="True"||!Array.isArray(result.Search)){host.innerHTML='<div class="empty">No matching titles found.</div>';return;}
@@ -2200,7 +2242,7 @@ async function selectWatchOmdbResult(imdbID,button){
   const preview=document.getElementById("watchSelectedPreview");
   preview.hidden=false;document.getElementById("watchSelectedName").textContent="Loading title details…";document.getElementById("watchSelectedYear").textContent="";
   try{
-    const response=await fetch(`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&i=${encodeURIComponent(imdbID)}&plot=short`);
+    const response=await omdbFetch(`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&i=${encodeURIComponent(imdbID)}&plot=short`);
     const item=await response.json();
     if(token!==watchOmdbRequestToken)return;
     if(item.Response!=="True")throw new Error(item.Error||"Title details unavailable");
@@ -2406,7 +2448,7 @@ async function searchOmdbSuggestions(query){
   results.innerHTML='<div class="muted" style="font-size:12px;padding:8px">Searching database…</div>';
   try{
     const type=list.type==="movie"?"movie":"series";
-    const response=await fetch(`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&s=${encodeURIComponent(query)}&type=${type}`);
+    const response=await omdbFetch(`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&s=${encodeURIComponent(query)}&type=${type}`);
     const dataResult=await response.json();
     if(dataResult.Response!=="True"||!Array.isArray(dataResult.Search)){results.innerHTML='<div class="empty">No matching titles found.</div>';return;}
     results.innerHTML=dataResult.Search.slice(0,8).map(item=>`<button type="button" class="omdb-result" data-omdb-id="${escapeHTML(item.imdbID)}"><img src="${item.Poster&&item.Poster!=="N/A"?escapeHTML(item.Poster):""}" onerror="this.style.visibility='hidden'" alt=""><span>${escapeHTML(item.Title)}<small>${escapeHTML(item.Year||"Year unknown")}</small></span></button>`).join("");
@@ -2418,7 +2460,7 @@ async function selectOmdbResult(imdbID){
   const results=document.getElementById("omdbSearchResults");
   const button=results.querySelector(`[data-omdb-id="${CSS.escape(imdbID)}"]`);if(button)button.style.borderColor="var(--accent)";
   try{
-    const response=await fetch(`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&i=${encodeURIComponent(imdbID)}&plot=short`);const item=await response.json();
+    const response=await omdbFetch(`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&i=${encodeURIComponent(imdbID)}&plot=short`);const item=await response.json();
     if(item.Response!=="True")return toast("Could not load the selected title.");
     selectedOmdbItem=item;document.getElementById("customSelectedTitle").value=item.Title||"";document.getElementById("customSelectedYear").value=item.Year||"";
   }catch(error){toast("Could not load the selected title.");}
@@ -2537,7 +2579,7 @@ async function openOverviewDetails(itemId,source="overview"){
     let url;
     if(item.imdbID){url=`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&i=${encodeURIComponent(item.imdbID)}&plot=full`;}
     else{url=`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&t=${encodeURIComponent(item.name)}&type=${item.mediaType==="movie"?"movie":"series"}&plot=full`;}
-    const response=await fetch(url);const result=await response.json();
+    const response=await omdbFetch(url);const result=await response.json();
     if(!modal.classList.contains("open"))return;
     if(result.Response!=="True")throw new Error(result.Error||"Title details were not found.");
     if(!item.imdbID&&result.imdbID){item.imdbID=result.imdbID;if(!item.poster&&result.Poster&&result.Poster!=="N/A")item.poster=result.Poster;if(!item.year&&result.Year)item.year=result.Year;save();}
@@ -2577,7 +2619,7 @@ async function searchOverviewOmdb(query){
   host.innerHTML='<div class="muted" style="font-size:12px;padding:8px">Searching OMDb…</div>';
   try{
     const type=overviewTypeFilter==="all"?"":`&type=${overviewTypeFilter}`;
-    const response=await fetch(`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&s=${encodeURIComponent(query)}${type}`);
+    const response=await omdbFetch(`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&s=${encodeURIComponent(query)}${type}`);
     const result=await response.json();if(token!==overviewRequestToken)return;
     if(result.Response!=="True"||!Array.isArray(result.Search)){host.innerHTML='<div class="empty">No matching titles found.</div>';return;}
     host.innerHTML=result.Search.slice(0,10).map(item=>`<button type="button" class="watch-omdb-result" data-overview-imdb="${escapeHTML(item.imdbID)}"><img src="${item.Poster&&item.Poster!=="N/A"?escapeHTML(item.Poster):""}" alt="" onerror="this.style.visibility='hidden'"><span>${escapeHTML(item.Title)}<small>${escapeHTML(item.Year||"Year unknown")} · ${item.Type==="movie"?"Movie":"Series"}</small></span></button>`).join("");
@@ -2588,7 +2630,7 @@ async function selectOverviewOmdb(imdbID){
   if(!omdbApiKey)return toast("Add your OMDb API key first.");
   const token=++overviewRequestToken;
   try{
-    const response=await fetch(`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&i=${encodeURIComponent(imdbID)}&plot=short`);const item=await response.json();
+    const response=await omdbFetch(`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&i=${encodeURIComponent(imdbID)}&plot=short`);const item=await response.json();
     if(token!==overviewRequestToken)return;
     if(item.Response!=="True")return toast("Could not load the selected title details.");
     selectedOverviewOmdbItem=item;
@@ -2658,20 +2700,22 @@ document.getElementById("overviewApplyStatus").onclick=()=>{
 const omdbKeyInput=document.getElementById("omdbApiKey");
 const omdbStatus=document.getElementById("omdbStatus");
 if(omdbKeyInput){try{omdbKeyInput.value=localStorage.getItem(OMDB_KEY_STORAGE)||"";}catch{omdbKeyInput.value="";}}
+updateOmdbActiveStatus();
 document.getElementById("omdbEditBtn").onclick=()=>{omdbKeyInput.disabled=false;omdbKeyInput.focus();omdbStatus.textContent="Enter or replace your API key, then save.";};
 document.getElementById("omdbRevealBtn").onclick=()=>{const visible=omdbKeyInput.type==="text";omdbKeyInput.type=visible?"password":"text";document.getElementById("omdbRevealBtn").textContent=visible?"Show":"Hide";};
 document.getElementById("omdbSaveBtn").onclick=()=>{
   const key=omdbKeyInput.value.trim();
   if(!key)return toast("Enter an OMDb API key first.");
-  omdbApiKey=key;
+  omdbPersonalKey=key;omdbApiKey=key;
   try{localStorage.setItem(OMDB_KEY_STORAGE,key);}catch{return toast("Could not save the API key in this browser.");}
   omdbKeyInput.disabled=true;omdbKeyInput.type="password";document.getElementById("omdbRevealBtn").textContent="Show";
-  omdbStatus.textContent="API key saved. Loading posters for your series…";
+  updateOmdbActiveStatus();
+  omdbStatus.textContent="Your personal API key is active. Automatic default-key switching is paused while it is in use.";
   toast("OMDb API key saved.");
   // Clear negative cache entries so titles can be retried with the new key.
   posterCache={};try{localStorage.removeItem(POSTER_CACHE_STORAGE);}catch{}
   render();
-  setTimeout(()=>{omdbStatus.textContent="Poster lookup is enabled. Results are cached in this browser.";},1200);
+  setTimeout(()=>{omdbStatus.textContent="Personal API lookup is enabled. Results are cached in this browser.";},1200);
 };
 
 /* Persistent dark / light theme */
