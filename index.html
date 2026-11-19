@@ -603,6 +603,74 @@ body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
     background:#eeeaff!important;color:#5948c7!important;
   }
 }
+
+/* Home discovery page */
+.home-feature{position:relative;min-height:360px;display:flex;align-items:flex-end;overflow:hidden;border:1px solid var(--border);border-radius:18px;background:#111827 center 30%/cover no-repeat;margin:18px 0 28px;box-shadow:0 16px 42px #0005}
+.home-feature:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#080b12ee 0%,#080b12a8 48%,#080b1230 100%),linear-gradient(0deg,#080b12dd,transparent 65%)}
+.home-feature-copy{position:relative;z-index:1;max-width:650px;padding:clamp(22px,5vw,42px)}
+.home-eyebrow{font-size:11px;letter-spacing:2px;font-weight:800;color:#c2b8ff}
+.home-feature h2{font-size:clamp(30px,5vw,48px);margin:10px 0}
+.home-feature p{font-size:14px;line-height:1.8;color:#e1e6ef;margin:0;max-width:590px}
+.home-feature-meta{display:flex;gap:12px;align-items:center;margin-top:15px;color:#f4cf76;font-weight:750}
+.home-section{margin:26px 0}.home-section .panel-head{margin-bottom:14px}.home-section .panel-head p{font-size:12px;margin:6px 0 0}
+.home-title-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.home-title-card{min-width:0;background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:transform .2s,border-color .2s}
+.home-title-card:hover{transform:translateY(-4px);border-color:var(--accent)}
+.home-title-card img{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;background:var(--panel2)}
+.home-title-card .home-poster-placeholder{aspect-ratio:2/3;display:grid;place-items:center;background:var(--panel2);color:var(--muted);font-size:28px}
+.home-title-card strong{display:block;padding:10px 9px 12px;font-size:12px;line-height:1.45;overflow-wrap:anywhere}
+.home-title-card small{display:block;color:var(--muted);font-size:10px;font-weight:500;margin-top:4px}
+@media(max-width:1050px){.home-title-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:600px){.home-feature{min-height:310px}.home-title-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.home-title-card strong{font-size:11px;padding:8px 7px 10px}}
+@media(max-width:360px){.home-title-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* Home-page section navigation and title metadata */
+.home-nav{position:sticky;top:0;z-index:15;display:flex;align-items:center;justify-content:center;gap:clamp(18px,5vw,54px);padding:13px 16px;margin:0 0 20px;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:13px}
+.home-nav a{color:var(--muted);font-size:13px;font-weight:750;text-decoration:none;transition:color .18s}
+.home-nav a:hover,.home-nav a:focus{color:var(--accent)}
+#homeTop,#homeSeries,#homeMovies,#homeFranchise{scroll-margin-top:82px}
+.home-title-card .home-poster{position:relative;aspect-ratio:2/3;background:var(--panel2);overflow:hidden}
+.home-title-card .home-poster img{display:block;width:100%;height:100%;object-fit:cover}
+.home-title-card .home-poster-placeholder{height:100%;aspect-ratio:auto}
+.home-imdb-rating{position:absolute;top:8px;left:8px;padding:5px 7px;border-radius:7px;background:#090d15eF;color:#f5ce69;font-size:11px;font-weight:800;box-shadow:0 2px 8px #0006}
+.home-card-info{padding:10px 10px 12px}
+.home-card-info strong{display:block;padding:0;font-size:12px;line-height:1.45;min-height:34px}
+.home-card-info small{display:block;color:var(--muted);font-size:10px;margin-top:5px;line-height:1.45}
+.home-card-info .home-genre{min-height:29px}
+.home-imdb-link{display:inline-flex;margin-top:9px;padding:6px 9px;border:1px solid var(--accent);border-radius:7px;color:var(--accent);font-size:10px;font-weight:750;text-decoration:none}
+.home-imdb-link:hover{background:var(--accent);color:#fff}
+.franchise-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.franchise-card{min-height:150px;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;overflow:hidden;border:1px solid var(--border);border-radius:15px;text-decoration:none;color:#fff;transition:transform .2s,border-color .2s,filter .2s}
+.franchise-card:hover{transform:translateY(-4px);border-color:var(--accent);filter:brightness(1.15)}
+.franchise-card .franchise-kicker{font-size:9px;letter-spacing:2px;opacity:.72;text-align:center}
+.franchise-card strong{font-size:clamp(22px,4vw,34px);font-weight:900;letter-spacing:1.5px;text-align:center}
+.franchise-card small{font-size:9px;letter-spacing:3px;font-weight:800;opacity:.8}
+.franchise-card{position:relative;isolation:isolate;min-height:190px;cursor:pointer;background:#151c29 center/cover no-repeat}
+.franchise-card:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,#05070def 0%,#080b1280 65%,#080b1240 100%)}
+.franchise-card strong,.franchise-card small,.franchise-card .franchise-kicker{text-shadow:0 2px 12px #000}
+.marvel-card{background-image:linear-gradient(135deg,#67121c,#15131c)}
+.dc-card{background-image:linear-gradient(135deg,#152c4a,#111827)}
+.starwars-card{background-image:linear-gradient(135deg,#333,#080808)}
+.franchise-modal{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:18px;background:#03050bd9;backdrop-filter:blur(8px)}
+.franchise-modal.open{display:flex}
+.franchise-modal-box{width:min(920px,100%);max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:20px;box-shadow:0 24px 80px #0009}
+.franchise-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.franchise-modal-head h2{margin:0;font-size:22px}
+.franchise-close{width:38px;height:38px;border:1px solid var(--border);border-radius:10px;background:var(--panel2);color:var(--text);font-size:22px}
+.franchise-movie-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.franchise-movie{min-width:0;overflow:hidden;border:1px solid var(--border);border-radius:11px;background:var(--bg)}
+.franchise-movie img,.franchise-movie .poster-empty{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;background:var(--panel2)}
+.franchise-movie .poster-empty{display:grid;place-items:center;color:var(--muted);font-size:24px}
+.franchise-movie-info{padding:9px}
+.franchise-movie-info strong{display:block;font-size:11px;line-height:1.4;min-height:31px}
+.franchise-movie-info small{display:block;margin-top:5px;color:var(--muted);font-size:10px}
+.franchise-movie-info a{display:inline-block;margin-top:8px;color:var(--accent);font-size:10px;font-weight:750;text-decoration:none}
+.franchise-loading{grid-column:1/-1;padding:30px;text-align:center;color:var(--muted)}
+@media(max-width:700px){.franchise-movie-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.franchise-modal-box{padding:14px}.franchise-card{min-height:130px}}
+body.light .home-nav{background:#ffffffeb}
+@media(max-width:700px){.home-nav{gap:0;justify-content:space-around;padding:12px 7px;margin-bottom:14px}.home-nav a{font-size:11px}.franchise-grid{grid-template-columns:1fr;gap:10px}.franchise-card{min-height:112px}.home-title-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.home-card-info{padding:9px}.home-card-info strong{font-size:11px}.home-imdb-link{font-size:9px}}
+
 </style>
 
 
@@ -613,10 +681,11 @@ body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
 
 <aside class="sidebar" id="sidebar">
   <div class="brand">SILVER<span>TV24</span></div>
-  <div class="version">SERIES MANAGER · VERSION 1.1</div>
+  <div class="version">SERIES MANAGER · VERSION 5.9</div>
   <div class="nav-label">MAIN MENU</div>
   <nav class="nav">
-    <button class="active" data-page="dashboard">◫ Dashboard</button>
+    <button class="active" data-page="home">⌂ Home</button>
+    <button data-page="dashboard">◫ Dashboard</button>
     <button data-page="overview">▦ OVERVIEW</button>
     <button data-page="series">▤ My List</button>
     <button data-page="watchlist">◷ Watchlist</button>
@@ -636,14 +705,48 @@ body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
 <header class="topbar">
   <div style="display:flex;align-items:center;gap:13px">
     <button class="menu-btn" id="menuBtn">☰</button>
-    <div><h1 id="pageTitle">Dashboard</h1><p>Your SILVERTV24 series collection</p></div>
+    <div><h1 id="pageTitle">Home</h1><p>Discover movies, series and cinematic universes</p></div>
   </div>
   <button class="theme-toggle" id="themeToggle" type="button" role="switch" aria-checked="false" aria-label="Dark mode is on" title="Switch to light mode">
     <span class="theme-switch-thumb" id="themeSwitchThumb">🌙</span>
   </button>
 </header>
 
-<section class="page active" id="dashboard">
+<section class="page active" id="home">
+  <div class="dashboard-brand" id="homeTop">
+    <img class="dashboard-brand-logo" src="https://user55191.na.imgto.link/public/20261112/af46ebb8909a3ce346703d9f-1000013733.avif" alt="SILVER TV logo" loading="eager" referrerpolicy="no-referrer">
+    <div class="dashboard-brand-copy"><h2>SILVER TV</h2><p>YOUR SERIES COLLECTION</p></div>
+  </div>
+  <nav class="home-nav" aria-label="Home sections">
+    <a href="#homeTop" data-home-anchor="homeTop">Home</a>
+    <a href="#homeSeries" data-home-anchor="homeSeries">Series</a>
+    <a href="#homeMovies" data-home-anchor="homeMovies">Movies</a>
+    <a href="#homeFranchise" data-home-anchor="homeFranchise">Franchise</a>
+  </nav>
+  <div class="home-feature" id="homeFeatured"><div class="home-feature-copy"><span class="home-eyebrow">EDITOR'S PICK</span><h2>Breaking Bad</h2><p>Loading series details…</p></div></div>
+  <section class="home-section" id="homeSeries"><div class="panel-head"><div><h2>Top Series</h2><p class="muted">Six highly rated series</p></div></div><div class="home-title-grid" id="homeTopSeries"><div class="empty">Loading series…</div></div></section>
+  <section class="home-section" id="homeMovies"><div class="panel-head"><div><h2>Top Movies</h2><p class="muted">Six must-watch movies</p></div></div><div class="home-title-grid" id="homeTopMovies"><div class="empty">Loading movies…</div></div></section>
+  <section class="home-section" id="homeFranchise">
+    <div class="panel-head"><div><h2>Franchise</h2><p class="muted">Explore iconic cinematic universes</p></div></div>
+    <div class="franchise-grid">
+      <button type="button" class="franchise-card marvel-card" data-franchise="marvel" aria-label="Show Marvel movies"><span class="franchise-kicker">THE UNIVERSE</span><strong>MARVEL</strong><small>STUDIOS</small></button>
+      <button type="button" class="franchise-card dc-card" data-franchise="dc" aria-label="Show DC movies"><span class="franchise-kicker">HEROES & LEGENDS</span><strong>DC</strong><small>UNIVERSE</small></button>
+      <button type="button" class="franchise-card starwars-card" data-franchise="starwars" aria-label="Show Star Wars movies"><span class="franchise-kicker">A GALAXY FAR, FAR AWAY</span><strong>STAR WARS</strong><small>EXPLORE THE SAGA</small></button>
+    </div>
+  </section>
+</section>
+
+<div class="franchise-modal" id="franchiseModal" role="dialog" aria-modal="true" aria-labelledby="franchiseModalTitle">
+  <div class="franchise-modal-box">
+    <div class="franchise-modal-head">
+      <div><h2 id="franchiseModalTitle">Franchise</h2><p class="muted" id="franchiseModalSubtitle" style="margin:5px 0 0;font-size:12px">Popular movies</p></div>
+      <button type="button" class="franchise-close" id="franchiseModalClose" aria-label="Close">×</button>
+    </div>
+    <div class="franchise-movie-grid" id="franchiseMovieGrid"><div class="franchise-loading">Loading movies…</div></div>
+  </div>
+</div>
+
+<section class="page" id="dashboard">
   <div class="dashboard-brand">
     <img class="dashboard-brand-logo" src="https://user55191.na.imgto.link/public/20261112/af46ebb8909a3ce346703d9f-1000013733.avif" alt="SILVER TV logo" loading="eager" referrerpolicy="no-referrer">
     <div class="dashboard-brand-copy">
@@ -1796,15 +1899,133 @@ function handlePrivateAction(key,action,id){
   if(!save())return;render();
 }
 
+/* Home page recommendations use the app's existing OMDb API configuration. */
+let homeLoaded=false;
+let homeLoadingPromise=null;
+const HOME_SERIES=["Better Call Saul","Chernobyl","Game of Thrones","The Wire","The Sopranos","Dark"];
+const HOME_MOVIES=["The Shawshank Redemption","The Godfather","The Dark Knight","Pulp Fiction","Forrest Gump","Inception"];
+async function fetchHomeTitle(title,type){
+  const response=await omdbFetch(`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&t=${encodeURIComponent(title)}&type=${type}&plot=short`);
+  const item=await response.json();if(item.Response!=="True")throw new Error(item.Error||"Title unavailable");return item;
+}
+function homeCard(item){
+  const poster=item.Poster&&item.Poster!=="N/A"?escapeHTML(item.Poster):"";
+  const rating=item.imdbRating&&item.imdbRating!=="N/A"?escapeHTML(item.imdbRating):"—";
+  const year=item.Year&&item.Year!=="N/A"?escapeHTML(item.Year):"Year unavailable";
+  const genre=item.Genre&&item.Genre!=="N/A"?escapeHTML(item.Genre):"Genre unavailable";
+  const imdb=item.imdbID&&/^tt\d+$/.test(item.imdbID)?`https://www.imdb.com/title/${encodeURIComponent(item.imdbID)}/`:"https://www.imdb.com/";
+  return `<article class="home-title-card"><div class="home-poster">${poster?`<img src="${poster}" alt="${escapeHTML(item.Title||"Title")} poster" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">`:``}<div class="home-poster-placeholder" ${poster?'style="display:none"':""}>▧</div><span class="home-imdb-rating">★ ${rating}</span></div><div class="home-card-info"><strong>${escapeHTML(item.Title||"Unknown title")}</strong><small>${year}</small><small class="home-genre">${genre}</small><a class="home-imdb-link" href="${imdb}" target="_blank" rel="noopener noreferrer">View on IMDb ↗</a></div></article>`;
+}
+async function loadHomePage(force=false){
+  if(homeLoaded&&!force)return;
+  if(homeLoadingPromise&&!force)return homeLoadingPromise;
+  const featured=document.getElementById("homeFeatured"),seriesHost=document.getElementById("homeTopSeries"),moviesHost=document.getElementById("homeTopMovies");
+  if(!featured||!seriesHost||!moviesHost)return;
+  if(!omdbApiKey){
+    featured.querySelector(".home-feature-copy p").textContent="برای نمایش تصاویر و اطلاعات، کلید OMDb را در بخش OMDb API Settings تنظیم کنید.";
+    seriesHost.innerHTML=moviesHost.innerHTML='<div class="empty">OMDb API key is not available.</div>';
+    homeLoaded=false;return;
+  }
+  seriesHost.innerHTML=moviesHost.innerHTML='<div class="empty">Loading recommendations…</div>';
+  homeLoadingPromise=(async()=>{
+    try{
+      const [breakingBad,seriesResults,movieResults]=await Promise.all([
+        fetchHomeTitle("Breaking Bad","series"),
+        Promise.allSettled(HOME_SERIES.map(t=>fetchHomeTitle(t,"series"))),
+        Promise.allSettled(HOME_MOVIES.map(t=>fetchHomeTitle(t,"movie")))
+      ]);
+      const series=seriesResults.filter(x=>x.status==="fulfilled").map(x=>x.value);
+      const movies=movieResults.filter(x=>x.status==="fulfilled").map(x=>x.value);
+      const heroPoster=breakingBad.Poster&&breakingBad.Poster!=="N/A"?breakingBad.Poster:"";
+      featured.style.backgroundImage=heroPoster?`url("${heroPoster.replace(/["\\]/g,"")}")`:"none";
+      featured.querySelector(".home-feature-copy").innerHTML=`<span class="home-eyebrow">FEATURED SERIES</span><h2>${escapeHTML(breakingBad.Title||"Breaking Bad")}</h2><p>${escapeHTML(breakingBad.Plot&&breakingBad.Plot!=="N/A"?breakingBad.Plot:"A chemistry teacher turns to making methamphetamine after a life-changing diagnosis.")}</p><div class="home-feature-meta"><span>★ ${escapeHTML(breakingBad.imdbRating&&breakingBad.imdbRating!=="N/A"?breakingBad.imdbRating:"—")}/10</span><span>${escapeHTML(breakingBad.Year||"")}</span><span>${escapeHTML(breakingBad.Genre||"")}</span></div>`;
+      const byRating=(a,b)=>(Number(b.imdbRating)||0)-(Number(a.imdbRating)||0);
+      series.sort(byRating);movies.sort(byRating);
+      seriesHost.innerHTML=series.length?series.map(homeCard).join(""):'<div class="empty">Series recommendations are unavailable.</div>';
+      moviesHost.innerHTML=movies.length?movies.map(homeCard).join(""):'<div class="empty">Movie recommendations are unavailable.</div>';
+      homeLoaded=true;
+    }catch(error){
+      console.error("Home recommendations could not be loaded:",error);
+      const msg="Could not load titles from OMDb. Check your connection or API key.";
+      seriesHost.innerHTML=moviesHost.innerHTML=`<div class="empty">${msg}</div>`;
+      featured.querySelector(".home-feature-copy p").textContent=msg;
+      homeLoaded=false;
+    }finally{homeLoadingPromise=null;}
+  })();
+  return homeLoadingPromise;
+}
+
+/* Franchise cards use real poster artwork from OMDb and open an in-page movie gallery. */
+const FRANCHISES={
+  marvel:{title:"MARVEL",subtitle:"Popular Marvel movies",background:"Avengers: Endgame",movies:["Avengers: Endgame","Iron Man","Spider-Man: No Way Home","Black Panther","Guardians of the Galaxy"]},
+  dc:{title:"DC",subtitle:"Popular DC movies",background:"The Dark Knight",movies:["The Dark Knight","The Batman","Joker","Man of Steel","Wonder Woman"]},
+  starwars:{title:"STAR WARS",subtitle:"Popular Star Wars movies",background:"Star Wars: Episode IV - A New Hope",movies:["Star Wars: Episode IV - A New Hope","Star Wars: Episode V - The Empire Strikes Back","Star Wars: Episode VI - Return of the Jedi","Rogue One: A Star Wars Story","Star Wars: The Force Awakens"]}
+};
+const franchiseCache=new Map();
+async function fetchFranchiseMovie(title){
+  if(franchiseCache.has(title))return franchiseCache.get(title);
+  const promise=fetchHomeTitle(title,"movie");
+  franchiseCache.set(title,promise);
+  try{return await promise;}catch(error){franchiseCache.delete(title);throw error;}
+}
+function closeFranchiseModal(){
+  const modal=document.getElementById("franchiseModal");
+  modal.classList.remove("open");
+  document.body.style.overflow="";
+}
+async function openFranchiseModal(key){
+  const config=FRANCHISES[key];if(!config)return;
+  const modal=document.getElementById("franchiseModal"),grid=document.getElementById("franchiseMovieGrid");
+  document.getElementById("franchiseModalTitle").textContent=config.title;
+  document.getElementById("franchiseModalSubtitle").textContent=config.subtitle;
+  grid.innerHTML='<div class="franchise-loading">Loading movies…</div>';
+  modal.classList.add("open");document.body.style.overflow="hidden";
+  if(omdbApiKey){
+    fetchFranchiseMovie(config.background).then(item=>{
+      const card=document.querySelector(`[data-franchise="${key}"]`);
+      if(card&&item.Poster&&item.Poster!=="N/A")card.style.backgroundImage=`linear-gradient(0deg,#05070def,#080b1240),url("${item.Poster.replace(/["\\]/g,"")}")`;
+    }).catch(()=>{});
+  }
+  if(!omdbApiKey){grid.innerHTML='<div class="franchise-loading">برای نمایش پوسترها، ابتدا کلید OMDb را تنظیم کنید.</div>';return;}
+  const results=await Promise.allSettled(config.movies.map(fetchFranchiseMovie));
+  if(!modal.classList.contains("open")||document.getElementById("franchiseModalTitle").textContent!==config.title)return;
+  const items=results.filter(r=>r.status==="fulfilled").map(r=>r.value);
+  grid.innerHTML=items.length?items.map(item=>{
+    const poster=item.Poster&&item.Poster!=="N/A"?escapeHTML(item.Poster):"";
+    const imdb=item.imdbID&&/^tt\d+$/.test(item.imdbID)?`https://www.imdb.com/title/${encodeURIComponent(item.imdbID)}/`:"https://www.imdb.com/";
+    return `<article class="franchise-movie">${poster?`<img src="${poster}" alt="${escapeHTML(item.Title||"Movie")} poster" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">`:''}<div class="poster-empty" ${poster?'style="display:none"':""}>▧</div><div class="franchise-movie-info"><strong>${escapeHTML(item.Title||"Movie")}</strong><small>${escapeHTML(item.Year||"")}</small><small>★ ${escapeHTML(item.imdbRating&&item.imdbRating!=="N/A"?item.imdbRating:"—")}</small><a href="${imdb}" target="_blank" rel="noopener noreferrer">View on IMDb ↗</a></div></article>`;
+  }).join(""):'<div class="franchise-loading">Could not load these movies. Check the OMDb API key or connection.</div>';
+}
+/* Preload franchise poster artwork so the cards already have cinematic backgrounds before the first click. */
+if(omdbApiKey){
+  Object.entries(FRANCHISES).forEach(([key,config])=>{
+    fetchFranchiseMovie(config.background).then(item=>{
+      const card=document.querySelector(`[data-franchise="${key}"]`);
+      if(card&&item.Poster&&item.Poster!=="N/A")card.style.backgroundImage=`linear-gradient(0deg,#05070def,#080b1240),url("${item.Poster.replace(/["\\]/g,"")}")`;
+    }).catch(error=>console.warn(`Could not load ${config.title} artwork:`,error));
+  });
+}
+document.querySelectorAll("[data-franchise]").forEach(card=>card.addEventListener("click",()=>openFranchiseModal(card.dataset.franchise)));
+document.getElementById("franchiseModalClose").addEventListener("click",closeFranchiseModal);
+document.getElementById("franchiseModal").addEventListener("click",event=>{if(event.target.id==="franchiseModal")closeFranchiseModal();});
+
 /* Navigation */
 function showPage(pageId,title){
   document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===pageId));
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   const page=document.getElementById(pageId);if(page)page.classList.add("active");
-  document.getElementById("pageTitle").textContent=title||({dashboard:"Dashboard",series:"My List",customListDetail:"My List",watchlist:"Watchlist",top:"Favorites",overview:"OVERVIEW",amirWatched:"Series I've Watched",amirWant:"Watchlist",telegram:"Telegram Channel",deleteData:"Delete Data",omdbSettings:"OMDb API Settings"})[pageId]||"My List";
+  document.getElementById("pageTitle").textContent=title||({home:"Home",dashboard:"Dashboard",series:"My List",customListDetail:"My List",watchlist:"Watchlist",top:"Favorites",overview:"OVERVIEW",amirWatched:"Series I've Watched",amirWant:"Watchlist",telegram:"Telegram Channel",deleteData:"Delete Data",omdbSettings:"OMDb API Settings"})[pageId]||"My List";
   closeSidebar();
+  if(pageId==="home")loadHomePage();
 }
 document.querySelectorAll(".nav button").forEach(btn=>btn.addEventListener("click",()=>showPage(btn.dataset.page)));
+/* Explicitly initialize Home after the page handlers exist; active class is also set in HTML for first paint. */
+showPage("home");
+document.querySelectorAll("[data-home-anchor]").forEach(link=>link.addEventListener("click",event=>{
+  event.preventDefault();
+  const target=document.getElementById(link.dataset.homeAnchor);
+  if(target)target.scrollIntoView({behavior:"smooth",block:"start"});
+}));
 function closeSidebar(){
   document.getElementById("sidebar").classList.remove("open");
   document.getElementById("overlay").classList.remove("show");
@@ -1817,7 +2038,7 @@ document.getElementById("menuBtn").onclick=()=>{
 document.getElementById("overlay").onclick=closeSidebar;
 
 document.addEventListener("keydown",e=>{
-  if(e.key==="Escape"){closeModal();closeBulk();closeWatchAddModal();closeSidebar();document.getElementById("customItemModal").classList.remove("open");document.getElementById("customBulkModal").classList.remove("open");}
+  if(e.key==="Escape"){closeModal();closeBulk();closeWatchAddModal();closeFranchiseModal();closeSidebar();document.getElementById("customItemModal").classList.remove("open");document.getElementById("customBulkModal").classList.remove("open");}
 });
 
 document.getElementById("addOne").onclick=()=>openAdd("series");
