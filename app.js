@@ -822,7 +822,7 @@ function renderHomeTitles(type,items){
   const toggle=document.getElementById(type==="series"?"homeSeriesToggle":"homeMoviesToggle");
   if(!host)return;
   const expanded=homeExpanded[type];
-  host.innerHTML=items.length?items.slice(0,expanded?18:6).map(homeCard).join():`<div class="empty">${type==="series"?"Series":"Movie"} recommendations are unavailable.</div>`;
+  host.innerHTML=items.length?items.slice(0,expanded?18:6).map(homeCard).join(""):`<div class="empty">${type==="series"?"Series":"Movie"} recommendations are unavailable.</div>`;
   if(toggle){toggle.hidden=items.length<=6;toggle.textContent=expanded?"Show less":"See more";toggle.setAttribute("aria-expanded",String(expanded));}
 }
 function toggleHomeMore(type){
