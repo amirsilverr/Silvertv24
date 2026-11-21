@@ -925,41 +925,47 @@ document.querySelectorAll("[data-franchise]").forEach(card=>card.addEventListene
 document.getElementById("franchiseModalClose").addEventListener("click",closeFranchiseModal);
 document.getElementById("franchiseModal").addEventListener("click",event=>{if(event.target.id==="franchiseModal")closeFranchiseModal();});
 
-/* Navigation with shareable, refresh-safe URLs */
+/* Path-based navigation: every main section has a clean URL ending in /. */
 const PAGE_ROUTES={
-  home:"home",dashboard:"dashboard",overview:"overview",series:"series",
-  watchlist:"watchlist",top:"top",amirWatched:"amir-watched",amirWant:"amir-watchlist",
-  telegram:"telegram",omdbSettings:"omdb-settings",deleteData:"delete-data"
+  home:"home",dashboard:"dashboard",overview:"overview",series:"my-list",
+  watchlist:"watchlist",top:"favorites",amirWatched:"series-ive-watched",
+  amirWant:"amirs-watchlist",telegram:"telegram",omdbSettings:"omdb-settings",deleteData:"delete-data"
 };
 const ROUTE_PAGES=Object.fromEntries(Object.entries(PAGE_ROUTES).map(([page,slug])=>[slug,page]));
-function pageFromLocation(){
-  const slug=decodeURIComponent(location.pathname.replace(/^\/+|\/+$/g,"" )).toLowerCase();
-  return ROUTE_PAGES[slug]||"home";
-}
+function slugifyRoute(value){return String(value||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")||"list";}
 function routeForPage(pageId){
-  const slug=PAGE_ROUTES[pageId];
-  return slug?`/${slug}`:location.pathname;
+  if(pageId==="customListDetail"){
+    const list=currentCustomList();
+    return list?`/my-list/${slugifyRoute(list.name)}-${encodeURIComponent(list.id)}/`:"/my-list/";
+  }
+  return `/${PAGE_ROUTES[pageId]||"home"}/`;
 }
-function showPage(pageId,title,updateUrl=true){
-  if(!document.getElementById(pageId))pageId="home";
-  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===pageId));
+function showPage(pageId,title,options={}){
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===pageId||(pageId==="customListDetail"&&b.dataset.page==="series")));
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   const page=document.getElementById(pageId);if(page)page.classList.add("active");
   document.getElementById("pageTitle").textContent=title||({home:"Home",dashboard:"Dashboard",series:"My List",customListDetail:"My List",watchlist:"Watchlist",top:"Favorites",overview:"OVERVIEW",amirWatched:"Series I've Watched",amirWant:"Watchlist",telegram:"Telegram Channel",deleteData:"Delete Data",omdbSettings:"OMDb API Settings"})[pageId]||"My List";
-  if(updateUrl){
-    const nextPath=routeForPage(pageId);
-    if(nextPath!==location.pathname||location.search||location.hash)history.pushState({pageId},"",nextPath);
-  }
+  if(!options.fromRoute){const next=routeForPage(pageId);if(location.pathname!==next)history.pushState({pageId},"",next);}
   closeSidebar();
   if(pageId==="home")loadHomePage();
 }
+function renderRouteFromLocation(){
+  const parts=decodeURIComponent(location.pathname).split("/").filter(Boolean);
+  const slug=parts[0]||"home";
+  const pageId=ROUTE_PAGES[slug];
+  if(parts.length>1&&slug==="my-list"){
+    const listId=parts[1].split("-").slice(-1)[0];
+    const list=data.customLists.find(item=>item.id===listId);
+    if(list){openCustomList(list.id,{fromRoute:true});return;}
+  }
+  if(pageId){showPage(pageId,undefined,{fromRoute:true});return;}
+  history.replaceState({pageId:"home"},"", "/home/");
+  showPage("home",undefined,{fromRoute:true});
+}
 document.querySelectorAll(".nav button").forEach(btn=>btn.addEventListener("click",()=>showPage(btn.dataset.page)));
-window.addEventListener("popstate",()=>showPage(pageFromLocation(),"",false));
-/* Open the requested section directly, including on refresh or when a URL is shared. */
-const initialPage=pageFromLocation();
-showPage(initialPage,"",false);
-const canonicalInitialPath=routeForPage(initialPage);
-if(location.pathname!==canonicalInitialPath||location.search||location.hash)history.replaceState({pageId:initialPage},"",canonicalInitialPath);
+window.addEventListener("popstate",renderRouteFromLocation);
+/* Resolve the requested URL on first load, including direct visits and refreshes. */
+renderRouteFromLocation();
 document.querySelectorAll("[data-home-anchor]").forEach(link=>link.addEventListener("click",event=>{
   event.preventDefault();
   const target=document.getElementById(link.dataset.homeAnchor);
@@ -1452,7 +1458,7 @@ function renderCustomLists(){
   document.getElementById("customListCount").textContent=`${data.customLists.length} Lists`;
   document.getElementById("customListsGrid").innerHTML=lists.length?lists.map(list=>`<div class="custom-list-card" data-open-custom-list="${escapeHTML(list.id)}"><h3>${escapeHTML(list.name)}</h3><p>${list.type==="movie"?"MOVIE COLLECTION":"SERIES COLLECTION"}</p><div class="custom-list-footer"><span class="muted">${list.items.length} ${list.items.length===1?"item":"items"}</span><div class="custom-list-actions"><button class="btn small" data-rename-custom-list="${escapeHTML(list.id)}">Rename</button><button class="btn small danger" data-delete-custom-list="${escapeHTML(list.id)}">Delete</button></div></div></div>`).join(""):`<div class="empty" style="grid-column:1/-1">${query?"No matching lists found.":"You have not created any lists yet."}</div>`;
 }
-function openCustomList(id){
+function openCustomList(id,options={}){
   const list=data.customLists.find(x=>x.id===id);if(!list)return;
   activeCustomListId=id;
   const exportKey=`custom:${id}`;
@@ -1465,7 +1471,7 @@ function openCustomList(id){
   document.getElementById("customItemSearch").value="";
   document.getElementById("customItemSort").value="manual";
   customEditMode=false;customSelectedIds.clear();updateCustomEditUI();
-  renderCustomItems();showPage("customListDetail",list.name);
+  renderCustomItems();showPage("customListDetail",list.name,options);
 }
 function updateCustomEditUI(){
   const toggle=document.getElementById("customEditToggle");
