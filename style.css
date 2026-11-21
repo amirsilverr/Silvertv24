@@ -593,7 +593,7 @@ body.light #overviewSelectionTools{background:#f8fafc;border-color:#dbe3ee}
 .home-feature h2{font-size:clamp(30px,5vw,48px);margin:10px 0}
 .home-feature p{font-size:14px;line-height:1.8;color:#e1e6ef;margin:0;max-width:590px}
 .home-feature-meta{display:flex;gap:12px;align-items:center;margin-top:15px;color:#f4cf76;font-weight:750}
-.home-section{margin:26px 0}.home-section .panel-head{margin-bottom:14px}.home-section .panel-head p{font-size:12px;margin:6px 0 0}
+.home-section{margin:26px 0}.home-section .panel-head{margin-bottom:14px}.home-section .panel-head p{font-size:12px;margin:6px 0 0}.home-more-btn{white-space:nowrap;flex-shrink:0}.home-more-btn[hidden]{display:none}
 .home-title-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
 .home-title-card{min-width:0;background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:transform .2s,border-color .2s}
 .home-title-card:hover{transform:translateY(-4px);border-color:var(--accent)}

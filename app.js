@@ -816,9 +816,24 @@ function handlePrivateAction(key,action,id){
 
 /* Home page recommendations use the app's existing OMDb API configuration. */
 let homeLoaded=false;
+const homeExpanded={series:false,movies:false};
+function renderHomeTitles(type,items){
+  const host=document.getElementById(type==="series"?"homeTopSeries":"homeTopMovies");
+  const toggle=document.getElementById(type==="series"?"homeSeriesToggle":"homeMoviesToggle");
+  if(!host)return;
+  const expanded=homeExpanded[type];
+  host.innerHTML=items.length?items.slice(0,expanded?18:6).map(homeCard).join():`<div class="empty">${type==="series"?"Series":"Movie"} recommendations are unavailable.</div>`;
+  if(toggle){toggle.hidden=items.length<=6;toggle.textContent=expanded?"Show less":"See more";toggle.setAttribute("aria-expanded",String(expanded));}
+}
+function toggleHomeMore(type){
+  if(type!=="series"&&type!=="movies")return;
+  homeExpanded[type]=!homeExpanded[type];
+  renderHomeTitles(type,type==="series"?homeSeriesCache:homeMoviesCache);
+}
+let homeSeriesCache=[],homeMoviesCache=[];
 let homeLoadingPromise=null;
-const HOME_SERIES=["Better Call Saul","Chernobyl","Game of Thrones","The Wire","The Sopranos","Dark"];
-const HOME_MOVIES=["The Shawshank Redemption","The Godfather","The Dark Knight","Pulp Fiction","Forrest Gump","Inception"];
+const HOME_SERIES=["Better Call Saul","Chernobyl","Game of Thrones","The Wire","The Sopranos","Dark","Breaking Bad","Stranger Things","Sherlock","The Boys","Succession","Peaky Blinders","Fargo","True Detective","Severance","Mr. Robot","Narcos","Band of Brothers"];
+const HOME_MOVIES=["The Shawshank Redemption","The Godfather","The Dark Knight","Pulp Fiction","Forrest Gump","Inception","The Godfather Part II","12 Angry Men","Schindler's List","The Lord of the Rings: The Return of the King","Fight Club","The Lord of the Rings: The Fellowship of the Ring","Interstellar","Parasite","The Green Mile","Goodfellas","Seven Samurai","City of God"];
 async function fetchHomeTitle(title,type){
   const response=await omdbFetch(`https://www.omdbapi.com/?apikey=${encodeURIComponent(omdbApiKey)}&t=${encodeURIComponent(title)}&type=${type}&plot=short`);
   const item=await response.json();if(item.Response!=="True")throw new Error(item.Error||"Title unavailable");return item;
@@ -854,11 +869,12 @@ async function loadHomePage(force=false){
       const heroPoster=breakingBad.Poster&&breakingBad.Poster!=="N/A"?breakingBad.Poster:"";
       featured.style.backgroundImage=heroPoster?`url("${heroPoster.replace(/["\\]/g,"")}")`:"none";
       const breakingBadImdb=breakingBad.imdbID&&/^tt\d+$/.test(breakingBad.imdbID)?`https://www.imdb.com/title/${encodeURIComponent(breakingBad.imdbID)}/`:"https://www.imdb.com/title/tt0903747/";
-      featured.querySelector(".home-feature-copy").innerHTML=`<span class="home-eyebrow">FEATURED SERIES</span><h2><a class="home-feature-imdb-link" href="${breakingBadImdb}" target="_blank" rel="noopener noreferrer" aria-label="Open Breaking Bad on IMDb">${escapeHTML(breakingBad.Title||"Breaking Bad")} ↗</a></h2><p>${escapeHTML(breakingBad.Plot&&breakingBad.Plot!=="N/A"?breakingBad.Plot:"A chemistry teacher turns to making methamphetamine after a life-changing diagnosis.")}</p><div class="home-feature-meta"><span>★ ${escapeHTML(breakingBad.imdbRating&&breakingBad.imdbRating!=="N/A"?breakingBad.imdbRating:"—")}/10</span><span>${escapeHTML(breakingBad.Year||"")}</span><span>${escapeHTML(breakingBad.Genre||"")}</span></div>`;
+      featured.querySelector(".home-feature-copy").innerHTML=`<span class="home-eyebrow">FEATURED SERIES</span><h2><a class="home-feature-imdb-link" href="${breakingBadImdb}" target="_blank" rel="noopener noreferrer" aria-label="Open Breaking Bad on IMDb">${escapeHTML(breakingBad.Title||"Breaking Bad")} ↗</a></h2><p>${escapeHTML(breakingBad.Plot&&breakingBad.Plot!=="N/A"?breakingBad.Plot:"A chemistry teacher turns to making methamphetamine after a life-changing diagnosis.")}</p><div class="home-feature-meta"><span>★ ${escapeHTML(breakingBad.imdbRating&&breakingBad.imdbRating!=="N/A"?breakingBad.imdbRating:"—")}</span><span>${escapeHTML(breakingBad.Year||"")}</span><span>${escapeHTML(breakingBad.Genre||"")}</span></div>`;
       const byRating=(a,b)=>(Number(b.imdbRating)||0)-(Number(a.imdbRating)||0);
       series.sort(byRating);movies.sort(byRating);
-      seriesHost.innerHTML=series.length?series.map(homeCard).join(""):'<div class="empty">Series recommendations are unavailable.</div>';
-      moviesHost.innerHTML=movies.length?movies.map(homeCard).join(""):'<div class="empty">Movie recommendations are unavailable.</div>';
+      homeSeriesCache=series;homeMoviesCache=movies;
+      homeExpanded.series=false;homeExpanded.movies=false;
+      renderHomeTitles("series",series);renderHomeTitles("movies",movies);
       homeLoaded=true;
     }catch(error){
       console.error("Home recommendations could not be loaded:",error);
@@ -870,6 +886,8 @@ async function loadHomePage(force=false){
   })();
   return homeLoadingPromise;
 }
+
+document.addEventListener("click",event=>{const toggle=event.target.closest("[data-home-toggle]");if(toggle)toggleHomeMore(toggle.dataset.homeToggle);});
 
 /* Franchise cards use real poster artwork from OMDb and open an in-page movie gallery. */
 const FRANCHISES={
